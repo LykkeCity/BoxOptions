@@ -10,7 +10,11 @@ import Foundation
 
 import UIKit
 
+
 class BOGraphView: UIView {
+    
+    var scale:CGFloat = 1
+
     
     var changes:[BORate]?
     
@@ -76,6 +80,17 @@ class BOGraphView: UIView {
         
         let context=UIGraphicsGetCurrentContext()
         
+//        CGContextTranslateCTM(context, frameSize.width / 2, frameSize.height / 2);
+//        CGContextRotateCTM(context, M_PI_2);
+//        CGContextTranslateCTM(context, -frameSize.height / 2, -frameSize.width / 2);
+
+        if(flagLandscape) {
+        context?.translateBy(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
+        context?.rotate(by: -CGFloat(M_PI_2))
+//        context?.translateBy(x:  -self.bounds.size.width/2, y: -self.bounds.size.height/2)
+            context?.translateBy(x:  -self.bounds.size.height/2, y: -self.bounds.size.width/2)
+        }
+        
          
         
         context?.setLineWidth(1)
@@ -88,16 +103,27 @@ class BOGraphView: UIView {
         context?.setLineCap(.round)
         let lastRate = changes!.last
 
-        
+        let rrr = self.bounds
+
         if(lastX == nil) {
             lastX = (lastRate!.ask + lastRate!.bid)/2
+            
             lastXCoord = self.bounds.size.width/2
+            if(flagLandscape) {
+                lastXCoord = self.bounds.size.height/2
+
+            }
+            
         }
+
 
         
         var prevX = priceToX(price: (lastRate!.ask + lastRate!.bid)/2)
 
-        let origPoint = CGPoint(x: prevX, y: self.bounds.size.height - 10)
+        var origPoint = CGPoint(x: prevX, y: self.bounds.size.height - 10)
+        if(flagLandscape) {
+            origPoint = CGPoint(x: prevX, y: self.bounds.size.width - 10)
+        }
         context?.move(to: origPoint)
         
         let y = timeToY(time: lastRate!.timestamp)
@@ -195,19 +221,32 @@ class BOGraphView: UIView {
     
     func priceToX(price: Double) -> CGFloat {
         let diff = price - lastX!
-        let x = lastXCoord! + (CGFloat(diff)*(self.bounds.size.width/CGFloat(widthPrice!)))
-
+        
+        var x = lastXCoord! + (CGFloat(diff)*(self.bounds.size.width/CGFloat(widthPrice! / Double(scale)))) + scrollOffset
+        if(flagLandscape) {
+            x = lastXCoord! + (CGFloat(diff)*(self.bounds.size.height/CGFloat(widthPrice! / Double(scale)))) - scrollOffset
+        }
+        
+        
+        
         return x
     }
     
     func xToPrice(x: CGFloat) -> Double {
-        let diff = (x - lastXCoord!) / (self.bounds.size.width/CGFloat(widthPrice!))
+        
+        var diff = (x - scrollOffset - lastXCoord!) / (self.bounds.size.width/CGFloat(widthPrice! / Double(scale)))
+        if(flagLandscape) {
+            diff = (lastXCoord! - (x - scrollOffset)) / (self.bounds.size.height/CGFloat(widthPrice! / Double(scale)))
+        }
         return Double(diff) + lastX!
     }
     
     func timeToY(time: TimeInterval) -> CGFloat {
 
-        let y = self.bounds.size.height - 10 - CGFloat(lastTime! - time)*(self.bounds.size.height/CGFloat(heightSeconds))
+        var y = self.bounds.size.height - 10 - CGFloat(lastTime! - time)*(self.bounds.size.height/CGFloat(heightSeconds / Double(scale)))
+        if(flagLandscape) {
+            y = self.bounds.size.width - 10 - CGFloat(lastTime! - time)*(self.bounds.size.width/CGFloat(heightSeconds / Double(scale)))
+        }
         return y
     }
     

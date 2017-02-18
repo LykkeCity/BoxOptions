@@ -11,6 +11,10 @@ import UIKit
 
 class BOFlyingCoin: UIView {
     
+    weak var presenter: BOGamePresenter?
+    
+    var value: Double?
+    
     var startPoint: CGPoint?
     var endPoint: CGPoint?
     
@@ -111,6 +115,9 @@ class BOFlyingCoin: UIView {
         if(curAng > gamma2!) {
             timer?.invalidate()
             self.removeFromSuperview()
+            if(presenter != nil) {
+                presenter!.balance += value!
+            }
             
         }
 

@@ -114,7 +114,9 @@
 		A10B54A31E4D5C0500E5DCBE /* BOGamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10B54A21E4D5C0500E5DCBE /* BOGamePresenter.swift */; };
 		A10B54A51E4D5C1D00E5DCBE /* BOGamePresenter.xib in Resources */ = {isa = PBXBuildFile; fileRef = A10B54A41E4D5C1D00E5DCBE /* BOGamePresenter.xib */; };
 		A10B54A71E4D994F00E5DCBE /* BOKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10B54A61E4D994F00E5DCBE /* BOKeyboard.swift */; };
+		A174FFD31E5451C400EC383F /* NSString+Date.m in Sources */ = {isa = PBXBuildFile; fileRef = A174FFD21E5451C400EC383F /* NSString+Date.m */; };
 		A1B241231E4E211A008F6913 /* BOFlyingCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */; };
+		A1F1C6B41E57FA580095E369 /* BOUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -363,7 +365,10 @@
 		A10B54A21E4D5C0500E5DCBE /* BOGamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOGamePresenter.swift; path = Presenters/Graph/BOGamePresenter.swift; sourceTree = "<group>"; };
 		A10B54A41E4D5C1D00E5DCBE /* BOGamePresenter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BOGamePresenter.xib; path = Presenters/Graph/BOGamePresenter.xib; sourceTree = "<group>"; };
 		A10B54A61E4D994F00E5DCBE /* BOKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOKeyboard.swift; path = Presenters/KeyBoard/BOKeyboard.swift; sourceTree = "<group>"; };
+		A174FFD11E5451C400EC383F /* NSString+Date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Date.h"; sourceTree = "<group>"; };
+		A174FFD21E5451C400EC383F /* NSString+Date.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Date.m"; sourceTree = "<group>"; };
 		A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOFlyingCoin.swift; path = Presenters/Graph/BOFlyingCoin.swift; sourceTree = "<group>"; };
+		A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOUtilsView.swift; path = Presenters/Utils/BOUtilsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -416,6 +421,7 @@
 		A10B531F1E4C3DED00E5DCBE /* BoxOptions */ = {
 			isa = PBXGroup;
 			children = (
+				A174FFD01E5451B300EC383F /* Utils */,
 				A10B548F1E4C40B000E5DCBE /* Models */,
 				A10B53561E4C3FBC00E5DCBE /* MDWamp */,
 				A10B53231E4C3DED00E5DCBE /* AppDelegate.h */,
@@ -902,9 +908,19 @@
 				A10B54A21E4D5C0500E5DCBE /* BOGamePresenter.swift */,
 				A10B54A61E4D994F00E5DCBE /* BOKeyboard.swift */,
 				A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */,
+				A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */,
 				A10B54A41E4D5C1D00E5DCBE /* BOGamePresenter.xib */,
 			);
 			name = Game;
+			sourceTree = "<group>";
+		};
+		A174FFD01E5451B300EC383F /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				A174FFD11E5451C400EC383F /* NSString+Date.h */,
+				A174FFD21E5451C400EC383F /* NSString+Date.m */,
+			);
+			name = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1060,6 +1076,7 @@
 				A10B54591E4C3FBD00E5DCBE /* MDWampSubscribed.m in Sources */,
 				A10B54791E4C3FBD00E5DCBE /* SRLog.m in Sources */,
 				A10B545F1E4C3FBD00E5DCBE /* MDWampYield.m in Sources */,
+				A1F1C6B41E57FA580095E369 /* BOUtilsView.swift in Sources */,
 				A10B545D1E4C3FBD00E5DCBE /* MDWampUnsubscribed.m in Sources */,
 				A10B54A71E4D994F00E5DCBE /* BOKeyboard.swift in Sources */,
 				A10B54471E4C3FBD00E5DCBE /* MDWampAbort.m in Sources */,
@@ -1131,6 +1148,7 @@
 				A10B546E1E4C3FBD00E5DCBE /* MPRPCProtocol.m in Sources */,
 				A10B545E1E4C3FBD00E5DCBE /* MDWampWelcome.m in Sources */,
 				A10B544F1E4C3FBD00E5DCBE /* MDWampHello.m in Sources */,
+				A174FFD31E5451C400EC383F /* NSString+Date.m in Sources */,
 				A10B547A1E4C3FBD00E5DCBE /* SRMutex.m in Sources */,
 				A10B54711E4C3FBD00E5DCBE /* SRIOConsumerPool.m in Sources */,
 				A10B543B1E4C3FBD00E5DCBE /* ABPinSelectionView.m in Sources */,
@@ -1321,8 +1339,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lykkex.BoxOptions;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4478b2cd-bc83-4aae-a81e-3ae935a9a823";
-				PROVISIONING_PROFILE_SPECIFIER = "BoxOptions-Adhoc2";
+				PROVISIONING_PROFILE = "988c39de-ca76-4d80-af33-012eeb75d9ca";
+				PROVISIONING_PROFILE_SPECIFIER = "BoxOptions-Adhoc3";
 				SWIFT_OBJC_BRIDGING_HEADER = "BoxOptions/BoxOptions-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};

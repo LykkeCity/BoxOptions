@@ -10,6 +10,7 @@
 #import "MDWamp.h"
 #import "BORate.h"
 #import "BOAsset.h"
+#import "NSString+Date.h"
 
 @import UIKit;
 
@@ -46,8 +47,48 @@
 - (void) mdwamp:(MDWamp*)wamp sessionEstablished:(NSDictionary*)info
 {
     
-    [self startListeningForAssets];
+    [self loadAssets];
     
+    
+}
+
+-(void) loadAssets {
+    
+    [wamp call:@"init.chartdata" payload:@{} complete:^(MDWampResult *result, NSError *error){
+        
+        NSDictionary *dict=result.arguments[0];
+        _assets = [[NSMutableArray alloc] init];
+        
+        for(NSString *key in dict.allKeys) {
+            
+            NSArray *changes = dict[key];
+            
+            BOAsset *newAsset = [BOAsset new];
+            newAsset.identity = key;
+            [_assets addObject:newAsset];
+
+
+            for(NSDictionary *d in changes) {
+                
+                BORate *rate=[BORate new];
+                rate.ask=[d[@"Ask"] doubleValue];
+                rate.bid=[d[@"Bid"] doubleValue];
+                NSDate *date = [d[@"Date"] toDateWithMilliSeconds];
+                rate.timestamp=[date timeIntervalSinceReferenceDate];
+                
+                [newAsset rateChanged:rate];
+            }
+            
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"AssetsListChanged" object:nil];
+        });
+
+        
+        [self startListeningForAssets];
+        
+    }];
 }
 
 
@@ -78,7 +119,9 @@
                 BORate *rate=[BORate new];
                 rate.ask=[dict[@"Ask"] doubleValue];
                 rate.bid=[dict[@"Bid"] doubleValue];
-                rate.timestamp=[[NSDate date] timeIntervalSinceReferenceDate];
+                NSDate *date = [dict[@"Date"] toDateWithMilliSeconds];
+                rate.timestamp=[date timeIntervalSinceReferenceDate];
+
                 
                 BOOL flagFound = false;
                 @synchronized (self) {
@@ -99,7 +142,7 @@
                             changedAssetId=asset.identity;
                             
                             if([changedAssetId isEqualToString:@"CHFJPY"]) {
-                                NSLog(@"received an event %@", payload.arguments);
+//                                NSLog(@"received an event %@", payload.arguments);
 
                             }
                         }
@@ -114,9 +157,6 @@
                     [newAsset rateChanged:rate];
                     [_assets addObject:newAsset];
                     
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"AssetsListChanged" object:nil];
-                    });
                 }
             
                 }

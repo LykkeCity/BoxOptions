@@ -13,30 +13,132 @@ class BOKeyboardView: UIView {
     
     var keysArray:Array<BOKeyView>?
     
+    var maxScrollOffset:CGFloat?
+    
+    
     weak var presenter: BOGamePresenter?
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        if(keysArray == nil) {
-        keysArray = Array()
-        let width = self.bounds.size.width/5
+        if(self.keysArray == nil) {
+            self.keysArray = Array()
+            
+        }
+
+        var etalon = (self.bounds.size.height/5)
+        
+        
+        if(flagLandscape == false) {
+            etalon = self.bounds.size.width/5
+        }
+        
+        var horNumber = 21.0
+        var verNumber = 12.0
+        
+        maxScrollOffset = etalon * CGFloat(horNumber / 2) * presenter!.graphView!.scale
+
+        
+        if(flagLandscape) {
+            horNumber = 12.0
+            verNumber = 21.0
+            
+        }
+        
+        
         
         var value = 1.0
-        for i in 0..<5 {
-            for j in 0..<5 {
 
-                let frame = CGRect(x: CGFloat(i) * width, y: CGFloat(j) * width, width: width, height: width)
-                let keyView = BOKeyView.init(frame: frame, value: value)
-                self.addSubview(keyView)
-                keyView.presenter = presenter
-                value += 1
+
+        
+            if(flagLandscape) {
+                
+                let width = etalon * self.presenter!.graphView!.scale
+                let height = width
+                
+                
+                
+                for i in 0..<Int(horNumber) {
+                    for j in 0..<Int(verNumber) {
+                        
+                        let frame = CGRect(x: 0, y: 0, width: width, height: height)
+                        
+                        let center = CGPoint(x: (CGFloat(i) + 0.5) * width, y: self.bounds.size.height/2 - (CGFloat(verNumber/2) - CGFloat(j) - 0.5) * height + scrollOffset)
+                        
+                        value = Double(i)*0.7 + 1.1 + fabs(verNumber/2 - Double(0.5) - Double(j))*1.1
+                        
+                        
+                        var keyView: BOKeyView?
+                        
+                        if(self.keysArray!.count < Int(horNumber * verNumber)) {
+                            keyView = BOKeyView.init(frame: frame, value: value)
+                            keyView!.presenter = self.presenter
+                            self.keysArray?.append(keyView!)
+                        }
+                        else {
+                            keyView = self.keysArray![Int(i) * Int(verNumber) + Int(j)]
+                        }
+                        
+                            keyView!.frame = frame
+                            keyView!.center = center
+                            keyView!.value = value
+                            if(keyView!.superview == nil) {
+                                self.addSubview(keyView!)
+                            }
+                        
+                        
+                        
+                        
+                    }
+                }
+            }
+                
+            else {
+                
+                let width = etalon * self.presenter!.graphView!.scale
+                let height = width
+                
+                
+                
+                for i in 0..<Int(horNumber) {
+                    for j in 0..<Int(verNumber) {
+                        
+                        let frame = CGRect(x: 0, y: 0, width: width, height: height)
+                        
+                        let center = CGPoint(x: self.bounds.size.width/2 - (CGFloat(horNumber/2) - CGFloat(i) - 0.5) * width + scrollOffset, y: (CGFloat(j)+0.5) * height)
+                        
+                        value = Double(j)*0.7 + 1.1 + fabs(horNumber/2 - Double(0.5) - Double(i))*1.1
+                        
+                        var keyView: BOKeyView?
+                        
+                        if(self.keysArray!.count < Int(horNumber * verNumber)) {
+                            keyView = BOKeyView.init(frame: frame, value: value)
+                            keyView!.presenter = self.presenter
+                            self.keysArray?.append(keyView!)
+                        }
+                        else {
+                            keyView = self.keysArray![Int(i) * Int(verNumber) + Int(j)]
+                        }
+                        
+                            keyView!.frame = frame
+                            keyView!.center = center
+                            keyView!.value = value
+                            if(keyView!.superview == nil) {
+                                self.addSubview(keyView!)
+                            }
+                        
+ 
+
+                    }
+                }
+                
             }
         }
-        }
         
+
         
-    }
+    
+    
     
     
 }
@@ -44,17 +146,29 @@ class BOKeyboardView: UIView {
 class BOKeyView: UIView {
     
     weak var presenter: BOGamePresenter?
-    var value:Double?
+    private var _value: Double?
+    var value:Double? {
+        get {
+            return _value
+        }
+        set {
+            _value = newValue
+            if(label != nil) {
+                label?.text = String(_value!)
+                label?.sizeToFit()
+                self.setNeedsLayout()
+            }
+        }
+    }
     
     var label: UILabel?
     var box:UIView?
     
     init(frame: CGRect, value: Double) {
         super.init(frame: frame)
-        self.value = value
         
         box = UIView(frame: CGRect(x: 3, y: 3, width: frame.size.width-6, height: frame.size.height-6))
-        
+        box?.isUserInteractionEnabled = false
         self.backgroundColor = nil
         box!.layer.borderColor = UIColor(red: 143.0/255, green: 125.0/255, blue: 25.0/255, alpha: 1).cgColor
         box!.layer.borderWidth = 0.5
@@ -65,19 +179,23 @@ class BOKeyView: UIView {
         label = UILabel()
         label?.font = UIFont.systemFont(ofSize: 14)
         label?.textColor = UIColor(red: 1, green: 246.0/255, blue: 0, alpha: 1)
-        label?.text = String(value)
-        label?.sizeToFit()
         self.addSubview(label!)
         label?.center = CGPoint(x: frame.size.width/2, y: frame.size.height/2)
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(userTapped))
         self.addGestureRecognizer(gesture)
         
+        self.value = value
+        
     }
+    
+    
     
     override func layoutSubviews() {
         super.layoutSubviews()
         label?.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
+        let frame = self.frame
+        box?.frame = CGRect(x: 3, y: 3, width: frame.size.width-6, height: frame.size.height-6)
 
     }
     
@@ -86,18 +204,32 @@ class BOKeyView: UIView {
     }
     
     func userTapped() {
-        let optionView = BOOptionView.init(frame: self.frame, value: value!, presenter: presenter!)
-        self.superview!.insertSubview(optionView, at: 0)
+        if(presenter!.balance < 1) {
+            return
+        }
+        presenter?.balance -= 1
+        _ = BOOptionView.init(frame: self.frame, inView:self.superview!, value: value!, presenter: presenter!)
+        
+        print("TAPPED")
     }
 }
 
 class BOOptionView: UIView {
     
     var value:Double?
+    weak var presenter: BOGamePresenter?
+
     weak var graphView: BOGraphView?
     
-    var originalY:CGFloat?
+//    var originalY:CGFloat?
+//    var originalX:CGFloat?
+    
+    var distToGraph: CGFloat?
     var originalTimeStamp: Double?
+    var timeNeededToGoToGraph: Double?
+    
+    var originalWidth:CGFloat?
+    var originalHeight:CGFloat?
     
     var price: Double?
     
@@ -108,11 +240,15 @@ class BOOptionView: UIView {
     var stopped = false
     
     
-    init(frame: CGRect, value: Double, presenter: BOGamePresenter) {
+    init(frame: CGRect, inView: UIView, value: Double, presenter: BOGamePresenter) {
         super.init(frame: frame)
+        inView.insertSubview(self, at: 0)
         self.clipsToBounds = true
         self.backgroundColor = UIColor.yellow
         self.value = value
+        
+        originalWidth = frame.size.width / presenter.graphView!.scale
+        originalHeight = frame.size.height / presenter.graphView!.scale
         
         self.layer.borderColor = UIColor.brown.cgColor
         self.layer.borderWidth = 2
@@ -122,19 +258,51 @@ class BOOptionView: UIView {
 
         label.backgroundColor = nil
         label.textColor = UIColor.black
+        label.textAlignment = .center
         label.isOpaque = false
         label.text = String(value)
         label.sizeToFit()
         self.addSubview(label)
-        label.center = CGPoint(x: frame.size.width/2, y: frame.size.height/2)
+        label.frame = self.bounds
+        label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
+        
+        self.presenter = presenter
         graphView = presenter.graphView
-        originalY = frame.origin.y + frame.size.height/2
+        if(flagLandscape) {
+            
+            let p = graphView!.convert(CGPoint(x: graphView!.bounds.size.width, y: 0), to: self)
+            distToGraph = -p.x + frame.size.width/2
+        }
+        else {
+            let p = graphView!.convert(CGPoint(x: 0, y: graphView!.bounds.size.height), to: self)
+            distToGraph = -p.y + frame.size.height/2
+        }
+        
+        
+//        originalY = frame.origin.y + frame.size.height/2
+//        originalX = frame.origin.x + frame.size.width/2
         originalTimeStamp = Date.timeIntervalSinceReferenceDate
         
-        price = graphView!.xToPrice(x: frame.origin.x + frame.size.width/2)
         
-        delta = self.graphView!.bounds.size.height / CGFloat(self.graphView!.heightSeconds)
+        if(flagLandscape) {
+            price = graphView!.xToPrice(x: frame.origin.y + frame.size.height/2)
+            
+            delta = self.graphView!.bounds.size.width / CGFloat(self.graphView!.heightSeconds  / Double(graphView!.scale))
+            
+            timeNeededToGoToGraph = Double(distToGraph! / delta!)
+
+
+        }
+        else {
+            price = graphView!.xToPrice(x: frame.origin.x + frame.size.width/2)
+
+            delta = self.graphView!.bounds.size.height / CGFloat(self.graphView!.heightSeconds  / Double(graphView!.scale))
+            
+            timeNeededToGoToGraph = Double(distToGraph! / delta!)
+
+        }
+        
 
         timer = Timer.init(timeInterval: 0.04, target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
         
@@ -142,11 +310,36 @@ class BOOptionView: UIView {
     }
     
     func timerFired () {
+        if(flagLandscape) {
+            delta = self.graphView!.bounds.size.width / CGFloat(self.graphView!.heightSeconds  / Double(graphView!.scale))
 
-        self.center.y = self.originalY! - delta! * CGFloat(Date.timeIntervalSinceReferenceDate - self.originalTimeStamp!)
-        self.center.x = self.graphView!.priceToX(price: self.price!)
-        
-        let pointFire = CGPoint(x: self.graphView!.bounds.size.width/2, y: self.graphView!.bounds.size.height-10)
+            let qqq = self.graphView!.priceToX(price: self.price!)
+            let qqq1 = self.graphView!.priceToX(price: self.price! - 10)
+            let qqq2 = self.graphView!.priceToX(price: self.price! + 10)
+            
+            
+            let yC = self.graphView!.bounds.size.height/2 + (self.graphView!.bounds.size.height/2 - self.graphView!.priceToX(price: self.price!))
+            let xC = self.graphView!.frame.origin.x + graphView!.frame.size.width + delta! * CGFloat(timeNeededToGoToGraph! - (Date.timeIntervalSinceReferenceDate - self.originalTimeStamp!))
+            
+            let p = graphView!.convert(CGPoint(x: xC, y: yC), to: self.superview)
+
+            self.frame = CGRect(x: p.x - (originalWidth!/2) * graphView!.scale, y: p.y - (originalHeight!/2) * graphView!.scale, width: originalWidth! * graphView!.scale, height: originalHeight! * graphView!.scale)
+        }
+        else {
+            delta = self.graphView!.bounds.size.height / CGFloat(self.graphView!.heightSeconds / Double(graphView!.scale) )
+
+            let yC = self.graphView!.frame.origin.y + graphView!.frame.size.height + delta! * CGFloat(timeNeededToGoToGraph! - (Date.timeIntervalSinceReferenceDate - self.originalTimeStamp!))
+            let xC = self.graphView!.priceToX(price: self.price!)
+            
+            let p = graphView!.convert(CGPoint(x: xC, y: yC), to: self.superview)
+
+            self.frame = CGRect(x: p.x - (originalWidth!/2) * graphView!.scale, y: p.y - (originalHeight!/2) * graphView!.scale, width: originalWidth! * graphView!.scale, height: originalHeight! * graphView!.scale)
+
+        }
+        var pointFire = CGPoint(x: self.graphView!.bounds.size.width/2 + scrollOffset, y: self.graphView!.bounds.size.height-10)
+        if(flagLandscape) {
+            pointFire = CGPoint(x: self.graphView!.bounds.size.width - 10, y: self.graphView!.bounds.size.height/2 + scrollOffset)
+        }
         let pointInSelf = self.graphView!.convert(pointFire, to: self)
         
         if(self.bounds.contains(pointInSelf)) {
@@ -154,13 +347,13 @@ class BOOptionView: UIView {
             
             UIView.animate(withDuration: 0.1, animations: {
                 self.layer.cornerRadius = 15
-                self.frame = CGRect(x: self.center.x - 15, y: self.center.y - 15, width: 30, height: 30)
+                self.frame = CGRect(x: self.frame.origin.x + pointInSelf.x - 15, y: self.frame.origin.y + pointInSelf.y - 15, width: 30, height: 30)
             }, completion: { fin in
                 self.fly()
             })
         }
         
-        if(pointInSelf.y > self.bounds.size.height && stopped == false) {
+        if(((pointInSelf.y > self.bounds.size.height && flagLandscape == false) || (pointInSelf.x > self.bounds.size.width && flagLandscape == true)) && stopped == false) {
             stopped = true
             UIView.animate(withDuration: 2, animations: {
                 self.alpha = 0
@@ -181,9 +374,11 @@ class BOOptionView: UIView {
         
         
         let flying = BOFlyingCoin(frame: graphView!.bounds)
+        flying.value = value
+        flying.presenter = presenter
         flying.backgroundColor = nil
         flying.isOpaque = false
-        
+        flying.isUserInteractionEnabled = false
         graphView?.addSubview(flying)
         flying.startPoint = UIApplication.shared.keyWindow?.convert(point1, to: graphView!)
         flying.endPoint = UIApplication.shared.keyWindow?.convert(point2, to: graphView!)
