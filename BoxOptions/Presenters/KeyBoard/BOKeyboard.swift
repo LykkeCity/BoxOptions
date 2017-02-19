@@ -26,11 +26,11 @@ class BOKeyboardView: UIView {
             
         }
 
-        var etalon = (self.bounds.size.height/5)
+        var etalon = (self.bounds.size.height/5) * CGFloat(keyboardScale)
         
         
         if(flagLandscape == false) {
-            etalon = self.bounds.size.width/5
+            etalon = (self.bounds.size.width/5)  * CGFloat(keyboardScale)
         }
         
         var horNumber = 21.0
@@ -65,7 +65,7 @@ class BOKeyboardView: UIView {
                         
                         let center = CGPoint(x: (CGFloat(i) + 0.5) * width, y: self.bounds.size.height/2 - (CGFloat(verNumber/2) - CGFloat(j) - 0.5) * height + scrollOffset)
                         
-                        value = Double(i)*0.7 + 1.1 + fabs(verNumber/2 - Double(0.5) - Double(j))*1.1
+                        value = Double(i)*0.7/keyboardScale + 1.1 + fabs(verNumber/2 - Double(0.5) - Double(j))*1.1/keyboardScale
                         
                         
                         var keyView: BOKeyView?
@@ -107,7 +107,7 @@ class BOKeyboardView: UIView {
                         
                         let center = CGPoint(x: self.bounds.size.width/2 - (CGFloat(horNumber/2) - CGFloat(i) - 0.5) * width + scrollOffset, y: (CGFloat(j)+0.5) * height)
                         
-                        value = Double(j)*0.7 + 1.1 + fabs(horNumber/2 - Double(0.5) - Double(i))*1.1
+                        value = Double(j)*0.7/keyboardScale + 1.1 + fabs(horNumber/2 - Double(0.5) - Double(i))*1.1/keyboardScale
                         
                         var keyView: BOKeyView?
                         
@@ -154,8 +154,8 @@ class BOKeyView: UIView {
         set {
             _value = newValue
             if(label != nil) {
-                label?.text = String(_value!)
-                label?.sizeToFit()
+                label?.text = NSString.init(format: "%.2f", _value! * betAmount) as String
+                
                 self.setNeedsLayout()
             }
         }
@@ -179,8 +179,12 @@ class BOKeyView: UIView {
         label = UILabel()
         label?.font = UIFont.systemFont(ofSize: 14)
         label?.textColor = UIColor(red: 1, green: 246.0/255, blue: 0, alpha: 1)
+        label?.textAlignment = .center
+        label?.frame = box!.frame
+        label?.adjustsFontSizeToFitWidth = true
+        label?.minimumScaleFactor = 0.3
         self.addSubview(label!)
-        label?.center = CGPoint(x: frame.size.width/2, y: frame.size.height/2)
+        
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(userTapped))
         self.addGestureRecognizer(gesture)
@@ -193,9 +197,10 @@ class BOKeyView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        label?.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
+//        label?.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
         let frame = self.frame
         box?.frame = CGRect(x: 3, y: 3, width: frame.size.width-6, height: frame.size.height-6)
+        label?.frame = box!.frame
 
     }
     
@@ -204,11 +209,12 @@ class BOKeyView: UIView {
     }
     
     func userTapped() {
-        if(presenter!.balance < 1) {
+        if(presenter!.balance < betAmount) {
             return
         }
-        presenter?.balance -= 1
-        _ = BOOptionView.init(frame: self.frame, inView:self.superview!, value: value!, presenter: presenter!)
+        presenter?.balance -= betAmount
+//        _ = BOOptionView.init(frame: self.frame, inView:self.superview!.superview!, value: value! * betAmount, presenter: presenter!)
+        _ = BOOptionView.init(frame: self.convert(self.bounds, to: self.superview!.superview!), inView:self.superview!.superview!, value: value! * betAmount, presenter: presenter!)
         
         print("TAPPED")
     }
@@ -260,7 +266,9 @@ class BOOptionView: UIView {
         label.textColor = UIColor.black
         label.textAlignment = .center
         label.isOpaque = false
-        label.text = String(value)
+        label.text = NSString.init(format: "%.2f", value) as String
+        label.minimumScaleFactor = 0.3
+        label.adjustsFontSizeToFitWidth = true
         label.sizeToFit()
         self.addSubview(label)
         label.frame = self.bounds

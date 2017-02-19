@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 
+
+let minimumScale: CGFloat = 0.6
+let maximumScale: CGFloat = 1.5
+
 var flagLandscape = false
 
 var scrollOffset: CGFloat = 0
@@ -28,7 +32,7 @@ class BOGamePresenter: UIViewController {
         
         set {
             _balance = newValue
-            balanceLabel?.text = "Balance: " + String(_balance!)
+            balanceLabel?.text = "Balance: " + (NSString.init(format: "%.2f", _balance!) as String)
         }
     }
     
@@ -37,6 +41,7 @@ class BOGamePresenter: UIViewController {
     
     @IBOutlet weak var balanceLabel:UILabel?
     @IBOutlet weak var currentRateLabel: UILabel?
+    @IBOutlet weak var utilsView: BOUtilsView?
     
     var asset: BOAsset?
     
@@ -48,8 +53,12 @@ class BOGamePresenter: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.view.clipsToBounds = true
+        
         balance = 50
         keyboardView!.presenter = self
+        utilsView?.graphView = graphView
+        utilsView?.presener = self
         
         graphView?.changes = asset?.changes as? [BORate]
         
@@ -76,11 +85,11 @@ class BOGamePresenter: UIViewController {
     func zoomDetected(gesture: UIPinchGestureRecognizer) {
         
         graphView!.scale = graphView!.scale * gesture.scale
-        if(graphView!.scale < 0.4) {
-            graphView!.scale = 0.4
+        if(graphView!.scale * CGFloat(keyboardScale) < minimumScale) {
+            graphView!.scale = minimumScale / CGFloat(keyboardScale)
         }
-        if(graphView!.scale > 1.5) {
-            graphView!.scale = 1.5
+        if(graphView!.scale * CGFloat(keyboardScale) > maximumScale) {
+            graphView!.scale = maximumScale / CGFloat(keyboardScale)
         }
         gesture.scale = 1
         
@@ -139,6 +148,7 @@ class BOGamePresenter: UIViewController {
         
         let distToKeyboard = 40.0 * graphView!.scale
         
+        
         if(self.view.bounds.size.width > self.view.bounds.size.height) {
             flagLandscape = true
             graphView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.height * 0.75, height: self.view.bounds.size.height)
@@ -147,6 +157,8 @@ class BOGamePresenter: UIViewController {
             balanceLabel?.frame = CGRect(x: 10, y: 10, width: 200, height: 20)
             currentRateLabel?.textAlignment = .left
             currentRateLabel?.frame = CGRect(x: 10, y: self.view.bounds.size.height - 10 - 20, width: 200, height: 20)
+            
+            utilsView!.center = CGPoint(x: self.view.bounds.size.width - 20, y: self.view.bounds.size.height/2)
         }
         else {
             flagLandscape = false
@@ -156,8 +168,13 @@ class BOGamePresenter: UIViewController {
             
             currentRateLabel?.textAlignment = .right
             currentRateLabel?.frame = CGRect(x: self.view.bounds.size.width - 200 - 10, y: 10, width: 200, height: 20)
+            utilsView!.center = CGPoint(x: self.view.bounds.size.width/2, y: self.view.bounds.size.height - 20)
 
         }
+        
+        utilsView?.setNeedsLayout()
+//        utilsView?.layoutIfNeeded()
+
         
         keyboardView?.setNeedsLayout()
         

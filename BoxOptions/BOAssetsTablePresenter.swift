@@ -40,6 +40,7 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
         
         let asset = BODataManager.shared().assets[indexPath.row] as! BOAsset
         cell.textLabel?.text = asset.identity
+        cell.selectionStyle = .none
         
         return cell
         

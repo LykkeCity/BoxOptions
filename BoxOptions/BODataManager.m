@@ -102,6 +102,8 @@
         // do something with the payload of the event
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
+            NSLog(@"received an event %@", payload.arguments);
+
             NSString *changedAssetId=nil;
             
             BOOL flagWasChange = false;

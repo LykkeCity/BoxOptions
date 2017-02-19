@@ -14,6 +14,7 @@
                 <outlet property="currentRateLabel" destination="4Ek-ST-U93" id="CKY-wt-n3o"/>
                 <outlet property="graphView" destination="TSb-q2-RAK" id="BJw-K1-R1x"/>
                 <outlet property="keyboardView" destination="Qgp-6I-cZ9" id="eX1-EB-Ilq"/>
+                <outlet property="utilsView" destination="P8C-NZ-QZ4" id="ZcA-qz-hWb"/>
                 <outlet property="view" destination="iN0-l3-epB" id="ZlW-k8-xVS"/>
             </connections>
         </placeholder>
@@ -46,6 +47,11 @@
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P8C-NZ-QZ4" customClass="BOUtilsView" customModule="BoxOptions" customModuleProvider="target">
+                    <rect key="frame" x="543" y="249" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
             </subviews>
             <color key="backgroundColor" red="0.027450980392156862" green="0.0" blue="0.1764705882352941" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <nil key="simulatedStatusBarMetrics"/>
