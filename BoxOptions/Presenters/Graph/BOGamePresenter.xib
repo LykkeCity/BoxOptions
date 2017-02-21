@@ -34,14 +34,7 @@
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AYl-vA-Nfc">
-                    <rect key="frame" x="56" y="20" width="42" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Ek-ST-U93">
-                    <rect key="frame" x="34" y="345" width="42" height="21"/>
+                    <rect key="frame" x="123" y="345" width="42" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -50,13 +43,39 @@
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P8C-NZ-QZ4" customClass="BOUtilsView" customModule="BoxOptions" customModuleProvider="target">
                     <rect key="frame" x="543" y="249" width="240" height="128"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.035294117647058823" green="0.0078431372549019607" blue="0.17254901960784313" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NId-Mt-JGT">
+                    <rect key="frame" x="12" y="11" width="46" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="22" id="GCx-bq-wS7"/>
+                        <constraint firstAttribute="height" constant="22" id="ruV-FH-j7s"/>
+                    </constraints>
+                    <state key="normal" backgroundImage="CloseIcon"/>
+                    <connections>
+                        <action selector="closePressed" destination="-2" eventType="touchUpInside" id="BhJ-xJ-HZH"/>
+                    </connections>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Ek-ST-U93">
+                    <rect key="frame" x="87" y="16" width="42" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.92941176470588238" green="0.91764705882352937" blue="0.3411764705882353" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" red="0.027450980392156862" green="0.0" blue="0.1764705882352941" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" red="0.19607843137254902" green="0.14509803921568626" blue="0.41176470588235292" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="NId-Mt-JGT" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="E2f-ns-dLN"/>
+                <constraint firstItem="4Ek-ST-U93" firstAttribute="leading" secondItem="NId-Mt-JGT" secondAttribute="trailing" constant="10" id="FAR-oO-Yda"/>
+                <constraint firstItem="4Ek-ST-U93" firstAttribute="centerY" secondItem="NId-Mt-JGT" secondAttribute="centerY" id="e76-1W-TZC"/>
+                <constraint firstItem="NId-Mt-JGT" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="ust-vz-SlS"/>
+            </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="262" y="-87"/>
         </view>
     </objects>
+    <resources>
+        <image name="CloseIcon" width="32" height="32"/>
+    </resources>
 </document>

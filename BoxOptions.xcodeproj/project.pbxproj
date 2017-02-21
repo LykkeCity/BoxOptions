@@ -117,6 +117,7 @@
 		A174FFD31E5451C400EC383F /* NSString+Date.m in Sources */ = {isa = PBXBuildFile; fileRef = A174FFD21E5451C400EC383F /* NSString+Date.m */; };
 		A1B241231E4E211A008F6913 /* BOFlyingCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */; };
 		A1F1C6B41E57FA580095E369 /* BOUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */; };
+		A1F1C6B61E5AB0AE0095E369 /* BOHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1C6B51E5AB0AE0095E369 /* BOHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -369,6 +370,7 @@
 		A174FFD21E5451C400EC383F /* NSString+Date.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Date.m"; sourceTree = "<group>"; };
 		A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOFlyingCoin.swift; path = Presenters/Graph/BOFlyingCoin.swift; sourceTree = "<group>"; };
 		A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOUtilsView.swift; path = Presenters/Utils/BOUtilsView.swift; sourceTree = "<group>"; };
+		A1F1C6B51E5AB0AE0095E369 /* BOHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOHelper.swift; path = Models/BOHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -910,6 +912,7 @@
 				A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */,
 				A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */,
 				A10B54A41E4D5C1D00E5DCBE /* BOGamePresenter.xib */,
+				A1F1C6B51E5AB0AE0095E369 /* BOHelper.swift */,
 			);
 			name = Game;
 			sourceTree = "<group>";
@@ -1126,6 +1129,7 @@
 				A10B54951E4C40F500E5DCBE /* BORate.m in Sources */,
 				A10B53251E4C3DED00E5DCBE /* AppDelegate.m in Sources */,
 				A10B54521E4C3FBD00E5DCBE /* MDWampMessageFactory.m in Sources */,
+				A1F1C6B61E5AB0AE0095E369 /* BOHelper.swift in Sources */,
 				A10B54691E4C3FBD00E5DCBE /* NSDictionary+MPMessagePack.m in Sources */,
 				A10B543F1E4C3FBD00E5DCBE /* GCMathParser.m in Sources */,
 				A10B54891E4C3FBD00E5DCBE /* DDDispatchQueueLogFormatter.m in Sources */,

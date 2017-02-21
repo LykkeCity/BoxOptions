@@ -109,6 +109,19 @@ class BOKeyboardView: UIView {
                         
                         value = Double(j)*0.7/keyboardScale + 1.1 + fabs(horNumber/2 - Double(0.5) - Double(i))*1.1/keyboardScale
                         
+                        
+//                        let lastRate = presenter!.asset!.changes!.lastObject as! BORate
+//                        let price = (lastRate.ask + lastRate.bid)/2
+//                        
+//                        let start = price - presenter!.graphView!.widthPrice!/2 + Double((center.x - width/2)/self.bounds.size.width)*presenter!.graphView!.widthPrice!
+//                        let end = price - presenter!.graphView!.widthPrice!/2 + Double((center.x + width/2)/self.bounds.size.width)*presenter!.graphView!.widthPrice!
+
+ //                       value = BOHelper.chanceToWinFor(start: start, end: end, timeFromNow: 1.0, history: (presenter!.asset!.changes as! [BORate]))
+                        
+                        
+//                        value = BOHelper.chanceToWinFor(start: price - (lastRate.ask - lastRate.bid)/2, end:  price + (lastRate.ask - lastRate.bid)/2, timeFromNow: 1.0, history: (presenter!.asset!.changes as! [BORate]))
+//                        
+                        
                         var keyView: BOKeyView?
                         
                         if(self.keysArray!.count < Int(horNumber * verNumber)) {
@@ -248,7 +261,13 @@ class BOOptionView: UIView {
     
     init(frame: CGRect, inView: UIView, value: Double, presenter: BOGamePresenter) {
         super.init(frame: frame)
-        inView.insertSubview(self, at: 0)
+        var index = 0
+        if(inView.subviews.count > 0) {
+            if(inView.subviews[0] is BOKeyboardView) {
+                index = 1
+            }
+        }
+        inView.insertSubview(self, at: index)
         self.clipsToBounds = true
         self.backgroundColor = UIColor.yellow
         self.value = value
@@ -406,3 +425,5 @@ class BOOptionView: UIView {
     }
     
 }
+
+
