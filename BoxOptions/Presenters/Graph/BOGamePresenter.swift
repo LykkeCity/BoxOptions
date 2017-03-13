@@ -132,6 +132,8 @@ class BOGamePresenter: UIViewController {
     
     func timerFired() {
         self.graphView?.setNeedsDisplay()
+        
+
     }
     
     func pricesChanged() {

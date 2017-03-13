@@ -337,6 +337,13 @@ class BOOptionView: UIView {
     }
     
     func timerFired () {
+        self.setNeedsDisplay()
+    }
+    
+    
+    override func draw(_ rect: CGRect) {
+        
+    
         if(flagLandscape) {
             delta = self.graphView!.bounds.size.width / CGFloat(self.graphView!.heightSeconds  / Double(graphView!.scale))
 
@@ -400,17 +407,25 @@ class BOOptionView: UIView {
         
         
         
-        let flying = BOFlyingCoin(frame: graphView!.bounds)
-        flying.value = value
-        flying.presenter = presenter
+        let fl = BOFlyingCoin(frame: graphView!.bounds)
+        graphView?.addSubview(fl)
+
+        
+
+        let flying = fl.layer as! BOFlyingCoinLayer
+        
+        flying.value = self.value
+        flying.presenter = self.presenter
         flying.backgroundColor = nil
         flying.isOpaque = false
-        flying.isUserInteractionEnabled = false
-        graphView?.addSubview(flying)
-        flying.startPoint = UIApplication.shared.keyWindow?.convert(point1, to: graphView!)
-        flying.endPoint = UIApplication.shared.keyWindow?.convert(point2, to: graphView!)
+        fl.isUserInteractionEnabled = false
+        flying.startPoint = UIApplication.shared.keyWindow?.convert(point1, to: self.graphView!)
+        flying.endPoint = UIApplication.shared.keyWindow?.convert(point2, to: self.graphView!)
         flying.calcValues()
-        flying.startAnimation()
+        
+
+        fl.startAnimation()
+        
         self.removeFromSuperview()
         return;
         
