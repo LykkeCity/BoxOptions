@@ -17,7 +17,7 @@
     self=[super init];
     
     _changes=[[NSMutableArray alloc] init];
-    
+    _accuracy = 5;
     return self;
 }
 

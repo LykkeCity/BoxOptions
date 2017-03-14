@@ -15,6 +15,7 @@ class BOGraphView: UIView {
     
     var scale:CGFloat = 1
 
+    var accuracy: Int?
     
     var changes:[BORate]?
     
@@ -27,16 +28,12 @@ class BOGraphView: UIView {
     var lastX: Double?
     var lastXCoord: CGFloat?
     
-    let maxCornerRadius: CGFloat = 4.0
-
+    let maxCornerRadius: CGFloat = 6.0
     
-    func calcValues() {
-        
-        
-        
-        
-        
-    }
+    var dashLinesValueStep: Double?
+
+    var context: CGContext?
+    
     
     override func draw(_ rect: CGRect) {
         
@@ -78,27 +75,30 @@ class BOGraphView: UIView {
 
 
         
-        let context=UIGraphicsGetCurrentContext()
+        context=UIGraphicsGetCurrentContext()
         
-//        CGContextTranslateCTM(context, frameSize.width / 2, frameSize.height / 2);
-//        CGContextRotateCTM(context, M_PI_2);
-//        CGContextTranslateCTM(context, -frameSize.height / 2, -frameSize.width / 2);
 
         if(flagLandscape) {
         context?.translateBy(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
         context?.rotate(by: -CGFloat(M_PI_2))
-//        context?.translateBy(x:  -self.bounds.size.width/2, y: -self.bounds.size.height/2)
+
             context?.translateBy(x:  -self.bounds.size.height/2, y: -self.bounds.size.width/2)
         }
         
-         
-        
-        context?.setLineWidth(1)
         
         let baseSpace=CGColorSpaceCreateDeviceRGB()
         
-        context!.setStrokeColor(UIColor.yellow.cgColor)
-        context?.setLineWidth(2)
+        drawDashedLines()
+        
+        
+        if(mode == .light) {
+            context!.setStrokeColor(UIColor(red: 13.0/255, green: 167.0/255 ,blue: 252.0/255, alpha: 1).cgColor)
+            
+        }
+        else {
+            context!.setStrokeColor(UIColor.yellow.cgColor)
+        }
+        context?.setLineWidth(1)
         context?.setLineJoin(.round)
         context?.setLineCap(.round)
         let lastRate = changes!.last
@@ -116,6 +116,7 @@ class BOGraphView: UIView {
             
         }
 
+        
 
         
         var prevX = priceToX(price: (lastRate!.ask + lastRate!.bid)/2)
@@ -193,6 +194,7 @@ class BOGraphView: UIView {
                 context?.addArc(center: center!, radius: cornerRadius, startAngle: CGFloat(startAngle!), endAngle: CGFloat(endAngle!), clockwise: false)
                 
             }
+            
 
 //            context?.addLine(to: CGPoint(x: x, y: y + cornerRadius))
             
@@ -205,9 +207,25 @@ class BOGraphView: UIView {
         }
         context?.strokePath()
         
-        context?.setFillColor(UIColor.yellow.cgColor)
-        context?.fillEllipse(in: CGRect(x: origPoint.x - 5, y: origPoint.y - 5, width: 10, height: 10))
+        context?.move(to: CGPoint(x: 0, y: origPoint.y))
+        context?.setLineWidth(0.5)
+        context?.addLine(to: CGPoint(x: self.bounds.size.width, y: origPoint.y))
+        context?.strokePath()
+
         
+        if(mode == .light) {
+            context!.setFillColor(UIColor(red: 13.0/255, green: 167.0/255 ,blue: 252.0/255, alpha: 1).cgColor)
+            
+        }
+        else {
+            context!.setFillColor(UIColor.yellow.cgColor)
+        }
+
+        context?.clear(CGRect(x: origPoint.x - 4, y: origPoint.y - 4, width: 8, height: 30))
+        context?.fillEllipse(in: CGRect(x: origPoint.x - 3, y: origPoint.y - 3, width: 6, height: 6))
+        
+        drawRatesLabels()
+
         if(lastXCoord != self.bounds.size.width) {
             
             let rrr = (changes!.last!.ask + changes!.last!.bid) / 2
@@ -249,6 +267,89 @@ class BOGraphView: UIView {
         }
         return y
     }
+    
+    func drawDashedLines() {
+        
+        if(lastX == nil) {
+            return
+        }
+        if(dashLinesValueStep == nil) {
+            let xxx = changes?.last?.ask
+            let xx2 = changes?.last?.bid
+            dashLinesValueStep = (changes!.last!.ask - changes!.last!.bid) / 1.5
+        }
+        context?.setLineWidth(0.5)
+        context?.setStrokeColor(UIColor.lightGray.cgColor)
+        context?.setLineDash(phase: 0, lengths: [5,5])
+        let startPrice = xToPrice(x: 0)
+        let firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!)
+        var value = startPrice - firstLineOffsetValue
+        
+        let width = priceToX(price: startPrice + dashLinesValueStep!) - priceToX(price: startPrice)
+        if(width == 0) {
+            return
+        }
+        repeat {
+            let x = priceToX(price: value)
+            if(x > self.bounds.size.width+width) {
+                break
+            }
+            context?.move(to: CGPoint(x: x, y: 20))
+            context?.addLine(to: CGPoint(x: x, y: self.bounds.size.height-10))
+            value += dashLinesValueStep!
+
+
+        } while(true)
+        
+        context?.strokePath()
+        
+        context?.setLineDash(phase: 0, lengths: [])
+        
+        
+    }
+    
+    func drawRatesLabels() {
+        
+        if(dashLinesValueStep == nil) {
+            return
+        }
+        context?.clear(CGRect(x: 0, y: -1, width: self.bounds.size.width, height: 20))
+        context?.setLineWidth(0.5)
+        context?.setStrokeColor(UIColor(red: 207.0/255, green: 210.0/255, blue: 215.0/255, alpha: 1).cgColor)
+        context?.move(to: CGPoint(x: 0, y: 20))
+        context?.addLine(to: CGPoint(x: self.bounds.size.width, y: 20))
+        context?.strokePath()
+        let startPrice = xToPrice(x: 0)
+        let firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!)
+        var value = startPrice - firstLineOffsetValue
+        
+        let width = priceToX(price: startPrice + dashLinesValueStep!) - priceToX(price: startPrice)
+        if(width == 0) {
+            return
+        }
+
+        repeat {
+            let x = priceToX(price: value)
+            if(x > self.bounds.size.width+width) {
+                break
+            }
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            
+            let attrs = [NSFontAttributeName: UIFont(name: "HelveticaNeue-Thin", size: 10)!, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: UIColor.black]
+            
+            let formatString = "%." + String(accuracy!) + "f"
+            let string = String(format:formatString, value)
+            string.draw(with: CGRect(x: x - width/2, y: 0, width: width, height: 20), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            
+            value += dashLinesValueStep!
+            
+            
+        } while(true)
+        
+        
+    }
+
     
     
 }

@@ -39,27 +39,34 @@ class BOUtilsView: UIView {
         self.addSubview(betView!)
         
         eyeButton = UIButton.init(type: .custom)
-        eyeButton?.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
-        eyeButton?.setBackgroundImage(#imageLiteral(resourceName: "EyeIcon"), for: .normal)
+        eyeButton?.frame = CGRect(x: 0, y: 0, width: 36, height: 36)
+        eyeButton?.setBackgroundImage(#imageLiteral(resourceName: "EyeIconGray"), for: .normal)
         eyeButton?.addTarget(self, action: #selector(eyePressed), for: .touchUpInside)
-        eyeButton?.center = CGPoint(x: self.bounds.size.width - (12 + 22), y: self.bounds.size.height / 2)
-        eyeButton?.setBackgroundImage(#imageLiteral(resourceName: "EyeIconActive"), for: .selected)
+        eyeButton?.center = CGPoint(x: self.bounds.size.width - (20 + 18), y: self.bounds.size.height / 2)
+        eyeButton?.setBackgroundImage(#imageLiteral(resourceName: "EyeIconGray"), for: .selected)
         self.addSubview(eyeButton!)
         
 
-        let yellow = UIColor.init(red: 237.0/255, green: 234.0/255, blue: 87.0/255, alpha: 1)
-        
         slider = UISlider()
+
+        var sliderColor: UIColor
+        if(mode == .light) {
+            sliderColor = UIColor.init(red: 13.0/255, green: 167.0/255, blue: 252.0/255, alpha: 1)
+            slider?.transform = CGAffineTransform.init(scaleX: 0.4, y: 0.4)
+        }
+        else {
+         sliderColor = UIColor.init(red: 237.0/255, green: 234.0/255, blue: 87.0/255, alpha: 1)
+        }
         slider?.setValue(0.5, animated: false)
         slider?.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
-        slider?.tintColor = yellow
-        slider?.maximumTrackTintColor = yellow
-        slider?.thumbTintColor = yellow
-//        slider?.backgroundColor = UIColor.white
+        slider?.tintColor = sliderColor
+        slider?.maximumTrackTintColor = UIColor(red: 207.0/255, green: 210.0/255, blue: 215.0/255, alpha: 1)
+        slider?.thumbTintColor = sliderColor
+
         self.addSubview(slider!)
-        slider?.layer.shadowColor = yellow.cgColor
-        slider?.layer.shadowRadius = 5
-        slider?.layer.shadowOpacity = 0.7
+//        slider?.layer.shadowColor = yellow.cgColor
+//        slider?.layer.shadowRadius = 5
+//        slider?.layer.shadowOpacity = 0.7
         
         
 //        self.transform = CGAffineTransform.init(rotationAngle: CGFloat(-M_PI_2))
@@ -105,9 +112,14 @@ class BOUtilsView: UIView {
         betView!.layoutIfNeeded()
         
 //        let point = self.center
-        betView?.center = CGPoint(x: self.bounds.size.width - (eyeButton!.bounds.size.width + 24 + betView!.bounds.size.width / 2 - 10), y: self.bounds.size.height / 2)
+//        betView?.center = CGPoint(x: self.bounds.size.width - (eyeButton!.bounds.size.width + 24 + betView!.bounds.size.width / 2 - 10), y: self.bounds.size.height / 2)
+
+        betView?.center = CGPoint(x: betView!.bounds.size.width / 2 + 20, y: self.bounds.size.height / 2)
+
+//        slider?.frame = CGRect(x: 12, y: 10, width: betView!.frame.origin.x - 20, height: 20)
         
-        slider?.frame = CGRect(x: 12, y: 10, width: betView!.frame.origin.x - 20, height: 20)
+        slider?.frame = CGRect(x: betView!.frame.origin.x + betView!.bounds.size.width + 20, y: 14, width: self.bounds.size.width - (betView!.frame.origin.x + betView!.bounds.size.width + 20 + eyeButton!.bounds.size.width + 40), height: 20)
+
         slider?.center.y = self.bounds.size.height / 2
         
 //        self.center = point
@@ -145,36 +157,36 @@ class BOUtilsBetView: UIView {
         super.init(frame: CGRect.zero)
         
         minusButton = UIButton.init(type: .custom)
-        minusButton?.setBackgroundImage(#imageLiteral(resourceName: "MinusIcon"), for: .normal)
-        minusButton?.setBackgroundImage(#imageLiteral(resourceName: "MinusIconActive"), for: .highlighted)
+        minusButton?.setBackgroundImage(#imageLiteral(resourceName: "MinusIconGray"), for: .normal)
+        minusButton?.setBackgroundImage(#imageLiteral(resourceName: "MinusIconGray"), for: .highlighted)
         minusButton?.addTarget(self, action: #selector(minusPressed), for: .touchUpInside)
-        minusButton?.frame = CGRect(x:0, y: 0, width: 45, height: 44)
+        minusButton?.frame = CGRect(x:0, y: 0, width: 36, height: 36)
         
         self.addSubview(minusButton!)
         
-        amountLabel = UILabel.init(frame: CGRect(x: 45 - 6, y: 6, width: 44, height: 32))
+        amountLabel = UILabel.init(frame: CGRect(x: 36, y: 0, width: 50, height: 36))
         amountLabel?.text = String(Int(betAmount))
-        amountLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        amountLabel?.textColor = UIColor.black
-        amountLabel?.backgroundColor = UIColor.init(red: 237.0/255, green: 234.0/255, blue: 87.0/255, alpha: 1)
+        amountLabel?.font = UIFont(name: "ProximaNova-Regular", size: 24)
+        amountLabel?.textColor = UIColor(red: 13.0/255, green: 167.0/255, blue: 252.0/255, alpha: 1)
+//        amountLabel?.backgroundColor = UIColor.init(red: 237.0/255, green: 234.0/255, blue: 87.0/255, alpha: 1)
         amountLabel!.textAlignment = .center
         
-        amountLabel!.layer.shadowColor = UIColor.init(red: 237.0/255, green: 234.0/255, blue: 87.0/255, alpha: 1).cgColor
-        amountLabel!.layer.shadowRadius = 5
-        amountLabel!.layer.shadowOpacity = 0.7
+//        amountLabel!.layer.shadowColor = UIColor.init(red: 237.0/255, green: 234.0/255, blue: 87.0/255, alpha: 1).cgColor
+//        amountLabel!.layer.shadowRadius = 5
+//        amountLabel!.layer.shadowOpacity = 0.7
 
         self.addSubview(amountLabel!)
 
 
         
         plusButton = UIButton.init(type: .custom)
-        plusButton?.setBackgroundImage(#imageLiteral(resourceName: "PlusIcon"), for: .normal)
-        plusButton?.setBackgroundImage(#imageLiteral(resourceName: "PlusIconActive"), for: .highlighted)
+        plusButton?.setBackgroundImage(#imageLiteral(resourceName: "PlusIconGray"), for: .normal)
+        plusButton?.setBackgroundImage(#imageLiteral(resourceName: "PlusIconGray"), for: .highlighted)
         plusButton?.addTarget(self, action: #selector(plusPressed), for: .touchUpInside)
-        plusButton?.frame = CGRect(x:amountLabel!.frame.origin.x + amountLabel!.bounds.size.width - 6, y: 0, width: 45, height: 44)
+        plusButton?.frame = CGRect(x:amountLabel!.frame.origin.x + amountLabel!.bounds.size.width, y: 0, width: 36, height: 36)
         self.addSubview(plusButton!)
 
-        self.frame = CGRect(x:0, y:0, width: plusButton!.frame.origin.x + plusButton!.bounds.size.width, height: 44)
+        self.frame = CGRect(x:0, y:0, width: plusButton!.frame.origin.x + plusButton!.bounds.size.width, height: 36)
         
         
     }

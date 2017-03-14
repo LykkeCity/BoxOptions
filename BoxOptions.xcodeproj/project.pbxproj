@@ -114,6 +114,11 @@
 		A10B54A31E4D5C0500E5DCBE /* BOGamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10B54A21E4D5C0500E5DCBE /* BOGamePresenter.swift */; };
 		A10B54A51E4D5C1D00E5DCBE /* BOGamePresenter.xib in Resources */ = {isa = PBXBuildFile; fileRef = A10B54A41E4D5C1D00E5DCBE /* BOGamePresenter.xib */; };
 		A10B54A71E4D994F00E5DCBE /* BOKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10B54A61E4D994F00E5DCBE /* BOKeyboard.swift */; };
+		A13DBA311E77C18C00922D5E /* Proxima Nova Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A13DBA2C1E77C18C00922D5E /* Proxima Nova Bold.otf */; };
+		A13DBA321E77C18C00922D5E /* Proxima Nova Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = A13DBA2D1E77C18C00922D5E /* Proxima Nova Light.otf */; };
+		A13DBA331E77C18C00922D5E /* Proxima Nova Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A13DBA2E1E77C18C00922D5E /* Proxima Nova Regular.otf */; };
+		A13DBA341E77C18C00922D5E /* Proxima Nova Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A13DBA2F1E77C18C00922D5E /* Proxima Nova Semibold.otf */; };
+		A13DBA351E77C18C00922D5E /* Proxima Nova Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A13DBA301E77C18C00922D5E /* Proxima Nova Thin.otf */; };
 		A174FFD31E5451C400EC383F /* NSString+Date.m in Sources */ = {isa = PBXBuildFile; fileRef = A174FFD21E5451C400EC383F /* NSString+Date.m */; };
 		A1B241231E4E211A008F6913 /* BOFlyingCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */; };
 		A1F1C6B41E57FA580095E369 /* BOUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */; };
@@ -366,6 +371,11 @@
 		A10B54A21E4D5C0500E5DCBE /* BOGamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOGamePresenter.swift; path = Presenters/Graph/BOGamePresenter.swift; sourceTree = "<group>"; };
 		A10B54A41E4D5C1D00E5DCBE /* BOGamePresenter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BOGamePresenter.xib; path = Presenters/Graph/BOGamePresenter.xib; sourceTree = "<group>"; };
 		A10B54A61E4D994F00E5DCBE /* BOKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOKeyboard.swift; path = Presenters/KeyBoard/BOKeyboard.swift; sourceTree = "<group>"; };
+		A13DBA2C1E77C18C00922D5E /* Proxima Nova Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Bold.otf"; sourceTree = "<group>"; };
+		A13DBA2D1E77C18C00922D5E /* Proxima Nova Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Light.otf"; sourceTree = "<group>"; };
+		A13DBA2E1E77C18C00922D5E /* Proxima Nova Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Regular.otf"; sourceTree = "<group>"; };
+		A13DBA2F1E77C18C00922D5E /* Proxima Nova Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Semibold.otf"; sourceTree = "<group>"; };
+		A13DBA301E77C18C00922D5E /* Proxima Nova Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Proxima Nova Thin.otf"; sourceTree = "<group>"; };
 		A174FFD11E5451C400EC383F /* NSString+Date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Date.h"; sourceTree = "<group>"; };
 		A174FFD21E5451C400EC383F /* NSString+Date.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Date.m"; sourceTree = "<group>"; };
 		A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOFlyingCoin.swift; path = Presenters/Graph/BOFlyingCoin.swift; sourceTree = "<group>"; };
@@ -439,6 +449,7 @@
 				A10B532E1E4C3DED00E5DCBE /* LaunchScreen.storyboard */,
 				A10B53311E4C3DED00E5DCBE /* Info.plist */,
 				A10B549A1E4C45CF00E5DCBE /* BoxOptions-Bridging-Header.h */,
+				A13DBA361E77C19300922D5E /* Fonts */,
 				A10B53201E4C3DED00E5DCBE /* Supporting Files */,
 			);
 			path = BoxOptions;
@@ -917,6 +928,18 @@
 			name = Game;
 			sourceTree = "<group>";
 		};
+		A13DBA361E77C19300922D5E /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A13DBA2C1E77C18C00922D5E /* Proxima Nova Bold.otf */,
+				A13DBA2D1E77C18C00922D5E /* Proxima Nova Light.otf */,
+				A13DBA2E1E77C18C00922D5E /* Proxima Nova Regular.otf */,
+				A13DBA2F1E77C18C00922D5E /* Proxima Nova Semibold.otf */,
+				A13DBA301E77C18C00922D5E /* Proxima Nova Thin.otf */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
 		A174FFD01E5451B300EC383F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -1035,10 +1058,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A13DBA311E77C18C00922D5E /* Proxima Nova Bold.otf in Resources */,
 				A10B53301E4C3DED00E5DCBE /* LaunchScreen.storyboard in Resources */,
 				A10B532D1E4C3DED00E5DCBE /* Assets.xcassets in Resources */,
+				A13DBA321E77C18C00922D5E /* Proxima Nova Light.otf in Resources */,
+				A13DBA351E77C18C00922D5E /* Proxima Nova Thin.otf in Resources */,
 				A10B532B1E4C3DED00E5DCBE /* Main.storyboard in Resources */,
+				A13DBA331E77C18C00922D5E /* Proxima Nova Regular.otf in Resources */,
 				A10B54801E4C3FBD00E5DCBE /* Info.plist in Resources */,
+				A13DBA341E77C18C00922D5E /* Proxima Nova Semibold.otf in Resources */,
 				A10B549E1E4C47E800E5DCBE /* BOAssetsTablePresenter.xib in Resources */,
 				A10B548B1E4C3FBD00E5DCBE /* README.txt in Resources */,
 				A10B543C1E4C3FBD00E5DCBE /* Documentation.html in Resources */,
@@ -1343,8 +1371,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lykkex.BoxOptions;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4365672b-9f4b-489d-8777-d939ab55f60d";
-				PROVISIONING_PROFILE_SPECIFIER = "BoxOptions-Adhoc4";
+				PROVISIONING_PROFILE = "cce82a98-b902-43c3-90da-d919ef7258a8";
+				PROVISIONING_PROFILE_SPECIFIER = "BoxOptions-Adhoc5";
 				SWIFT_OBJC_BRIDGING_HEADER = "BoxOptions/BoxOptions-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};

@@ -17,6 +17,7 @@
 
 @property (strong, nonatomic) BORate *rate;
 @property (strong, nonatomic) BORate *previousRate;
+@property int accuracy;
 
 
 

@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+let maxProgress:CGFloat = 50.0
+
 class BOFlyingCoin: UIView, CAAnimationDelegate {
     
     dynamic var progress: CGFloat = 0.00 {
@@ -18,7 +20,7 @@ class BOFlyingCoin: UIView, CAAnimationDelegate {
             animation.keyPath = "progress"
             animation.fromValue = circleLayer().progress
             animation.toValue = progress
-            animation.duration = Double(3)
+            animation.duration = Double(1.5)
             animation.delegate = self
             
             let yyy = circleLayer()
@@ -42,7 +44,7 @@ class BOFlyingCoin: UIView, CAAnimationDelegate {
         
         let yyy = self.circleLayer()
         self.circleLayer().gamma = self.circleLayer().gamma1
-        self.progress = 100
+        self.progress = maxProgress
     }
     
     func circleLayer() ->  BOFlyingCoinLayer {
@@ -86,8 +88,14 @@ class BOFlyingCoinLayer: CALayer {
     
     func calcValues() {
         
-        let point1 = startPoint!
-        let point2 = endPoint!
+        var point1 = startPoint!
+        var point2 = endPoint!
+        
+        if(startPoint!.x < endPoint!.x) {
+            let t = point1
+            point1 = point2
+            point2 = t
+        }
         
         
         let l = sqrt((point1.x - point2.x)*(point1.x - point2.x) + (point1.y - point2.y)*(point1.y - point2.y))
@@ -157,10 +165,20 @@ class BOFlyingCoinLayer: CALayer {
         if(gamma == nil) {
             return
         }
+        if(progress == maxProgress || progress == 0) {
+            return
+        }
         counter = progress
         
-        print(counter)
+        ctx.setLineWidth(1)
+        
         gamma = gamma1! + Double(counter!) * deltaGamma
+
+        if(startPoint!.x < endPoint!.x) {
+            gamma = gamma2! - Double(counter!) * deltaGamma
+        }
+        
+        
         let point = CGPoint(x: centerPoint!.x + CGFloat(cos(gamma!))*radius, y: centerPoint!.y - CGFloat(sin(gamma!))*radius)
 //        counter! += 1
         
@@ -169,22 +187,25 @@ class BOFlyingCoinLayer: CALayer {
         context = ctx
         
         
-        context?.setFillColor(UIColor.yellow.cgColor)
-        context?.fillEllipse(in: CGRect(x: point.x - 10, y: point.y - 10, width: 20, height: 20))
+        context?.setFillColor(UIColor.init(red: 13.0/255, green: 167.0/255, blue: 252.0/255, alpha: 1).cgColor)
+        context?.fillEllipse(in: CGRect(x: point.x - 4, y: point.y - 4, width: 8, height: 8))
         
         context?.move(to: point)
         
         var al = 1.0
         var deltaAl = 1.0/10
         var curAng = gamma!
-        let delta = (gamma2! - gamma1!)/20
+        var delta = (gamma2! - gamma1!)/20
+        if(startPoint!.x < endPoint!.x) {
+            delta = -delta
+        }
         for i in 0..<10 {
             al = al - deltaAl
             curAng -= delta
             
             
             
-            context?.setStrokeColor(UIColor.yellow.withAlphaComponent(CGFloat(al)).cgColor)
+            context?.setStrokeColor(UIColor.init(red: 13.0/255, green: 167.0/255, blue: 252.0/255, alpha: 1).withAlphaComponent(CGFloat(al)).cgColor)
             let nextPoint = CGPoint(x: centerPoint!.x + CGFloat(cos(curAng))*radius, y: centerPoint!.y - CGFloat(sin(curAng))*radius)
             context?.addLine(to: nextPoint)
             context?.strokePath()

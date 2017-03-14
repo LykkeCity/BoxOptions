@@ -15,6 +15,13 @@ let maximumScale: CGFloat = 1.5
 
 var flagLandscape = false
 
+enum COLOR_MODE {
+    case light
+    case dark
+}
+
+let mode: COLOR_MODE = .light
+
 var scrollOffset: CGFloat = 0
 
 class BOGamePresenter: UIViewController {
@@ -31,11 +38,23 @@ class BOGamePresenter: UIViewController {
         }
         
         set {
+            let previous = _balance
             _balance = newValue
             
-            var str = NSMutableAttributedString(string: (NSString.init(format: "%.2f", _balance!) as String) + " Balance")
-            str.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFont(ofSize: 17), range: NSMakeRange(0, str.length - 8))
-            balanceLabel?.attributedText = str
+//            var str = NSMutableAttributedString(string: "Available " + ( NSString.init(format: "%.2f", _balance!) as String) )
+//            str.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFont(ofSize: 17), range: NSMakeRange(0, str.length - 8))
+            balanceLabel?.text = "Available " + ( NSString.init(format: "%.2f", _balance!) as String)
+            if(previous != nil && _balance! > previous!) {
+                UIView.animate(withDuration: 0.1, animations: {
+                    self.balanceLabel?.transform = CGAffineTransform.init(scaleX: 1.5, y: 1.5)
+                    self.balanceLabel?.textColor = UIColor(red: 13.0/255, green: 167.0/255, blue: 252.0/255, alpha: 1)
+                }, completion: { finished in
+                    UIView.animate(withDuration: 0.1, animations: {
+                        self.balanceLabel?.textColor = UIColor(red: 63.0/255, green: 77.0/255, blue: 96.0/255, alpha: 1)
+                        self.balanceLabel?.transform = CGAffineTransform.init(scaleX: 1, y: 1)
+                    })
+                })
+            }
             //balanceLabel?.text = (NSString.init(format: "%.2f", _balance!) as String) + " Balance"
         }
     }
@@ -46,6 +65,9 @@ class BOGamePresenter: UIViewController {
     @IBOutlet weak var balanceLabel:UILabel?
     @IBOutlet weak var currentRateLabel: UILabel?
     @IBOutlet weak var utilsView: BOUtilsView?
+    @IBOutlet weak var titleLabel: UILabel?
+    
+    var gradientView: UIImageView?
     
     var asset: BOAsset?
     
@@ -57,6 +79,12 @@ class BOGamePresenter: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if(mode == .light) {
+            self.view.backgroundColor = .white
+//            graphView?.backgroundColor = .white
+            keyboardView?.backgroundColor = nil
+        }
+        
         self.view.clipsToBounds = true
         
         balance = 50
@@ -65,8 +93,12 @@ class BOGamePresenter: UIViewController {
         utilsView?.presener = self
         
         graphView?.changes = asset?.changes as? [BORate]
+        graphView?.accuracy = Int(asset!.accuracy)
         
         graphView?.widthPrice = (graphView!.changes!.last!.ask - graphView!.changes!.last!.bid) * 4
+        
+        gradientView = UIImageView(image: #imageLiteral(resourceName: "GradientImage"))
+        self.view.insertSubview(gradientView!, belowSubview: graphView!)
         
         NotificationCenter.default.addObserver(self, selector: #selector(pricesChanged), name: NSNotification.Name("PricesChanged" + asset!.identity), object: nil)
 
@@ -75,6 +107,7 @@ class BOGamePresenter: UIViewController {
 //        })
         
         currentRateLabel?.text = asset!.identity
+        titleLabel?.text = asset!.identity
         
         timer = Timer.init(timeInterval: 0.04, target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
         RunLoop.current.add(timer!, forMode: .defaultRunLoopMode)
@@ -152,6 +185,8 @@ class BOGamePresenter: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+//        return
+        
         let distToKeyboard = 40.0 * graphView!.scale
         
         
@@ -170,11 +205,13 @@ class BOGamePresenter: UIViewController {
         }
         else {
             flagLandscape = false
-            graphView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.width * 0.75)
-            keyboardView?.frame = CGRect(x: 0, y: graphView!.bounds.size.height + distToKeyboard, width: self.view.bounds.size.width , height: self.view.bounds.size.height - (graphView!.bounds.size.height + distToKeyboard))
-            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width - 200 - 10, y: 10, width: 200, height: 20)
-            balanceLabel?.center.y = currentRateLabel!.center.y
-            balanceLabel?.textAlignment = .right
+            graphView?.frame = CGRect(x: 0, y: 90, width: self.view.bounds.size.width, height: self.view.bounds.size.width * 0.75 - 90)
+            
+            gradientView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y + 20, width: self.view.bounds.size.width, height: graphView!.frame.size.height - 20 - 10)
+            keyboardView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y + graphView!.bounds.size.height + distToKeyboard, width: self.view.bounds.size.width , height: self.view.bounds.size.height - (graphView!.frame.origin.y + graphView!.bounds.size.height + distToKeyboard))
+//            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width - 200 - 10, y: 10, width: 200, height: 20)
+//            balanceLabel?.center.y = currentRateLabel!.center.y
+//            balanceLabel?.textAlignment = .right
 //            currentRateLabel?.frame = CGRect(x: self.view.bounds.size.width - 200 - 10, y: 10, width: 200, height: 20)
             utilsView!.center = CGPoint(x: self.view.bounds.size.width/2, y: self.view.bounds.size.height - 56/2)
 
@@ -194,7 +231,7 @@ class BOGamePresenter: UIViewController {
     
     override var prefersStatusBarHidden: Bool {
         get {
-            return true
+            return false
         }
     }
     
