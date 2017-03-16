@@ -91,10 +91,12 @@ class BOKeyboardView: UIView {
                                 self.addSubview(keyView!)
                             }
                         
-                        
+                        keyView?.flagIsRight = (j == Int(verNumber)-1)
+
                         
                         
                     }
+                    
                 }
             }
                 
@@ -126,15 +128,17 @@ class BOKeyboardView: UIView {
                             keyView = self.keysArray![Int(i) * Int(verNumber) + Int(j)]
                         }
                         
-                            keyView!.frame = frame
-                            keyView!.center = center
-                            keyView!.value = value
-                            if(keyView!.superview == nil) {
-                                self.addSubview(keyView!)
-                            }
+                        keyView!.frame = frame
+                        keyView!.center = center
+                        keyView!.value = value
+                        if(keyView!.superview == nil) {
+                            self.addSubview(keyView!)
+                        }
                         
- 
-
+                        
+                        keyView?.flagIsRight = (i == Int(horNumber)-1)
+                        
+                        
                     }
                 }
                 
@@ -150,6 +154,7 @@ class BOKeyboardView: UIView {
 }
 
 class BOKeyView: UIView {
+    var flagIsRight: Bool?
     
     weak var presenter: BOGamePresenter?
     private var _value: Double?
@@ -172,16 +177,16 @@ class BOKeyView: UIView {
     
     init(frame: CGRect, value: Double) {
         super.init(frame: frame)
-        
-        box = UIView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
+        self.clipsToBounds = true
+        box = UIView(frame: CGRect(x: 0, y: 0, width: frame.size.width+10, height: frame.size.height+10))
         box?.isUserInteractionEnabled = false
         self.backgroundColor = nil
         
         label = UILabel()
-        label?.font = UIFont(name: "ProximaNova-Regular", size: 14)
+        label?.font = UIFont(name: "ProximaNova-Regular", size: 17)
         
         if(mode == .light) {
-            box!.layer.borderColor = UIColor(red: 230.0/255, green: 230.0/255, blue: 230.0/255, alpha: 1).cgColor
+            box!.layer.borderColor = UIColor(red: 216.0/255, green: 216.0/255, blue: 216.0/255, alpha: 1).cgColor
             box!.backgroundColor = UIColor(red: 255.0/255, green: 255.0/255, blue: 255.0/255, alpha: 0.9)
             label?.textColor = UIColor(red: 63.0/255, green: 77.0/255, blue: 96.0/255, alpha: 1)
 
@@ -217,7 +222,15 @@ class BOKeyView: UIView {
         super.layoutSubviews()
 //        label?.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
         let frame = self.frame
-        box?.frame = CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height)
+        
+        let m: CGFloat = flagIsRight! ? 0 : 0.5
+        if(flagLandscape == false) {
+            box?.frame = CGRect(x: 0, y: 0, width: frame.size.width + m, height: frame.size.height + 0.5)
+        }
+        else {
+            box?.frame = CGRect(x: 0, y: 0, width: frame.size.width + 0.5, height: frame.size.height + m)
+
+        }
         label?.frame = box!.frame
 
     }
@@ -266,13 +279,20 @@ class BOOptionView: UIView {
     
     init(frame: CGRect, inView: UIView, value: Double, presenter: BOGamePresenter) {
         super.init(frame: frame)
+        
+        self.presenter = presenter
+        graphView = presenter.graphView
+
         var index = 0
         if(inView.subviews.count > 0) {
             if(inView.subviews[0] is BOKeyboardView) {
                 index = 1
             }
         }
-        inView.insertSubview(self, at: index)
+//        inView.insertSubview(self, at: index)
+        
+        inView.insertSubview(self, aboveSubview: graphView!)
+        
         self.clipsToBounds = true
         self.value = value
         
@@ -310,8 +330,6 @@ class BOOptionView: UIView {
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         
-        self.presenter = presenter
-        graphView = presenter.graphView
         if(flagLandscape) {
             
             let p = graphView!.convert(CGPoint(x: graphView!.bounds.size.width, y: 0), to: self)
@@ -401,12 +419,35 @@ class BOOptionView: UIView {
 //        if(((pointInSelf.y > self.bounds.size.height && flagLandscape == false) || (pointInSelf.x > self.bounds.size.width && flagLandscape == true)) && stopped == false) {  //remove immediately
         if(((self.frame.origin.y < (graphView!.frame.origin.y + 20) && flagLandscape == false) || (self.frame.origin.x < 0 && flagLandscape == true)) && stopped == false) {
             stopped = true
-            UIView.animate(withDuration: 2, animations: {
-                self.alpha = 0
-            }, completion: {res in
-                self.timer?.invalidate()
-                self.removeFromSuperview()
-            })
+//            UIView.animate(withDuration: 2, animations: {
+//                self.alpha = 0
+//            }, completion: {res in
+//                self.timer?.invalidate()
+//                self.removeFromSuperview()
+//            })
+        }
+        
+        if(stopped) {
+            if(flagLandscape == false) {
+                // Create a mask layer and the frame to determine what will be visible in the view.
+                let maskLayer = CAShapeLayer()
+                let dY = (graphView!.frame.origin.y + 20) - self.frame.origin.y
+                let path = CGPath(rect: CGRect(x: 0, y: dY, width: self.bounds.size.width, height: self.bounds.size.height - dY), transform: nil)
+                maskLayer.path = path
+                
+                self.layer.mask = maskLayer
+                
+                if(dY > self.bounds.size.height) {
+                    timer?.invalidate()
+                    self.removeFromSuperview()
+                }
+              }
+            else {
+                if(self.frame.origin.x < -self.bounds.size.width) {
+                    timer?.invalidate()
+                    self.removeFromSuperview()
+                }
+            }
         }
 
     }
@@ -417,7 +458,14 @@ class BOOptionView: UIView {
         let point1 = self.superview!.convert(self.center, to: UIApplication.shared.keyWindow)
 //        let point2 = graphView!.superview!.convert(graphView!.frame.origin, to: UIApplication.shared.keyWindow)
         
-        let point2 = graphView!.convert(CGPoint(x: graphView!.bounds.size.width/2, y: -10), to: UIApplication.shared.keyWindow)
+        var point2: CGPoint?
+        
+        if(flagLandscape == false) {
+            point2 = graphView!.convert(CGPoint(x: graphView!.bounds.size.width/2, y: -10), to: UIApplication.shared.keyWindow)
+        }
+        else {
+            point2 = CGPoint(x: UIApplication.shared.keyWindow!.bounds.size.width - 80, y: 25)
+        }
 
         
         

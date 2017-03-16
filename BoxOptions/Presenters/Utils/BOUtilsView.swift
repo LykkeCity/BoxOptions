@@ -23,7 +23,7 @@ class BOUtilsView: UIView {
     
     var eyeButton: UIButton?
     
-    
+    var lineView: UIView?
     
     var betView: BOUtilsBetView?
     
@@ -64,6 +64,10 @@ class BOUtilsView: UIView {
         slider?.thumbTintColor = sliderColor
 
         self.addSubview(slider!)
+        
+        lineView = UIView()
+        lineView?.backgroundColor = UIColor(red: 207.0/255, green: 210.0/255, blue: 215.0/255, alpha: 1)
+        self.addSubview(lineView!)
 //        slider?.layer.shadowColor = yellow.cgColor
 //        slider?.layer.shadowRadius = 5
 //        slider?.layer.shadowOpacity = 0.7
@@ -122,21 +126,25 @@ class BOUtilsView: UIView {
 
         slider?.center.y = self.bounds.size.height / 2
         
+        eyeButton?.center = CGPoint(x: self.bounds.size.width - (20 + 18), y: self.bounds.size.height / 2)
+
+        lineView?.frame = CGRect(x: 0, y: 0, width: self.bounds.size.width, height: 0.5)
+        
 //        self.center = point
         
 //        betView?.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
-        if(currentOrientationIsLandscape != flagLandscape ) {
-        if(flagLandscape) {
-            self.transform = CGAffineTransform.init(rotationAngle: CGFloat(-M_PI_2))
-            
-        }
-        else {
-
-            self.transform = CGAffineTransform.identity
-        }
-            currentOrientationIsLandscape = flagLandscape
-            self.setNeedsLayout()
-        }
+//        if(currentOrientationIsLandscape != flagLandscape ) {
+//        if(flagLandscape) {
+//            self.transform = CGAffineTransform.init(rotationAngle: CGFloat(-M_PI_2))
+//            
+//        }
+//        else {
+//
+//            self.transform = CGAffineTransform.identity
+//        }
+//            currentOrientationIsLandscape = flagLandscape
+//            self.setNeedsLayout()
+//        }
 
     }
     

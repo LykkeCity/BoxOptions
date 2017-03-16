@@ -67,7 +67,12 @@ class BOGamePresenter: UIViewController {
     @IBOutlet weak var utilsView: BOUtilsView?
     @IBOutlet weak var titleLabel: UILabel?
     
+    @IBOutlet weak var backButton: UIButton?
+    @IBOutlet weak var titleContainerView: UIView?
+    
+    var titleLineView: UIView?
     var gradientView: UIImageView?
+    
     
     var asset: BOAsset?
     
@@ -86,6 +91,11 @@ class BOGamePresenter: UIViewController {
         }
         
         self.view.clipsToBounds = true
+        
+        titleLineView = UIView(frame: CGRect(x: 0, y: titleContainerView!.bounds.size.height - 0.5, width: titleContainerView!.bounds.size.width, height: 0.5))
+        titleLineView!.backgroundColor = UIColor(red: 207.0/255, green: 210.0/255, blue: 215.0/255, alpha: 1)
+        titleLineView!.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
+        titleContainerView?.addSubview(titleLineView!)
         
         balance = 50
         keyboardView!.presenter = self
@@ -107,7 +117,9 @@ class BOGamePresenter: UIViewController {
 //        })
         
         currentRateLabel?.text = asset!.identity
-        titleLabel?.text = asset!.identity
+        titleLabel?.attributedText =  NSAttributedString.init(string: asset!.identity, attributes: [NSFontAttributeName: UIFont.init(name: "ProximaNova-Semibold", size: 17)!, NSKernAttributeName: 1.5])
+        
+        titleLabel?.sizeToFit()
         
         timer = Timer.init(timeInterval: 0.04, target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
         RunLoop.current.add(timer!, forMode: .defaultRunLoopMode)
@@ -170,7 +182,7 @@ class BOGamePresenter: UIViewController {
     }
     
     func pricesChanged() {
-        graphView?.changes = asset!.changes as! [BORate]
+        graphView?.changes = asset!.changes.copy() as! [BORate]
         currentRateLabel?.text = asset!.identity + ": " + String((graphView!.changes!.last!.ask + graphView!.changes!.last!.bid)/2)
         graphView?.setNeedsDisplay()
     }
@@ -193,27 +205,53 @@ class BOGamePresenter: UIViewController {
         if(self.view.bounds.size.width > self.view.bounds.size.height) {
             flagLandscape = true
             graphView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.height * 0.75, height: self.view.bounds.size.height)
+            gradientView?.image = #imageLiteral(resourceName: "GradientImageRotated")
+            gradientView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y, width: graphView!.bounds.size.width - 10, height: graphView!.frame.size.height)
+
             keyboardView?.frame = CGRect(x: graphView!.bounds.size.width + distToKeyboard, y: 0, width: self.view.bounds.size.width - (graphView!.bounds.size.width + distToKeyboard), height: self.view.bounds.size.height)
 
-            balanceLabel?.frame = CGRect(x: 10, y: self.view.bounds.size.height - 10 - 20, width: 200, height: 20)
-            balanceLabel?.textAlignment = .left
+            titleContainerView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 52)
+            titleLineView?.isHidden = false
+            balanceLabel?.textAlignment = .right
+            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width - 20 - 200, y: 16, width: 200, height: 20)
+            
+            titleLabel?.center = CGPoint(x: 51 + titleLabel!.bounds.size.width/2, y: titleContainerView!.bounds.size.height/2)
+            
+            backButton?.frame = CGRect(x: 16, y: 12, width: 28, height: 28)
+            
+            
+            
 //            balanceLabel?.center.y = currentRateLabel!.center.y
 
 //            currentRateLabel?.frame = CGRect(x: 10, y: self.view.bounds.size.height - 10 - 20, width: 200, height: 20)
             
-            utilsView!.center = CGPoint(x: self.view.bounds.size.width - 56/2, y: self.view.bounds.size.height/2)
+//            utilsView!.center = CGPoint(x: self.view.bounds.size.width/2, y: self.view.bounds.size.height - 30)
+            utilsView?.frame = CGRect(x: 0, y: self.view.bounds.size.height - 56, width: self.view.bounds.size.width, height: 56)
         }
         else {
             flagLandscape = false
             graphView?.frame = CGRect(x: 0, y: 90, width: self.view.bounds.size.width, height: self.view.bounds.size.width * 0.75 - 90)
             
             gradientView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y + 20, width: self.view.bounds.size.width, height: graphView!.frame.size.height - 20 - 10)
+            gradientView?.image = #imageLiteral(resourceName: "GradientImage")
             keyboardView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y + graphView!.bounds.size.height + distToKeyboard, width: self.view.bounds.size.width , height: self.view.bounds.size.height - (graphView!.frame.origin.y + graphView!.bounds.size.height + distToKeyboard))
+            utilsView?.frame = CGRect(x: 0, y: self.view.bounds.size.height - 56, width: self.view.bounds.size.width, height: 56)
+
+            titleContainerView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 80)
+            titleLineView?.isHidden = true
+            balanceLabel?.textAlignment = .center
+            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width/2 - 100, y: 60, width: 200, height: 20)
+            
+            titleLabel?.center = CGPoint(x: self.view.bounds.size.width/2, y: 42)
+            
+            backButton?.frame = CGRect(x: 16, y: 28, width: 28, height: 28)
+
+            
 //            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width - 200 - 10, y: 10, width: 200, height: 20)
 //            balanceLabel?.center.y = currentRateLabel!.center.y
 //            balanceLabel?.textAlignment = .right
 //            currentRateLabel?.frame = CGRect(x: self.view.bounds.size.width - 200 - 10, y: 10, width: 200, height: 20)
-            utilsView!.center = CGPoint(x: self.view.bounds.size.width/2, y: self.view.bounds.size.height - 56/2)
+//            utilsView!.center = CGPoint(x: self.view.bounds.size.width/2, y: self.view.bounds.size.height - 56/2)
 
         }
         
@@ -231,6 +269,7 @@ class BOGamePresenter: UIViewController {
     
     override var prefersStatusBarHidden: Bool {
         get {
+            return !(UIInterfaceOrientationIsPortrait(UIApplication.shared.statusBarOrientation))
             return false
         }
     }

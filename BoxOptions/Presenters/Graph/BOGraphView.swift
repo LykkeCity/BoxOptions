@@ -79,8 +79,9 @@ class BOGraphView: UIView {
         
 
         if(flagLandscape) {
-        context?.translateBy(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
-        context?.rotate(by: -CGFloat(M_PI_2))
+            context?.saveGState()
+            context?.translateBy(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
+            context?.rotate(by: -CGFloat(M_PI_2))
 
             context?.translateBy(x:  -self.bounds.size.height/2, y: -self.bounds.size.width/2)
         }
@@ -89,6 +90,9 @@ class BOGraphView: UIView {
         let baseSpace=CGColorSpaceCreateDeviceRGB()
         
         drawDashedLines()
+        if(flagLandscape) {
+            drawRatesLabels()
+        }
         
         
         if(mode == .light) {
@@ -209,7 +213,13 @@ class BOGraphView: UIView {
         
         context?.move(to: CGPoint(x: 0, y: origPoint.y))
         context?.setLineWidth(0.5)
-        context?.addLine(to: CGPoint(x: self.bounds.size.width, y: origPoint.y))
+        if(flagLandscape) {
+            context?.addLine(to: CGPoint(x: self.bounds.size.height, y: origPoint.y))
+
+        }
+        else {
+            context?.addLine(to: CGPoint(x: self.bounds.size.width, y: origPoint.y))
+        }
         context?.strokePath()
 
         
@@ -224,7 +234,9 @@ class BOGraphView: UIView {
         context?.clear(CGRect(x: origPoint.x - 4, y: origPoint.y - 4, width: 8, height: 30))
         context?.fillEllipse(in: CGRect(x: origPoint.x - 3, y: origPoint.y - 3, width: 6, height: 6))
         
-        drawRatesLabels()
+        if(flagLandscape == false) {
+            drawRatesLabels()
+        }
 
         if(lastXCoord != self.bounds.size.width) {
             
@@ -244,11 +256,9 @@ class BOGraphView: UIView {
         if(flagLandscape) {
             x = lastXCoord! + (CGFloat(diff)*(self.bounds.size.height/CGFloat(widthPrice! / Double(scale)))) - scrollOffset
         }
-        
-        
-        
         return x
     }
+    
     
     func xToPrice(x: CGFloat) -> Double {
         
@@ -274,14 +284,20 @@ class BOGraphView: UIView {
             return
         }
         if(dashLinesValueStep == nil) {
-            let xxx = changes?.last?.ask
-            let xx2 = changes?.last?.bid
             dashLinesValueStep = (changes!.last!.ask - changes!.last!.bid) / 1.5
         }
         context?.setLineWidth(0.5)
-        context?.setStrokeColor(UIColor.lightGray.cgColor)
+        context?.setStrokeColor(UIColor.init(red: 182.0/255, green: 229.0/255, blue: 1, alpha: 1).cgColor)
         context?.setLineDash(phase: 0, lengths: [5,5])
-        let startPrice = xToPrice(x: 0)
+        var startPrice:Double = 0
+        if(flagLandscape == false) {
+            startPrice = xToPrice(x: 0)
+        }
+        else {
+            startPrice = xToPrice(x: self.bounds.size.height)
+
+        }
+        
         let firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!)
         var value = startPrice - firstLineOffsetValue
         
@@ -291,11 +307,17 @@ class BOGraphView: UIView {
         }
         repeat {
             let x = priceToX(price: value)
-            if(x > self.bounds.size.width+width) {
+            if((flagLandscape == false && x > self.bounds.size.width+width) || (flagLandscape == true && x > self.bounds.size.height+width)) {
                 break
             }
             context?.move(to: CGPoint(x: x, y: 20))
-            context?.addLine(to: CGPoint(x: x, y: self.bounds.size.height-10))
+            if(flagLandscape) {
+                context?.addLine(to: CGPoint(x: x, y: self.bounds.size.width-10))
+
+            }
+            else {
+                context?.addLine(to: CGPoint(x: x, y: self.bounds.size.height-10))
+            }
             value += dashLinesValueStep!
 
 
@@ -313,13 +335,25 @@ class BOGraphView: UIView {
         if(dashLinesValueStep == nil) {
             return
         }
-        context?.clear(CGRect(x: 0, y: -1, width: self.bounds.size.width, height: 20))
-        context?.setLineWidth(0.5)
-        context?.setStrokeColor(UIColor(red: 207.0/255, green: 210.0/255, blue: 215.0/255, alpha: 1).cgColor)
-        context?.move(to: CGPoint(x: 0, y: 20))
-        context?.addLine(to: CGPoint(x: self.bounds.size.width, y: 20))
-        context?.strokePath()
-        let startPrice = xToPrice(x: 0)
+        var startPrice:Double = 0
+        if(flagLandscape == false) {
+            startPrice = xToPrice(x: 0)
+            context?.clear(CGRect(x: 0, y: -1, width: self.bounds.size.width, height: 21))
+
+            context?.setLineWidth(0.5)
+            context?.setStrokeColor(UIColor(red: 207.0/255, green: 210.0/255, blue: 215.0/255, alpha: 1).cgColor)
+            context?.move(to: CGPoint(x: 0, y: 20))
+
+            context?.addLine(to: CGPoint(x: self.bounds.size.width, y: 20))
+            context?.strokePath()
+
+        }
+        else {
+            startPrice = xToPrice(x: self.bounds.size.height)
+
+        }
+
+
         let firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!)
         var value = startPrice - firstLineOffsetValue
         
@@ -327,26 +361,49 @@ class BOGraphView: UIView {
         if(width == 0) {
             return
         }
+        
+        if(flagLandscape) {
+            context?.restoreGState()
+        }
+
 
         repeat {
             let x = priceToX(price: value)
-            if(x > self.bounds.size.width+width) {
+            if((flagLandscape == false && x > self.bounds.size.width+width) || (flagLandscape == true && x > self.bounds.size.height+width)) {
                 break
             }
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
             
-            let attrs = [NSFontAttributeName: UIFont(name: "HelveticaNeue-Thin", size: 10)!, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: UIColor.black]
+            let attrs = [NSFontAttributeName: UIFont(name: "ProximaNova-Regular", size: 10)!, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: UIColor(red: 178.0/255, green: 184.0/255, blue: 191.0/255, alpha: 1)]
             
             let formatString = "%." + String(accuracy!) + "f"
             let string = String(format:formatString, value)
-            string.draw(with: CGRect(x: x - width/2, y: 0, width: width, height: 20), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            
+            
+            if(flagLandscape == false) {
+               
+                string.draw(with: CGRect(x: x - width/2, y: 0, width: width, height: 20), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            }
+            else {
+                paragraphStyle.alignment = .left
+                let rect = NSString(string: string).boundingRect(with: .zero, options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+                context?.clear(CGRect(x: 10, y: (self.bounds.size.height - x - 7), width: rect.size.width+10, height: 20))
+                string.draw(with: CGRect(x: 10, y: self.bounds.size.height - x - 7, width: 100, height: 20), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            }
             
             value += dashLinesValueStep!
             
             
         } while(true)
         
+        if(flagLandscape) {
+            context?.translateBy(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
+            context?.rotate(by: -CGFloat(M_PI_2))
+            
+            context?.translateBy(x:  -self.bounds.size.height/2, y: -self.bounds.size.width/2)
+        }
+
         
     }
 
