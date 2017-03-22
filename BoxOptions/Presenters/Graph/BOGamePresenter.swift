@@ -13,6 +13,11 @@ import UIKit
 let minimumScale: CGFloat = 0.6
 let maximumScale: CGFloat = 1.5
 
+let BoxColumns = 15.0 //21.0
+let BoxRows = 8.0 //12.0
+
+
+
 var flagLandscape = false
 
 enum COLOR_MODE {
@@ -105,29 +110,33 @@ class BOGamePresenter: UIViewController {
         graphView?.changes = asset?.changes as? [BORate]
         graphView?.accuracy = Int(asset!.accuracy)
         
-        graphView?.widthPrice = (graphView!.changes!.last!.ask - graphView!.changes!.last!.bid) * 4
+//        graphView?.widthPrice = (graphView!.changes!.last!.ask - graphView!.changes!.last!.bid) * 4 * 4
+        
+//        NSArray *allowedAssets = @[@"EURUSD", @"EURAUD", @"EURCHF", @"EURGBP", @"EURJPY", @"USDCHF"];
+
+        let ww = 0.0001 //0.0005
+        let widthPrices = ["EURUSD":ww, "EURAUD":ww, "EURCHF":ww, "EURGBP":ww, "EURJPY": 0.03, "USDCHF":ww]
+        
+        graphView?.widthPrice = widthPrices[asset!.identity]
         
         gradientView = UIImageView(image: #imageLiteral(resourceName: "GradientImage"))
         self.view.insertSubview(gradientView!, belowSubview: graphView!)
         
         NotificationCenter.default.addObserver(self, selector: #selector(pricesChanged), name: NSNotification.Name("PricesChanged" + asset!.identity), object: nil)
-
-//        timer = Timer.init(timeInterval: 0.03, repeats: true, block: { t in
-//            self.graphView?.setNeedsDisplay()
-//        })
         
         currentRateLabel?.text = asset!.identity
         titleLabel?.attributedText =  NSAttributedString.init(string: asset!.identity, attributes: [NSFontAttributeName: UIFont.init(name: "ProximaNova-Semibold", size: 17)!, NSKernAttributeName: 1.5])
         
         titleLabel?.sizeToFit()
         
-        timer = Timer.init(timeInterval: 0.04, target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
+        timer = Timer.init(timeInterval: 0.02, target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
         RunLoop.current.add(timer!, forMode: .defaultRunLoopMode)
         
         let gesture = UIPinchGestureRecognizer(target: self, action: #selector(zoomDetected(gesture:)))
         self.view.addGestureRecognizer(gesture)
         let gesture1 = UIPanGestureRecognizer(target: self, action: #selector(dragDetected(gesture:)))
         self.view.addGestureRecognizer(gesture1)
+        
 
     }
     
@@ -176,6 +185,16 @@ class BOGamePresenter: UIViewController {
     
     
     func timerFired() {
+        
+        if(BODataManager.shared().flagConnected == false) {
+            self.view.isUserInteractionEnabled = false
+            return
+        }
+        
+        if(self.view.isUserInteractionEnabled == false) {
+            self.view.isUserInteractionEnabled = true
+        }
+        
         self.graphView?.setNeedsDisplay()
         
 
@@ -192,6 +211,12 @@ class BOGamePresenter: UIViewController {
         super.viewWillAppear(animated)
         UIApplication.shared.setStatusBarHidden(true, with: .none)
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        timer?.invalidate()
+        keyboardView?.timer?.invalidate()
     }
     
     override func viewDidLayoutSubviews() {
@@ -284,6 +309,10 @@ class BOGamePresenter: UIViewController {
         get {
             return true
         }
+    }
+    
+    deinit {
+        
     }
     
 }

@@ -10,12 +10,16 @@
 
 @interface BODataManager : NSObject
 
+
 + (instancetype)shared;
 
 -(void) start;
 
 @property (strong, nonatomic) NSMutableArray *assets;
+@property BOOL flagConnected;
 
+-(void) sendParametersForAsset:(NSString *) assetId timeToGraph:(double) timeToGraph boxPriceWidth:(double) priceWidth boxTimeLength:(double) timeLength columns:(int) columns rows:(int)rows withCompletion:(void (^)(BOOL result)) completion;
 
+-(void) requestCoeffsForPair:(NSString *) assetId withCompletion:(void (^)(NSArray *result)) completion;
 
 @end

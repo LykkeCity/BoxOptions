@@ -59,6 +59,7 @@ class BOUtilsView: UIView {
         }
         slider?.setValue(0.5, animated: false)
         slider?.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
+        slider?.addTarget(self, action: #selector(sliderFinishedEditing), for: .touchUpInside)
         slider?.tintColor = sliderColor
         slider?.maximumTrackTintColor = UIColor(red: 207.0/255, green: 210.0/255, blue: 215.0/255, alpha: 1)
         slider?.thumbTintColor = sliderColor
@@ -108,6 +109,11 @@ class BOUtilsView: UIView {
 
         
         self.superview?.setNeedsLayout()
+    }
+    
+    func sliderFinishedEditing() {
+        presener!.keyboardView?.sendParams()
+
     }
     
     override func layoutSubviews() {

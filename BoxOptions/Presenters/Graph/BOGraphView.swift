@@ -284,7 +284,15 @@ class BOGraphView: UIView {
             return
         }
         if(dashLinesValueStep == nil) {
-            dashLinesValueStep = (changes!.last!.ask - changes!.last!.bid) / 1.5
+            let a = changes?.last?.ask
+            let b = changes?.last?.bid
+            
+            dashLinesValueStep = widthPrice! / 8
+        }
+        
+        if(dashLinesValueStep == 0) {
+            dashLinesValueStep = nil
+            return
         }
         context?.setLineWidth(0.5)
         context?.setStrokeColor(UIColor.init(red: 182.0/255, green: 229.0/255, blue: 1, alpha: 1).cgColor)

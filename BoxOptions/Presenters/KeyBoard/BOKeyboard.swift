@@ -9,17 +9,107 @@
 import Foundation
 import UIKit
 
+let numberOfColumnsOnScreen = 5
+
 class BOKeyboardView: UIView {
     
     var keysArray:Array<BOKeyView>?
     
     var maxScrollOffset:CGFloat?
     
+    var etalon: CGFloat?
+    
+    var timer: Timer?
+    
+    var flagParamsSent: Bool?
     
     weak var presenter: BOGamePresenter?
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        flagParamsSent = false
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.sendParams()
+        }
+        
+        timer = Timer.init(timeInterval: 5, target: self, selector: #selector(refreshCoeffs), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer!, forMode: .defaultRunLoopMode)
+        
+    }
+    
+    func refreshCoeffs() {
+        
+        if(flagParamsSent == false || presenter == nil) {
+            return
+        }
+        BODataManager.shared().requestCoeffs(forPair: self.presenter!.asset!.identity, withCompletion: { result in
+            let arr = result as! [Double]
+            
+            var horNumber = BoxColumns
+            var verNumber = BoxRows
+            
+            if(flagLandscape) {
+                horNumber = BoxRows
+                verNumber = BoxColumns
+                
+            }
+            
+            for j in 0..<Int(verNumber) {
+                for i in 0..<Int(horNumber) {
+                    let keyView = self.keysArray![Int(j) * Int(horNumber) + Int(i)]
+                    keyView.value = arr[Int(j) * Int(horNumber) + Int(i)]
+                }
+            }
+        })
+
+    }
+    
+    func sendParams() {
+        
+        flagParamsSent = false
+
+        for v in keysArray! {
+            v.value = 0
+        }
+        
+        
+        var distToGraph: CGFloat?
+        var timeNeededToGoToGraph: Double?
+        var delta: CGFloat?
+        
+        let graphView = presenter?.graphView
+        if(flagLandscape) {
+            
+            let p = graphView!.convert(CGPoint(x: graphView!.bounds.size.width, y: 0), to: self)
+            distToGraph = -p.x
+        }
+        else {
+            let p = graphView!.convert(CGPoint(x: 0, y: graphView!.bounds.size.height), to: self)
+            distToGraph = -p.y
+        }
+        
+        if(flagLandscape) {
+            delta = graphView!.bounds.size.width / CGFloat(graphView!.heightSeconds  / Double(graphView!.scale))
+            timeNeededToGoToGraph = Double(distToGraph! / delta!)
+        }
+        else {
+            delta = graphView!.bounds.size.height / CGFloat(graphView!.heightSeconds  / Double(graphView!.scale))
+            timeNeededToGoToGraph = Double(distToGraph! / delta!)
+        }
+
+        let boxTimeLength = Double(etalon! * self.presenter!.graphView!.scale)/Double(delta!)
+        
+
+        BODataManager.shared().sendParameters(forAsset: presenter!.asset!.identity, timeToGraph: timeNeededToGoToGraph!, boxPriceWidth: presenter!.graphView!.widthPrice!/Double(numberOfColumnsOnScreen), boxTimeLength: boxTimeLength, columns: Int32(BoxColumns), rows: Int32(BoxRows), withCompletion: { res in
+            self.flagParamsSent = true
+            self.refreshCoeffs()
+        })
+        
+       // @{@"pair":@"EURUSD", @"timeToFirstOption":@(4000), @"optionLen":@(4000), @"priceSize":@(0.005), @"nPriceIndex":@(10), @"nTimeIndex":@(5)
+        
+        
         
     }
     
@@ -31,22 +121,22 @@ class BOKeyboardView: UIView {
             
         }
 
-        var etalon = (self.bounds.size.height/5) * CGFloat(keyboardScale)
+        etalon = (self.bounds.size.height/CGFloat(numberOfColumnsOnScreen)) * CGFloat(keyboardScale)
         
         
         if(flagLandscape == false) {
-            etalon = (self.bounds.size.width/5)  * CGFloat(keyboardScale)
+            etalon = (self.bounds.size.width/CGFloat(numberOfColumnsOnScreen))  * CGFloat(keyboardScale)
         }
         
-        var horNumber = 21.0
-        var verNumber = 12.0
+        var horNumber = BoxColumns
+        var verNumber = BoxRows
         
-        maxScrollOffset = etalon * CGFloat(horNumber / 2) * presenter!.graphView!.scale
+        maxScrollOffset = etalon! * CGFloat(horNumber / 2) * presenter!.graphView!.scale
 
         
         if(flagLandscape) {
-            horNumber = 12.0
-            verNumber = 21.0
+            horNumber = BoxRows
+            verNumber = BoxColumns
             
         }
         
@@ -58,7 +148,7 @@ class BOKeyboardView: UIView {
         
             if(flagLandscape) {
                 
-                let width = etalon * self.presenter!.graphView!.scale
+                let width = etalon! * self.presenter!.graphView!.scale
                 let height = width
                 
                 
@@ -78,6 +168,7 @@ class BOKeyboardView: UIView {
                         if(self.keysArray!.count < Int(horNumber * verNumber)) {
                             keyView = BOKeyView.init(frame: frame, value: value)
                             keyView!.presenter = self.presenter
+                            keyView?.value = 0
                             self.keysArray?.append(keyView!)
                         }
                         else {
@@ -86,7 +177,8 @@ class BOKeyboardView: UIView {
                         
                             keyView!.frame = frame
                             keyView!.center = center
-                            keyView!.value = value
+                            keyView!.value = keyView?.value
+
                             if(keyView!.superview == nil) {
                                 self.addSubview(keyView!)
                             }
@@ -102,14 +194,14 @@ class BOKeyboardView: UIView {
                 
             else {
                 
-                let width = etalon * self.presenter!.graphView!.scale
+                let width = etalon! * self.presenter!.graphView!.scale
                 let height = width
                 
                 
                 
-                for i in 0..<Int(horNumber) {
-                    for j in 0..<Int(verNumber) {
-                        
+                for j in 0..<Int(verNumber) {
+                    for i in 0..<Int(horNumber) {
+                    
                         let frame = CGRect(x: 0, y: 0, width: width, height: height)
                         
                         let center = CGPoint(x: self.bounds.size.width/2 - (CGFloat(horNumber/2) - CGFloat(i) - 0.5) * width + scrollOffset, y: (CGFloat(j)+0.5) * height)
@@ -122,15 +214,16 @@ class BOKeyboardView: UIView {
                         if(self.keysArray!.count < Int(horNumber * verNumber)) {
                             keyView = BOKeyView.init(frame: frame, value: value)
                             keyView!.presenter = self.presenter
+                            keyView?.value = 0
                             self.keysArray?.append(keyView!)
                         }
                         else {
-                            keyView = self.keysArray![Int(i) * Int(verNumber) + Int(j)]
+                            keyView = self.keysArray![Int(j) * Int(horNumber) + Int(i)]
                         }
                         
                         keyView!.frame = frame
                         keyView!.center = center
-                        keyView!.value = value
+                        keyView!.value = keyView?.value
                         if(keyView!.superview == nil) {
                             self.addSubview(keyView!)
                         }
@@ -143,10 +236,12 @@ class BOKeyboardView: UIView {
                 }
                 
             }
+        
+//            sendParams()
         }
         
 
-        
+    
     
     
     
@@ -160,12 +255,22 @@ class BOKeyView: UIView {
     private var _value: Double?
     var value:Double? {
         get {
+            if(_value == nil) {
+                _value = 0
+            }
             return _value
         }
         set {
             _value = newValue
             if(label != nil) {
-                label?.text = NSString.init(format: "%.2f", _value! * betAmount) as String
+                if(_value == 0) {
+                    label?.text = "?"
+                    self.isUserInteractionEnabled = false
+                }
+                else {
+                    self.isUserInteractionEnabled = true
+                    label?.text = NSString.init(format: "%.2f", _value! * betAmount) as String
+                }
                 
                 self.setNeedsLayout()
             }
