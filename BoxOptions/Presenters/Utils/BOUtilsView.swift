@@ -89,6 +89,7 @@ class BOUtilsView: UIView {
         }
         else {
             presener!.keyboardView!.superview!.bringSubview(toFront: presener!.keyboardView!)
+            presener!.view.bringSubview(toFront: presener!.titleContainerView!)
             self.superview?.bringSubview(toFront: self)
         }
     }

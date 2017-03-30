@@ -154,7 +154,9 @@ class BOGraphView: UIView {
             if(cornerRadius > fabs(x - prevX)/2) {
                 cornerRadius = fabs(x - prevX)/2
             }
-            
+            if(cornerRadius < 1) {
+                cornerRadius = 0
+            }
 //            if(i == changes!.count - 2) {
                 context?.addLine(to: CGPoint(x: prevX, y: prevY + cornerRadius))
 //            }

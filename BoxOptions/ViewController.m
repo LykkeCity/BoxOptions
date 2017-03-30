@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "BODataManager.h"
 #import "BoxOptions-Swift.h"
+//#import <LOTAnimationView.h>
+#import "Lottie.h"
 
 @interface ViewController ()
 
@@ -32,9 +34,18 @@
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    BOAssetsTablePresenter *presenter = [[BOAssetsTablePresenter alloc] initWithNibName:@"BOAssetsTablePresenter" bundle:[NSBundle mainBundle]];
-    [self presentViewController:presenter animated:YES completion:nil];
     
+    
+    LOTAnimationView *animation = [LOTAnimationView animationNamed:@"box_options_intro"];
+    animation.frame = self.view.bounds;
+    animation.contentMode = UIViewContentModeScaleAspectFit;
+    
+    [self.view addSubview:animation];
+    [animation playWithCompletion:^(BOOL animationFinished) {
+        BOAssetsTablePresenter *presenter = [[BOAssetsTablePresenter alloc] initWithNibName:@"BOAssetsTablePresenter" bundle:[NSBundle mainBundle]];
+        [self presentViewController:presenter animated:YES completion:nil];
+
+    }];
 }
 
 

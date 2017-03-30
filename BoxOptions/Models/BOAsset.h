@@ -19,11 +19,13 @@
 @property (strong, nonatomic) BORate *previousRate;
 @property int accuracy;
 
-
+@property BOOL askRaising;
+@property BOOL bidRaising;
 
 
 @property (strong, nonatomic) NSMutableArray *changes;
 
+@property (strong, nonatomic) NSArray *graphValues;
 
 
 -(BOOL) rateChanged:(BORate *) newRate;

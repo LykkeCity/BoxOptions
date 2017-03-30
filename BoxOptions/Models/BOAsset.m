@@ -36,12 +36,42 @@
         _previousRate=_rate;
         _rate=newRate;
         
+        _askRaising = _rate.ask > _previousRate.ask;
+        _bidRaising = _rate.bid > _previousRate.bid;
+        
         
         if(newChanges.count>500)
             [newChanges removeObjectAtIndex:0];
         _changes=newChanges;
-
-
+        NSArray *tempChanges = [_changes copy];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSMutableArray *g = [[NSMutableArray alloc] init];
+            double max = 0;
+            double min = MAXFLOAT;
+            for(int i = (int)tempChanges.count-1; i>=0 && i>((int)tempChanges.count - 50); i--) {
+                BORate *rate = tempChanges[i];
+                double value = (rate.ask + rate.bid) / 2;
+                [g insertObject:@(value) atIndex:0];
+                if(value > max) {
+                    max = value;
+                }
+                if(value < min) {
+                    min = value;
+                }
+                
+            }
+            
+            NSMutableArray *final = [NSMutableArray new];
+            for(NSNumber *n in g) {
+                double value = (n.doubleValue - min)/(max - min);
+                [final addObject:@(value)];
+            }
+            
+            _graphValues = final;
+        
+        });
+        if(!_graphValues)
+            _graphValues = @[@(0.3), @(0.5), @(0.7), @(0.1)];
         
     }
     return YES;

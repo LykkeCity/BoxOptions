@@ -264,7 +264,7 @@ class BOKeyView: UIView {
             _value = newValue
             if(label != nil) {
                 if(_value == 0) {
-                    label?.text = "?"
+                    label?.text = "..."
                     self.isUserInteractionEnabled = false
                 }
                 else {
@@ -375,11 +375,16 @@ class BOOptionView: UIView {
     
     var price: Double?
     
+    var priceLength: Double?
+    var timeLength: Double?
+    
     var delta:CGFloat?
 
     var timer: Timer?
     
     var stopped = false
+    
+    var flagWon = false
     
     
     init(frame: CGRect, inView: UIView, value: Double, presenter: BOGamePresenter) {
@@ -457,7 +462,8 @@ class BOOptionView: UIView {
             delta = self.graphView!.bounds.size.width / CGFloat(self.graphView!.heightSeconds  / Double(graphView!.scale))
             
             timeNeededToGoToGraph = Double(distToGraph! / delta!)
-
+            timeLength = Double(self.bounds.size.width / delta!)
+            priceLength =  graphView!.xToPrice(x: frame.origin.y) - graphView!.xToPrice(x: frame.origin.y + frame.size.height)
 
         }
         else {
@@ -467,18 +473,55 @@ class BOOptionView: UIView {
             
             timeNeededToGoToGraph = Double(distToGraph! / delta!)
 
+            timeLength = Double(self.bounds.size.height / delta!)
+            priceLength =  graphView!.xToPrice(x: frame.origin.x + frame.size.width) - graphView!.xToPrice(x: frame.origin.x)
+
         }
         
 
         timer = Timer.init(timeInterval: 0.04, target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
         
         RunLoop.current.add(timer!, forMode: .defaultRunLoopMode)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(checkPrice(notification:)), name: Notification.Name("PricesChanged" + presenter.asset!.identity), object: nil)
     }
     
     func timerFired () {
         self.setNeedsDisplay()
     }
     
+    func checkPrice(notification: Notification) {
+        
+        
+        let value = notification.object as! NSValue
+        let point  = value.cgPointValue
+        
+        let timeNow = Date.timeIntervalSinceReferenceDate
+        if(timeNow >= originalTimeStamp! + timeNeededToGoToGraph! - timeLength!/2 && timeNow <= originalTimeStamp! + timeNeededToGoToGraph! + timeLength!/2) {
+            if((Double(point.x) > price! && Double(point.y) < price!) || (Double(point.x) < price! && Double(point.y) > price!)) {
+                boxWin()
+            }
+        }
+        
+    }
+    
+    func boxWin() {
+        if(flagWon == true) {
+            return
+        }
+        flagWon = true
+        self.timer?.invalidate()
+        NotificationCenter.default.removeObserver(self)
+        UIView.animate(withDuration: 0.1, animations: {
+            self.layer.cornerRadius = 4
+//            self.frame = CGRect(x: self.frame.origin.x + pointInSelf.x - 4, y: self.frame.origin.y + pointInSelf.y - 4, width: 8, height: 8)
+            self.frame = CGRect(x: self.center.x - 4, y: self.center.y - 4, width: 8, height: 8)
+
+        }, completion: { fin in
+            self.fly()
+        })
+
+    }
     
     override func draw(_ rect: CGRect) {
         
@@ -511,19 +554,14 @@ class BOOptionView: UIView {
         let pointInSelf = self.graphView!.convert(pointFire, to: self)
         
         if(self.bounds.contains(pointInSelf)) {
-            self.timer?.invalidate()
-            
-            UIView.animate(withDuration: 0.1, animations: {
-                self.layer.cornerRadius = 4
-                self.frame = CGRect(x: self.frame.origin.x + pointInSelf.x - 4, y: self.frame.origin.y + pointInSelf.y - 4, width: 8, height: 8)
-            }, completion: { fin in
-                self.fly()
-            })
+            boxWin()
         }
         
 //        if(((pointInSelf.y > self.bounds.size.height && flagLandscape == false) || (pointInSelf.x > self.bounds.size.width && flagLandscape == true)) && stopped == false) {  //remove immediately
         if(((self.frame.origin.y < (graphView!.frame.origin.y + 20) && flagLandscape == false) || (self.frame.origin.x < 0 && flagLandscape == true)) && stopped == false) {
             stopped = true
+            NotificationCenter.default.removeObserver(self)
+
 //            UIView.animate(withDuration: 2, animations: {
 //                self.alpha = 0
 //            }, completion: {res in
@@ -558,7 +596,10 @@ class BOOptionView: UIView {
     }
     
     func fly() {
-        
+        if(self.superview == nil) {
+            NotificationCenter.default.removeObserver(self)
+            return
+        }
         
         let point1 = self.superview!.convert(self.center, to: UIApplication.shared.keyWindow)
 //        let point2 = graphView!.superview!.convert(graphView!.frame.origin, to: UIApplication.shared.keyWindow)

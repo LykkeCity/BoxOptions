@@ -121,8 +121,15 @@
 		A13DBA351E77C18C00922D5E /* Proxima Nova Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A13DBA301E77C18C00922D5E /* Proxima Nova Thin.otf */; };
 		A174FFD31E5451C400EC383F /* NSString+Date.m in Sources */ = {isa = PBXBuildFile; fileRef = A174FFD21E5451C400EC383F /* NSString+Date.m */; };
 		A1B241231E4E211A008F6913 /* BOFlyingCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */; };
+		A1E1361C1E8268F9009D1348 /* box_options_intro.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E1361B1E8268F9009D1348 /* box_options_intro.json */; };
+		A1E1361E1E826CA1009D1348 /* box_loader.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E1361D1E826CA1009D1348 /* box_loader.json */; };
+		A1E136211E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E1361F1E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift */; };
+		A1E136221E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1E136201E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.xib */; };
+		A1E136251E8271F5009D1348 /* LWAssetLykkeTableChangeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1E136241E8271F5009D1348 /* LWAssetLykkeTableChangeView.m */; };
+		A1E136281E82743B009D1348 /* UIView+ThinLines.m in Sources */ = {isa = PBXBuildFile; fileRef = A1E136271E82743B009D1348 /* UIView+ThinLines.m */; };
 		A1F1C6B41E57FA580095E369 /* BOUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */; };
 		A1F1C6B61E5AB0AE0095E369 /* BOHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1C6B51E5AB0AE0095E369 /* BOHelper.swift */; };
+		B3831D90064B6587BD5A6E06 /* libPods-BoxOptions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 766BD6BA3CD22BBE328A2836 /* libPods-BoxOptions.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,6 +150,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1711EC2097662B541C5225BC /* Pods-BoxOptions.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoxOptions.release.xcconfig"; path = "Pods/Target Support Files/Pods-BoxOptions/Pods-BoxOptions.release.xcconfig"; sourceTree = "<group>"; };
+		761CDBBD82B9C778AD8FFB30 /* Pods-BoxOptions.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoxOptions.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BoxOptions/Pods-BoxOptions.debug.xcconfig"; sourceTree = "<group>"; };
+		766BD6BA3CD22BBE328A2836 /* libPods-BoxOptions.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BoxOptions.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10B531D1E4C3DED00E5DCBE /* BoxOptions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoxOptions.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10B53211E4C3DED00E5DCBE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A10B53231E4C3DED00E5DCBE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -379,6 +389,14 @@
 		A174FFD11E5451C400EC383F /* NSString+Date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Date.h"; sourceTree = "<group>"; };
 		A174FFD21E5451C400EC383F /* NSString+Date.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Date.m"; sourceTree = "<group>"; };
 		A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOFlyingCoin.swift; path = Presenters/Graph/BOFlyingCoin.swift; sourceTree = "<group>"; };
+		A1E1361B1E8268F9009D1348 /* box_options_intro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = box_options_intro.json; sourceTree = "<group>"; };
+		A1E1361D1E826CA1009D1348 /* box_loader.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = box_loader.json; sourceTree = "<group>"; };
+		A1E1361F1E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LWMarginalAssetPairTableViewCell.swift; sourceTree = "<group>"; };
+		A1E136201E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LWMarginalAssetPairTableViewCell.xib; sourceTree = "<group>"; };
+		A1E136231E8271F5009D1348 /* LWAssetLykkeTableChangeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LWAssetLykkeTableChangeView.h; sourceTree = "<group>"; };
+		A1E136241E8271F5009D1348 /* LWAssetLykkeTableChangeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LWAssetLykkeTableChangeView.m; sourceTree = "<group>"; };
+		A1E136261E82743B009D1348 /* UIView+ThinLines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ThinLines.h"; sourceTree = "<group>"; };
+		A1E136271E82743B009D1348 /* UIView+ThinLines.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ThinLines.m"; sourceTree = "<group>"; };
 		A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOUtilsView.swift; path = Presenters/Utils/BOUtilsView.swift; sourceTree = "<group>"; };
 		A1F1C6B51E5AB0AE0095E369 /* BOHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOHelper.swift; path = Models/BOHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -389,6 +407,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10B54981E4C457A00E5DCBE /* libicucore.tbd in Frameworks */,
+				B3831D90064B6587BD5A6E06 /* libPods-BoxOptions.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,6 +428,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		88260E101B6D5C9A2508DA93 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				761CDBBD82B9C778AD8FFB30 /* Pods-BoxOptions.debug.xcconfig */,
+				1711EC2097662B541C5225BC /* Pods-BoxOptions.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		A10B53141E4C3DED00E5DCBE = {
 			isa = PBXGroup;
 			children = (
@@ -417,6 +445,7 @@
 				A10B53441E4C3DED00E5DCBE /* BoxOptionsUITests */,
 				A10B531E1E4C3DED00E5DCBE /* Products */,
 				A10B54961E4C457A00E5DCBE /* Frameworks */,
+				88260E101B6D5C9A2508DA93 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -449,6 +478,8 @@
 				A10B532E1E4C3DED00E5DCBE /* LaunchScreen.storyboard */,
 				A10B53311E4C3DED00E5DCBE /* Info.plist */,
 				A10B549A1E4C45CF00E5DCBE /* BoxOptions-Bridging-Header.h */,
+				A1E1361B1E8268F9009D1348 /* box_options_intro.json */,
+				A1E1361D1E826CA1009D1348 /* box_loader.json */,
 				A13DBA361E77C19300922D5E /* Fonts */,
 				A10B53201E4C3DED00E5DCBE /* Supporting Files */,
 			);
@@ -901,6 +932,7 @@
 			isa = PBXGroup;
 			children = (
 				A10B54971E4C457A00E5DCBE /* libicucore.tbd */,
+				766BD6BA3CD22BBE328A2836 /* libPods-BoxOptions.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -910,6 +942,10 @@
 			children = (
 				A10B549B1E4C45D000E5DCBE /* BOAssetsTablePresenter.swift */,
 				A10B549D1E4C47E800E5DCBE /* BOAssetsTablePresenter.xib */,
+				A1E1361F1E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift */,
+				A1E136201E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.xib */,
+				A1E136231E8271F5009D1348 /* LWAssetLykkeTableChangeView.h */,
+				A1E136241E8271F5009D1348 /* LWAssetLykkeTableChangeView.m */,
 			);
 			name = BOAssetsList;
 			sourceTree = "<group>";
@@ -945,6 +981,8 @@
 			children = (
 				A174FFD11E5451C400EC383F /* NSString+Date.h */,
 				A174FFD21E5451C400EC383F /* NSString+Date.m */,
+				A1E136261E82743B009D1348 /* UIView+ThinLines.h */,
+				A1E136271E82743B009D1348 /* UIView+ThinLines.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -956,9 +994,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A10B534A1E4C3DED00E5DCBE /* Build configuration list for PBXNativeTarget "BoxOptions" */;
 			buildPhases = (
+				EB3E12ABF78AAFBAF6B82EAD /* [CP] Check Pods Manifest.lock */,
 				A10B53191E4C3DED00E5DCBE /* Sources */,
 				A10B531A1E4C3DED00E5DCBE /* Frameworks */,
 				A10B531B1E4C3DED00E5DCBE /* Resources */,
+				B5A6D758F1FE96404771E1CA /* [CP] Embed Pods Frameworks */,
+				1BE51D5F40302063D0509F02 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1060,7 +1101,9 @@
 			files = (
 				A13DBA311E77C18C00922D5E /* Proxima Nova Bold.otf in Resources */,
 				A10B53301E4C3DED00E5DCBE /* LaunchScreen.storyboard in Resources */,
+				A1E136221E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.xib in Resources */,
 				A10B532D1E4C3DED00E5DCBE /* Assets.xcassets in Resources */,
+				A1E1361C1E8268F9009D1348 /* box_options_intro.json in Resources */,
 				A13DBA321E77C18C00922D5E /* Proxima Nova Light.otf in Resources */,
 				A13DBA351E77C18C00922D5E /* Proxima Nova Thin.otf in Resources */,
 				A10B532B1E4C3DED00E5DCBE /* Main.storyboard in Resources */,
@@ -1069,6 +1112,7 @@
 				A13DBA341E77C18C00922D5E /* Proxima Nova Semibold.otf in Resources */,
 				A10B549E1E4C47E800E5DCBE /* BOAssetsTablePresenter.xib in Resources */,
 				A10B548B1E4C3FBD00E5DCBE /* README.txt in Resources */,
+				A1E1361E1E826CA1009D1348 /* box_loader.json in Resources */,
 				A10B543C1E4C3FBD00E5DCBE /* Documentation.html in Resources */,
 				A10B54A51E4D5C1D00E5DCBE /* BOGamePresenter.xib in Resources */,
 			);
@@ -1090,6 +1134,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1BE51D5F40302063D0509F02 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoxOptions/Pods-BoxOptions-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B5A6D758F1FE96404771E1CA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoxOptions/Pods-BoxOptions-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EB3E12ABF78AAFBAF6B82EAD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A10B53191E4C3DED00E5DCBE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1100,6 +1192,7 @@
 				A10B546B1E4C3FBD00E5DCBE /* MPMessagePackClient.m in Sources */,
 				A10B54541E4C3FBD00E5DCBE /* MDWampPublished.m in Sources */,
 				A10B54451E4C3FBD00E5DCBE /* MDWampClientConfig.m in Sources */,
+				A1E136281E82743B009D1348 /* UIView+ThinLines.m in Sources */,
 				A10B54411E4C3FBD00E5DCBE /* GHODict.m in Sources */,
 				A10B54771E4C3FBD00E5DCBE /* SRHash.m in Sources */,
 				A10B547C1E4C3FBD00E5DCBE /* SRSIMDHelpers.m in Sources */,
@@ -1109,9 +1202,11 @@
 				A10B545F1E4C3FBD00E5DCBE /* MDWampYield.m in Sources */,
 				A1F1C6B41E57FA580095E369 /* BOUtilsView.swift in Sources */,
 				A10B545D1E4C3FBD00E5DCBE /* MDWampUnsubscribed.m in Sources */,
+				A1E136251E8271F5009D1348 /* LWAssetLykkeTableChangeView.m in Sources */,
 				A10B54A71E4D994F00E5DCBE /* BOKeyboard.swift in Sources */,
 				A10B54471E4C3FBD00E5DCBE /* MDWampAbort.m in Sources */,
 				A10B54431E4C3FBD00E5DCBE /* NSString+MDString.m in Sources */,
+				A1E136211E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift in Sources */,
 				A10B54841E4C3FBD00E5DCBE /* DDASLLogger.m in Sources */,
 				A10B54741E4C3FBD00E5DCBE /* SRPinningSecurityPolicy.m in Sources */,
 				A10B545C1E4C3FBD00E5DCBE /* MDWampUnsubscribe.m in Sources */,
@@ -1341,11 +1436,17 @@
 		};
 		A10B534B1E4C3DED00E5DCBE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 761CDBBD82B9C778AD8FFB30 /* Pods-BoxOptions.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Andrey Snetkov (G246P4BT76)";
 				DEVELOPMENT_TEAM = "";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"/**",
+					"\"${PODS_ROOT}/Headers/Public/lottie-ios\"/**",
+				);
 				INFOPLIST_FILE = BoxOptions/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1361,11 +1462,17 @@
 		};
 		A10B534C1E4C3DED00E5DCBE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1711EC2097662B541C5225BC /* Pods-BoxOptions.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Lykke Corp (MNZ5M7YPQV)";
 				DEVELOPMENT_TEAM = "";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"/**",
+					"\"${PODS_ROOT}/Headers/Public/lottie-ios\"/**",
+				);
 				INFOPLIST_FILE = BoxOptions/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -141,7 +141,7 @@
             
 //            NSLog(@"received an event %@", payload.arguments);
 
-            NSString *changedAssetId=nil;
+            BOAsset *changedAsset=nil;
             
             BOOL flagWasChange = false;
             
@@ -171,32 +171,14 @@
                     {
                         flagWasChange = [asset rateChanged:rate];
                         
-                        
-                        
-                        //                        if([asset.identity isEqualToString:@"BTCCHF"]) //testing
-                        //                        {
-                        //                            NSLog(@"received an event %@", payload.arguments);
-                        //                        }
                         if(flagWasChange) {
-                            changedAssetId=asset.identity;
+                            changedAsset = asset;
                             
-                            if([changedAssetId isEqualToString:@"EURUSD"]) {
-                                NSLog(@"received an event %@", payload.arguments);
-
-                            }
                         }
                         flagFound = YES;
                         break;
                     }
                 }
-//                if(flagFound == false) {
-//                    BOAsset *newAsset = [BOAsset new];
-//                    newAsset.identity = dict[@"Instrument"];
-//                    
-//                    [newAsset rateChanged:rate];
-//                    [_assets addObject:newAsset];
-//                    
-//                }
             
                 }
             }
@@ -205,9 +187,15 @@
                 
                 [alertDisconnected dismissWithClickedButtonIndex:0 animated:true];
                 alertDisconnected = nil;
-                if(changedAssetId)
+                if(changedAsset)
                 {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:[@"PricesChanged" stringByAppendingString:changedAssetId]  object:nil];
+                    
+                    if(changedAsset.previousRate) {
+                        CGPoint point = CGPointMake((changedAsset.previousRate.ask + changedAsset.previousRate.bid)/2, (changedAsset.rate.ask + changedAsset.rate.bid)/2);
+                        [[NSNotificationCenter defaultCenter] postNotificationName:[@"PricesChanged" stringByAppendingString:changedAsset.identity]  object:[NSValue valueWithCGPoint:point]];
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"PricesChanged" object:nil];
+
                 }
                 
             });
