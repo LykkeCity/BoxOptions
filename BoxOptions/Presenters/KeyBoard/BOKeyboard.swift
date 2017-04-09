@@ -348,6 +348,9 @@ class BOKeyView: UIView {
         if(presenter!.balance < betAmount) {
             return
         }
+        
+        BODataManager.sendLogEvent(BOEventBetPlaced, message: "Coeff: " + String(_value!) + ", Bet: " + String(betAmount))
+
         presenter?.balance -= betAmount
 //        _ = BOOptionView.init(frame: self.frame, inView:self.superview!.superview!, value: value! * betAmount, presenter: presenter!)
         _ = BOOptionView.init(frame: self.convert(self.bounds, to: self.superview!.superview!), inView:self.superview!.superview!, value: value! * betAmount, presenter: presenter!)
@@ -511,6 +514,9 @@ class BOOptionView: UIView {
         }
         flagWon = true
         self.timer?.invalidate()
+        
+        BODataManager.sendLogEvent(BOEventBetWon, message: "Value: " + String(value!))
+
         NotificationCenter.default.removeObserver(self)
         UIView.animate(withDuration: 0.1, animations: {
             self.layer.cornerRadius = 4
@@ -560,6 +566,8 @@ class BOOptionView: UIView {
 //        if(((pointInSelf.y > self.bounds.size.height && flagLandscape == false) || (pointInSelf.x > self.bounds.size.width && flagLandscape == true)) && stopped == false) {  //remove immediately
         if(((self.frame.origin.y < (graphView!.frame.origin.y + 20) && flagLandscape == false) || (self.frame.origin.x < 0 && flagLandscape == true)) && stopped == false) {
             stopped = true
+            BODataManager.sendLogEvent(BOEventBetLost, message: "Value: " + String(value!))
+
             NotificationCenter.default.removeObserver(self)
 
 //            UIView.animate(withDuration: 2, animations: {

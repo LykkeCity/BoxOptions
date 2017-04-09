@@ -75,6 +75,8 @@ class BOGamePresenter: UIViewController {
     @IBOutlet weak var backButton: UIButton?
     @IBOutlet weak var titleContainerView: UIView?
     
+    var showSettingsButton: UIButton?
+    
     var titleLineView: UIView?
     var gradientView: UIImageView?
     
@@ -89,6 +91,8 @@ class BOGamePresenter: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        BODataManager.sendLogEvent(BOEventGameStarted, message: asset!.identity)
+        
         if(mode == .light) {
             self.view.backgroundColor = .white
 //            graphView?.backgroundColor = .white
@@ -96,6 +100,13 @@ class BOGamePresenter: UIViewController {
         }
         
         self.view.clipsToBounds = true
+        
+        showSettingsButton = UIButton.init(type: .custom)
+        showSettingsButton?.setBackgroundImage(#imageLiteral(resourceName: "GearWheel"), for: .normal)
+        showSettingsButton?.addTarget(self, action: #selector(showSettingsButtonPressed), for: .touchUpInside)
+        self.view.addSubview(showSettingsButton!)
+        
+        utilsView?.isHidden = true;
         
         titleLineView = UIView(frame: CGRect(x: 0, y: titleContainerView!.bounds.size.height - 0.5, width: titleContainerView!.bounds.size.width, height: 0.5))
         titleLineView!.backgroundColor = UIColor(red: 207.0/255, green: 210.0/255, blue: 215.0/255, alpha: 1)
@@ -140,6 +151,29 @@ class BOGamePresenter: UIViewController {
 
     }
     
+    func showSettingsButtonPressed() {
+        if(utilsView!.isHidden) {
+            utilsView?.center = CGPoint(x: self.view.bounds.size.width/2, y: self.view.bounds.size.height + utilsView!.bounds.size.height/2)
+            utilsView?.isHidden = false
+            UIView.animate(withDuration: 0.3, animations: {
+                self.utilsView?.center = CGPoint(x: self.view.bounds.size.width/2, y: self.view.bounds.size.height - self.utilsView!.bounds.size.height/2)
+                self.showSettingsButton?.center = CGPoint(x: self.view.bounds.size.width - 20 - self.showSettingsButton!.bounds.size.width/2, y: self.view.bounds.size.height - self.utilsView!.bounds.size.height - 20 - self.showSettingsButton!.bounds.size.height/2)
+            
+            })
+        }
+        else {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.utilsView?.center = CGPoint(x: self.view.bounds.size.width/2, y: self.view.bounds.size.height + self.utilsView!.bounds.size.height/2)
+                self.showSettingsButton?.center = CGPoint(x: self.view.bounds.size.width - 20 - self.showSettingsButton!.bounds.size.width/2, y: self.view.bounds.size.height - 20 - self.showSettingsButton!.bounds.size.height/2)
+                
+            }, completion: { finished in
+                self.utilsView?.isHidden = true
+                
+            })
+  
+        }
+    }
+    
     func zoomDetected(gesture: UIPinchGestureRecognizer) {
         
         graphView!.scale = graphView!.scale * gesture.scale
@@ -180,6 +214,7 @@ class BOGamePresenter: UIViewController {
         graphView?.setNeedsLayout()
         keyboardView?.setNeedsLayout()
 
+        
     }
     
     
@@ -226,10 +261,12 @@ class BOGamePresenter: UIViewController {
         
         let distToKeyboard = 40.0 * graphView!.scale
         
+        let graphSizeCoeff: CGFloat = 1
+        
         
         if(self.view.bounds.size.width > self.view.bounds.size.height) {
             flagLandscape = true
-            graphView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.height * 0.75, height: self.view.bounds.size.height)
+            graphView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.height * graphSizeCoeff, height: self.view.bounds.size.height)
             gradientView?.image = #imageLiteral(resourceName: "GradientImageRotated")
             gradientView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y, width: graphView!.bounds.size.width - 10, height: graphView!.frame.size.height)
 
@@ -251,16 +288,24 @@ class BOGamePresenter: UIViewController {
 //            currentRateLabel?.frame = CGRect(x: 10, y: self.view.bounds.size.height - 10 - 20, width: 200, height: 20)
             
 //            utilsView!.center = CGPoint(x: self.view.bounds.size.width/2, y: self.view.bounds.size.height - 30)
+            
+            
             utilsView?.frame = CGRect(x: 0, y: self.view.bounds.size.height - 56, width: self.view.bounds.size.width, height: 56)
+            
+            if(utilsView!.isHidden) {
+                showSettingsButton?.frame = CGRect(x: self.view.bounds.size.width - 20 - 48, y: self.view.bounds.size.height - 20 - 48, width: 48, height: 48)
+            }
+            else {
+                showSettingsButton?.frame = CGRect(x: self.view.bounds.size.width - 20 - 48, y: self.view.bounds.size.height - utilsView!.bounds.size.height - 20 - 48, width: 48, height: 48)
+            }
         }
         else {
             flagLandscape = false
-            graphView?.frame = CGRect(x: 0, y: 90, width: self.view.bounds.size.width, height: self.view.bounds.size.width * 0.75 - 90)
+            graphView?.frame = CGRect(x: 0, y: 90, width: self.view.bounds.size.width, height: self.view.bounds.size.width * graphSizeCoeff - 90)
             
             gradientView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y + 20, width: self.view.bounds.size.width, height: graphView!.frame.size.height - 20 - 10)
             gradientView?.image = #imageLiteral(resourceName: "GradientImage")
             keyboardView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y + graphView!.bounds.size.height + distToKeyboard, width: self.view.bounds.size.width , height: self.view.bounds.size.height - (graphView!.frame.origin.y + graphView!.bounds.size.height + distToKeyboard))
-            utilsView?.frame = CGRect(x: 0, y: self.view.bounds.size.height - 56, width: self.view.bounds.size.width, height: 56)
 
             titleContainerView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 80)
             titleLineView?.isHidden = true
@@ -270,6 +315,16 @@ class BOGamePresenter: UIViewController {
             titleLabel?.center = CGPoint(x: self.view.bounds.size.width/2, y: 42)
             
             backButton?.frame = CGRect(x: 16, y: 28, width: 28, height: 28)
+
+            
+            utilsView?.frame = CGRect(x: 0, y: self.view.bounds.size.height - 56, width: self.view.bounds.size.width, height: 56)
+
+            if(utilsView!.isHidden) {
+                showSettingsButton?.frame = CGRect(x: self.view.bounds.size.width - 20 - 48, y: self.view.bounds.size.height - 20 - 48, width: 48, height: 48)
+            }
+            else {
+                showSettingsButton?.frame = CGRect(x: self.view.bounds.size.width - 20 - 48, y: self.view.bounds.size.height - utilsView!.bounds.size.height - 20 - 48, width: 48, height: 48)
+            }
 
             
 //            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width - 200 - 10, y: 10, width: 200, height: 20)
@@ -289,6 +344,8 @@ class BOGamePresenter: UIViewController {
     }
     
     @IBAction func closePressed() {
+        BODataManager.sendLogEvent(BOEventGameClosed, message: asset!.identity)
+
         self.dismiss(animated: true, completion: nil)
     }
     

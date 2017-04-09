@@ -278,6 +278,62 @@
     
 }
 
++(void) sendLogEvent:(BOEvent)event message:(NSString *)message {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSString *urlString =  @"http://boxoptions-dev-api.azurewebsites.net/api/Log";
+        
+        
+        
+        NSMutableURLRequest *request=[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+        [request setHTTPMethod:@"POST"];
+        
+            [request setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+        
+        NSString *clientId = [[NSUserDefaults standardUserDefaults] objectForKey:@"ClientId"];
+        if(!clientId) {
+            clientId = [[NSUUID UUID] UUIDString];
+            [[NSUserDefaults standardUserDefaults] setObject:clientId forKey:@"ClientId"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        
+        NSString *eventMessage = message;
+        
+        if(!eventMessage) {
+            eventMessage = @"";
+        }
+        
+        NSDictionary *params = @{
+                                 @"ClientId": clientId,
+                                 @"EventCode":@(event),
+                                 @"Message": eventMessage
+                                 };
+        
+        
+        NSData* jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:nil];
+            
+            request.HTTPBody = jsonData;
+            
+        
+
+        
+        NSURLResponse *responce;
+        NSError *error;
+        
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&responce error:&error];
+        
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) responce;
+        NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
+        
+        if(data) {
+            NSArray *ddd = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            NSLog(@"%@", ddd);
+        }
+    
+    
+    });
+}
+
 
 
 

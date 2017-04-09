@@ -113,8 +113,11 @@ class BOUtilsView: UIView {
     }
     
     func sliderFinishedEditing() {
-        presener!.keyboardView?.sendParams()
+        
+        BODataManager.sendLogEvent(BOEventChangeScale, message: String(keyboardScale))
 
+        presener!.keyboardView?.sendParams()
+        
     }
     
     override func layoutSubviews() {
@@ -228,6 +231,8 @@ class BOUtilsBetView: UIView {
         amountLabel?.text = String(Int(betAmount))
         self.superview?.superview?.setNeedsLayout()
 
+        BODataManager.sendLogEvent(BOEventChangeBet, message: String(betAmount))
+
     }
     
     func minusPressed() {
@@ -238,6 +243,9 @@ class BOUtilsBetView: UIView {
         amountLabel?.text = String(Int(betAmount))
 
         self.superview?.superview?.setNeedsLayout()
+        
+        BODataManager.sendLogEvent(BOEventChangeBet, message: String(betAmount))
+
 
     }
     

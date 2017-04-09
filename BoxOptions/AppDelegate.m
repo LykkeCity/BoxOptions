@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "BODataManager.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +18,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    [BODataManager sendLogEvent:BOEventLaunch message:nil];
     return YES;
 }
 
@@ -30,6 +33,8 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    [BODataManager sendLogEvent:BOEventSleep message:nil];
+
     UIApplication *app = [UIApplication sharedApplication];
     UIBackgroundTaskIdentifier bgTask;
     bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
@@ -40,6 +45,9 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    [BODataManager sendLogEvent:BOEventWake message:nil];
+
 }
 
 
