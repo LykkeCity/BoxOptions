@@ -615,7 +615,9 @@ class BOOptionView: UIView {
         var point2: CGPoint?
         
         if(flagLandscape == false) {
-            point2 = graphView!.convert(CGPoint(x: graphView!.bounds.size.width/2, y: -10), to: UIApplication.shared.keyWindow)
+//            point2 = graphView!.convert(CGPoint(x: graphView!.bounds.size.width/2, y: -10), to: UIApplication.shared.keyWindow)
+            point2 = CGPoint(x: UIApplication.shared.keyWindow!.bounds.size.width - 80, y: 50)
+
         }
         else {
             point2 = CGPoint(x: UIApplication.shared.keyWindow!.bounds.size.width - 80, y: 25)

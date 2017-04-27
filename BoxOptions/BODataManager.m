@@ -39,10 +39,11 @@
 }
 
 -(void) start {
-    MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:@"ws://lke-mt-dev-api.azurewebsites.net:80/ws"] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
+ //   MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:@"ws://lke-mt-dev-api.azurewebsites.net:80/ws"] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
     
+    MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:@"ws://boxoptions-api.lykke.com:5000/ws"] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
     
-    wamp = [[MDWamp alloc] initWithTransport:websocket realm:@"mtcrossbar" delegate:self];
+    wamp = [[MDWamp alloc] initWithTransport:websocket realm:@"box-options" delegate:self];
     
     [wamp connect];
     
@@ -224,7 +225,8 @@
         
         // http://13.94.249.22:8800/change?pair=EURUSD&timeToFirstOption=40000&optionLen=40000&priceSize=0.0005&nPriceIndex=20&nTimeIndex=20
         NSString *urlString = [NSString stringWithFormat:@"http://13.94.249.22:8800/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
-        
+//        NSString *urlString = [NSString stringWithFormat:@"http://boxoptions-api.lykke.com:8800/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
+       
         
         
         
@@ -253,9 +255,14 @@
         
         // http://13.94.249.22:8800/change?pair=EURUSD&timeToFirstOption=40000&optionLen=40000&priceSize=0.0005&nPriceIndex=20&nTimeIndex=20
         NSString *urlString = [NSString stringWithFormat:@"http://13.94.249.22:8800/request?pair=%@&userId=%@", assetId, token];
+//        NSString *urlString = [NSString stringWithFormat:@"http://boxoptions-api.lykke.com:8800/request?pair=%@&userId=%@", assetId, token];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
         
+        NSHTTPURLResponse *response;
+        NSError *error;
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        
+        NSInteger status = response.statusCode;
         if(data == nil || data.length == 0) {
             return;
         }

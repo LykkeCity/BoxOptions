@@ -43,12 +43,24 @@ class BOGamePresenter: UIViewController {
         }
         
         set {
+            
             let previous = _balance
             _balance = newValue
             
+            if(_balance! < 1.0) {
+                _balance = 50
+            }
+            
+            UserDefaults.standard.set(_balance, forKey: "UserBalance")
+            UserDefaults.standard.synchronize()
+            
 //            var str = NSMutableAttributedString(string: "Available " + ( NSString.init(format: "%.2f", _balance!) as String) )
 //            str.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFont(ofSize: 17), range: NSMakeRange(0, str.length - 8))
+            
+            let prevY = balanceLabel!.center.y
             balanceLabel?.text = "Available " + ( NSString.init(format: "%.2f", _balance!) as String)
+            balanceLabel?.sizeToFit()
+            balanceLabel?.center = CGPoint(x: self.view.bounds.size.width - balanceLabel!.bounds.size.width/2 - 20, y: prevY)
             if(previous != nil && _balance! > previous!) {
                 UIView.animate(withDuration: 0.1, animations: {
                     self.balanceLabel?.transform = CGAffineTransform.init(scaleX: 1.5, y: 1.5)
@@ -91,6 +103,14 @@ class BOGamePresenter: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let b = UserDefaults.standard.double(forKey: "UserBalance")
+        if(b != nil && b > 0) {
+            balance = b
+        }
+        else {
+            balance = 50
+        }
+        
         BODataManager.sendLogEvent(BOEventGameStarted, message: asset!.identity)
         
         if(mode == .light) {
@@ -113,7 +133,7 @@ class BOGamePresenter: UIViewController {
         titleLineView!.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
         titleContainerView?.addSubview(titleLineView!)
         
-        balance = 50
+        
         keyboardView!.presenter = self
         utilsView?.graphView = graphView
         utilsView?.presener = self
@@ -274,8 +294,9 @@ class BOGamePresenter: UIViewController {
 
             titleContainerView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 52)
             titleLineView?.isHidden = false
-            balanceLabel?.textAlignment = .right
-            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width - 20 - 200, y: 16, width: 200, height: 20)
+//            balanceLabel?.textAlignment = .right
+//            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width - 20 - 200, y: 16, width: 200, height: 20)
+            balanceLabel!.center = CGPoint(x: self.view.bounds.size.width - 20 - balanceLabel!.bounds.size.width/2, y: 26)
             
             titleLabel?.center = CGPoint(x: 51 + titleLabel!.bounds.size.width/2, y: titleContainerView!.bounds.size.height/2)
             
@@ -301,18 +322,25 @@ class BOGamePresenter: UIViewController {
         }
         else {
             flagLandscape = false
-            graphView?.frame = CGRect(x: 0, y: 90, width: self.view.bounds.size.width, height: self.view.bounds.size.width * graphSizeCoeff - 90)
+            graphView?.frame = CGRect(x: 0, y: 70, width: self.view.bounds.size.width, height: self.view.bounds.size.width * graphSizeCoeff - 70)
             
             gradientView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y + 20, width: self.view.bounds.size.width, height: graphView!.frame.size.height - 20 - 10)
             gradientView?.image = #imageLiteral(resourceName: "GradientImage")
             keyboardView?.frame = CGRect(x: 0, y: graphView!.frame.origin.y + graphView!.bounds.size.height + distToKeyboard, width: self.view.bounds.size.width , height: self.view.bounds.size.height - (graphView!.frame.origin.y + graphView!.bounds.size.height + distToKeyboard))
 
-            titleContainerView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 80)
+            titleContainerView?.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 60)
             titleLineView?.isHidden = true
-            balanceLabel?.textAlignment = .center
-            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width/2 - 100, y: 60, width: 200, height: 20)
+//            balanceLabel?.textAlignment = .center
+//            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width/2 - 100, y: 60, width: 200, height: 20)
+//            balanceLabel?.frame = CGRect(x: self.view.bounds.size.width - 20 - 200, y: 20, width: 200, height: 44)
+            balanceLabel!.center = CGPoint(x: self.view.bounds.size.width - 20 - balanceLabel!.bounds.size.width/2, y: 42)
+
+//            balanceLabel?.textAlignment = .right
+          
+//            titleLabel?.center = CGPoint(x: self.view.bounds.size.width/2, y: 42)
             
-            titleLabel?.center = CGPoint(x: self.view.bounds.size.width/2, y: 42)
+            titleLabel?.center = CGPoint(x: 51 + titleLabel!.bounds.size.width/2, y: 42)
+
             
             backButton?.frame = CGRect(x: 16, y: 28, width: 28, height: 28)
 
