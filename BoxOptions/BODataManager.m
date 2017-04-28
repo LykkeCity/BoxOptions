@@ -39,12 +39,14 @@
 }
 
 -(void) start {
- //   MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:@"ws://lke-mt-dev-api.azurewebsites.net:80/ws"] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
+    MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:@"ws://lke-mt-dev-api.azurewebsites.net:80/ws"] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
     
-    MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:@"ws://boxoptions-api.lykke.com:5000/ws"] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
-    
-    wamp = [[MDWamp alloc] initWithTransport:websocket realm:@"box-options" delegate:self];
-    
+//    MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:@"ws://boxoptions-api.lykke.com:5000/ws"] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
+//    
+//    wamp = [[MDWamp alloc] initWithTransport:websocket realm:@"box-options" delegate:self];
+
+    wamp = [[MDWamp alloc] initWithTransport:websocket realm:@"mtcrossbar" delegate:self];
+
     [wamp connect];
     
 //    [self sendParameters:@{@"pair":@"EURUSD", @"timeToFirstOption":@(4000), @"optionLen":@(4000), @"priceSize":@(0.005), @"nPriceIndex":@(10), @"nTimeIndex":@(5)} withCompletion:^(BOOL result){
@@ -73,7 +75,7 @@
     
     if(alertDisconnected == nil) {
         alertDisconnected = [[UIAlertView alloc] initWithTitle:@"PLEASE WAIT" message:@"Connecting to server" delegate:nil cancelButtonTitle:nil otherButtonTitles: nil];
-        [alertDisconnected show];
+//        [alertDisconnected show];
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"WampDisconnected" object:nil];
@@ -132,8 +134,14 @@
 
 -(void) startListeningForAssets
 {
+//    [wamp subscribe:@"prices.update" onEvent:^(MDWampEvent *payload){} result:nil];
     
-    [wamp subscribe:@"prices.update" options:nil onEvent:^(MDWampEvent *payload) {
+    
+    
+    
+    [wamp subscribe:@"prices.update" onEvent:^(MDWampEvent *payload) {
+        
+//    [wamp subscribe:@"prices.update" options:nil onEvent:^(MDWampEvent *payload) {
         
         NSLog(@"received an event %@", payload.arguments);
 
@@ -225,7 +233,7 @@
         
         // http://13.94.249.22:8800/change?pair=EURUSD&timeToFirstOption=40000&optionLen=40000&priceSize=0.0005&nPriceIndex=20&nTimeIndex=20
         NSString *urlString = [NSString stringWithFormat:@"http://13.94.249.22:8800/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
-//        NSString *urlString = [NSString stringWithFormat:@"http://boxoptions-api.lykke.com:8800/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
+//        NSString *urlString = [NSString stringWithFormat:@"http://boxoptions-api.lykke.com:5000/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
        
         
         
@@ -255,7 +263,7 @@
         
         // http://13.94.249.22:8800/change?pair=EURUSD&timeToFirstOption=40000&optionLen=40000&priceSize=0.0005&nPriceIndex=20&nTimeIndex=20
         NSString *urlString = [NSString stringWithFormat:@"http://13.94.249.22:8800/request?pair=%@&userId=%@", assetId, token];
-//        NSString *urlString = [NSString stringWithFormat:@"http://boxoptions-api.lykke.com:8800/request?pair=%@&userId=%@", assetId, token];
+//        NSString *urlString = [NSString stringWithFormat:@"http://boxoptions-api.lykke.com/request?pair=%@&userId=%@", assetId, token];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
         
         NSHTTPURLResponse *response;
@@ -288,7 +296,8 @@
 +(void) sendLogEvent:(BOEvent)event message:(NSString *)message {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
-        NSString *urlString =  @"http://boxoptions-dev-api.azurewebsites.net/api/Log";
+//        NSString *urlString =  @"http://boxoptions-dev-api.azurewebsites.net/api/Log";
+        NSString *urlString =  @"http://boxoptions-api.lykke.com:5000/api/Log";
         
         
         

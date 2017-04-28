@@ -25,7 +25,19 @@
     if (self.changes && self.changes.count >= 2) {
         // calculation preparation
         
+        CGContextRef context=UIGraphicsGetCurrentContext();
+
         
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        
+        CGFloat colors1[] =
+        {
+            216.0/255, 241.0/255.0, 255.0/255.0, 1.0,
+            1.0, 1.0, 1.0, 1.0   //RGBA values (so red to green in this case)
+        };
+        
+        CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, colors1, NULL, 2);
+        CGColorSpaceRelease(colorSpace);
         
         
         CGFloat xPosition = 0.0;
@@ -42,11 +54,45 @@
         path.lineWidth = 1;
         [path moveToPoint:CGPointMake(xPosition, [self point:firstPoint forSize:size])];
         
+        CGFloat prevY = [self point:firstPoint forSize:size];
         // prepare drawing data
         for (NSNumber *change in self.changes) {
             CGFloat const yPosition = [self point:change forSize:size];
             [path addLineToPoint:CGPointMake(xPosition, yPosition)];
             xPosition += xStep;
+            
+            
+            
+            
+            CGMutablePathRef pathRef = CGPathCreateMutable();
+            
+            CGPathMoveToPoint(pathRef, NULL, xPosition-xStep, self.bounds.size.height);
+            
+            
+            CGPathAddLineToPoint(pathRef, NULL, xPosition-xStep, prevY);
+            CGPathAddLineToPoint(pathRef, NULL, xPosition, yPosition);
+            CGPathAddLineToPoint(pathRef, NULL, xPosition, self.bounds.size.height);
+
+            CGPathCloseSubpath(pathRef);
+            
+//            CGPathAddRect(pathRef, NULL, CGRectMake(xPosition, 0, xStep, yPosition));
+            
+            CGContextSaveGState(context);
+            
+            CGContextAddPath(context, pathRef);
+            CGContextClip(context);
+            
+            CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), CGPointMake(0, self.bounds.size.height), 0);
+            
+            CGContextDrawPath(context, kCGPathFillStroke);
+            
+            //            CGGradientRelease(gradient);
+            CGContextRestoreGState(context);
+            CGPathRelease(pathRef);
+            
+            prevY = yPosition;
+
+            
         }
         
         UIColor *color = nil;
@@ -66,6 +112,15 @@
         [color setStroke];
         [path stroke];
         
+        
+        CGRect rect0 = CGRectMake(xPosition - xStep - 2.5, [self point:lastPoint forSize:size] - 2.5, 5.0, 5.0);
+        UIBezierPath *cicle0 = [UIBezierPath bezierPathWithOvalInRect:rect0];
+        
+        
+        [[UIColor whiteColor] set];
+        [cicle0 fill];
+
+        
         // draw last point
         CGRect rect = CGRectMake(xPosition - xStep - 1.5, [self point:lastPoint forSize:size] - 1.5, 3.0, 3.0);
         UIBezierPath *cicle = [UIBezierPath bezierPathWithOvalInRect:rect];
@@ -73,6 +128,8 @@
         
         [color set];
         [cicle fill];
+        
+        
     }
 }
 

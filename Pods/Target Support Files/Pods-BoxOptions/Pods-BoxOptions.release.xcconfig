@@ -1,8 +1,8 @@
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/lottie-ios"
-LIBRARY_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/lottie-ios"
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/lottie-ios"
-OTHER_LDFLAGS = $(inherited) -ObjC -l"lottie-ios" -framework "UIKit"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/CocoaAsyncSocket" "${PODS_ROOT}/Headers/Public/GHODictionary" "${PODS_ROOT}/Headers/Public/MDWamp" "${PODS_ROOT}/Headers/Public/MPMessagePack" "${PODS_ROOT}/Headers/Public/SocketRocket" "${PODS_ROOT}/Headers/Public/lottie-ios"
+LIBRARY_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/CocoaAsyncSocket" "$PODS_CONFIGURATION_BUILD_DIR/GHODictionary" "$PODS_CONFIGURATION_BUILD_DIR/MDWamp" "$PODS_CONFIGURATION_BUILD_DIR/MPMessagePack" "$PODS_CONFIGURATION_BUILD_DIR/SocketRocket" "$PODS_CONFIGURATION_BUILD_DIR/lottie-ios"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/CocoaAsyncSocket" -isystem "${PODS_ROOT}/Headers/Public/GHODictionary" -isystem "${PODS_ROOT}/Headers/Public/MDWamp" -isystem "${PODS_ROOT}/Headers/Public/MPMessagePack" -isystem "${PODS_ROOT}/Headers/Public/SocketRocket" -isystem "${PODS_ROOT}/Headers/Public/lottie-ios"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"CocoaAsyncSocket" -l"GHODictionary" -l"MDWamp" -l"MPMessagePack" -l"SocketRocket" -l"icucore" -l"lottie-ios" -framework "CFNetwork" -framework "MobileCoreServices" -framework "Security" -framework "UIKit"
 PODS_BUILD_DIR = $BUILD_DIR
 PODS_CONFIGURATION_BUILD_DIR = $PODS_BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_ROOT = ${SRCROOT}/Pods

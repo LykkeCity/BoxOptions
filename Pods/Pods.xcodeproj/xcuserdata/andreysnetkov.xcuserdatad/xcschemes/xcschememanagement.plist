@@ -4,7 +4,32 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>CocoaAsyncSocket.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>GHODictionary.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>MDWamp.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>MPMessagePack.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-BoxOptions.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SocketRocket.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -17,12 +42,37 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>8684E771C7D24AB5EF3003ECB044F6E3</key>
+		<key>2A6DB337D4E2D130944E5C6014C22AD6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D35928A1F974B2F7FC3B6B80A4C5604B</key>
+		<key>565038AF2068983C14F1DA708F0D5419</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A24612F5694DD7D801373A83EA635CE9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B32BCE8088319B63DCD6BA8488784966</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>BBEA691098281105BFEF407666E4F351</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D61A0009F8E8B2B55B0C3DE54823F4D9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FE27E49A5F318E4F39AF730B23928106</key>
 		<dict>
 			<key>primary</key>
 			<true/>

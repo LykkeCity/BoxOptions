@@ -36,9 +36,12 @@
     
     
     
-    LOTAnimationView *animation = [LOTAnimationView animationNamed:@"box_options_intro"];
+    LOTAnimationView *animation = [LOTAnimationView animationNamed:@"data"];
     animation.frame = self.view.bounds;
+    
+//    animation.frame = CGRectMake(0, 0, 320, 320);
     animation.contentMode = UIViewContentModeScaleAspectFit;
+    
     
     [self.view addSubview:animation];
     [animation playWithCompletion:^(BOOL animationFinished) {
@@ -46,6 +49,10 @@
         [self presentViewController:presenter animated:YES completion:nil];
 
     }];
+}
+
+-(UIInterfaceOrientationMask) supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 

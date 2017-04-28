@@ -40,27 +40,31 @@ class LWMarginalAssetPairTableViewCell: UITableViewCell {
             askLabel?.text = String(asset.rate.ask)
             bidLabel?.text = String(asset.rate.bid)
             
-            let greenColor=UIColor(red: 19.0/255, green: 183.0/255, blue: 42.0/255, alpha: 1)
-            let redColor=UIColor(red: 255.0/255, green: 62.0/255, blue: 46.0/255, alpha: 1)
-            
+//            let greenColor=UIColor(red: 19.0/255, green: 183.0/255, blue: 42.0/255, alpha: 1)
+//            let redColor=UIColor(red: 255.0/255, green: 62.0/255, blue: 46.0/255, alpha: 1)
+//            
             if(_asset!.previousRate != nil)
             {
                 if(_asset!.askRaising)
                 {
-                    askLabel?.textColor=greenColor
+//                    askLabel?.textColor=greenColor
+                    askArrow?.image = #imageLiteral(resourceName: "ArrowUp")
                 }
                 else
                 {
-                    askLabel?.textColor=redColor
+//                    askLabel?.textColor=redColor
+                    askArrow?.image = #imageLiteral(resourceName: "ArrowDown")
                 }
                 
                 if(_asset!.bidRaising)
                 {
-                    bidLabel?.textColor=greenColor
+//                    bidLabel?.textColor=greenColor
+                    bidArrow?.image = #imageLiteral(resourceName: "ArrowUp")
                 }
                 else
                 {
-                    bidLabel?.textColor=redColor
+                    //bidLabel?.textColor=redColor
+                    bidArrow?.image = #imageLiteral(resourceName: "ArrowDown")
                 }
                 
             }
@@ -81,6 +85,9 @@ class LWMarginalAssetPairTableViewCell: UITableViewCell {
     @IBOutlet private weak var changeView:LWAssetLykkeTableChangeView?
     @IBOutlet private weak var leverageLabel:UILabel?
     @IBOutlet private weak var checkmark:UIImageView?
+    
+    @IBOutlet private weak var askArrow: UIImageView?
+    @IBOutlet private weak var bidArrow: UIImageView?
     
     @IBOutlet private weak var checkmarkContainerWidthConstraint:NSLayoutConstraint?
     
@@ -107,7 +114,7 @@ class LWMarginalAssetPairTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         self.selectionStyle=UITableViewCellSelectionStyle.none
-        changeView?.defaultColor=UIColor(red: 63.0/255, green: 77.0/255, blue: 96.0/255, alpha: 1)
+        changeView?.defaultColor=UIColor(red: 13.0/255, green: 167.0/255, blue: 252.0/255, alpha: 1)
         
         
         adjustThinLines()

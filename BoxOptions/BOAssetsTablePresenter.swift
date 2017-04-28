@@ -14,10 +14,17 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
     
     @IBOutlet weak var tableView:UITableView?
     
+    @IBOutlet weak var balanceTitleLabel: UILabel?
+    @IBOutlet weak var balanceLabel: UILabel?
+    
     var animation: LOTAnimationView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        balanceTitleLabel?.attributedText = NSAttributedString.init(string: "BALANCE", attributes: [NSKernAttributeName: 2.0, NSFontAttributeName: UIFont.init(name: "ProximaNova-Regular", size: 10)!, NSForegroundColorAttributeName: UIColor.init(red: 63.0/255, green: 77.0/255, blue: 96.0/255, alpha: 1)])
+        
+        
         tableView?.delegate = self
         tableView?.dataSource = self
         
@@ -30,10 +37,27 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let b = UserDefaults.standard.double(forKey: "UserBalance")
+        var balance: Double?
+        if(b != nil && b > 0) {
+            balance = b
+        }
+        else {
+            balance = 50
+        }
+        
+        balanceLabel?.text = "USD " + String.init(format: "%.2f", balance!)
+
+        
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if(animation == nil) {
-            animation = LOTAnimationView.animationNamed("box_loader.json")
+//            animation = LOTAnimationView.animationNamed("box_loader.json")
+            animation = LOTAnimationView(name: "box_loader.json")
             animation?.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
             
             animation!.center = self.view.center
@@ -71,7 +95,7 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 65
+        return 64
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -109,6 +133,18 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
     func pricesChanged() {
         tableView?.reloadData()
 
+    }
+    
+//    open override var shouldAutorotate: Bool {
+//        get {
+//            return false
+//        }
+//    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        get {
+            return .portrait
+        }
     }
     
 }

@@ -1,0 +1,1 @@
+../../../MDWamp/MDWamp/src/MDWampClientConfig.h

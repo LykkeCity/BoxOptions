@@ -49,6 +49,13 @@ class BOGamePresenter: UIViewController {
             
             if(_balance! < 1.0) {
                 _balance = 50
+                
+//                let alert = UIAlertView.init(title: "BALANCE", message: "Additional 50 coins added to your balance", delegate: nil, cancelButtonTitle: "OK")
+//                alert.show()
+
+                
+                let popup = LWBottomInfoPopup.popup(withText: "Additional 50 coins added to your balance") as! LWBottomInfoPopup
+                popup.show()
             }
             
             UserDefaults.standard.set(_balance, forKey: "UserBalance")

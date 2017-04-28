@@ -11,3 +11,4 @@
 #import "LWAssetLykkeTableChangeView.h"
 #import "UIView+ThinLines.h"
 #import "LOTAnimationView.h"
+#import "LWBottomInfoPopup.h"
