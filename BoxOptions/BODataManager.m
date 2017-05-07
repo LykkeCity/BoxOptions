@@ -127,6 +127,8 @@
 
         
         [self startListeningForAssets];
+        _flagConnected = true;
+
         
     }];
 }
@@ -191,7 +193,7 @@
             
                 }
             }
-            _flagConnected = true;
+//            _flagConnected = true;
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 [alertDisconnected dismissWithClickedButtonIndex:0 animated:true];

@@ -37,6 +37,8 @@
 		A1410BF51EB205A800EA9607 /* img_1.png in Resources */ = {isa = PBXBuildFile; fileRef = A1410BF11EB205A800EA9607 /* img_1.png */; };
 		A1410BF61EB205A800EA9607 /* img_2.png in Resources */ = {isa = PBXBuildFile; fileRef = A1410BF21EB205A800EA9607 /* img_2.png */; };
 		A174FFD31E5451C400EC383F /* NSString+Date.m in Sources */ = {isa = PBXBuildFile; fileRef = A174FFD21E5451C400EC383F /* NSString+Date.m */; };
+		A18F440B1EBAF82600C6FB05 /* BOSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = A18F440A1EBAF82600C6FB05 /* BOSlider.m */; };
+		A18F44101EBECC1700C6FB05 /* BOCurrentPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F440F1EBECC1700C6FB05 /* BOCurrentPriceView.swift */; };
 		A1B241231E4E211A008F6913 /* BOFlyingCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */; };
 		A1E1361E1E826CA1009D1348 /* box_loader.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E1361D1E826CA1009D1348 /* box_loader.json */; };
 		A1E136211E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E1361F1E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift */; };
@@ -114,6 +116,9 @@
 		A1410BF21EB205A800EA9607 /* img_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_2.png; sourceTree = "<group>"; };
 		A174FFD11E5451C400EC383F /* NSString+Date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Date.h"; sourceTree = "<group>"; };
 		A174FFD21E5451C400EC383F /* NSString+Date.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Date.m"; sourceTree = "<group>"; };
+		A18F44091EBAF82600C6FB05 /* BOSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BOSlider.h; sourceTree = "<group>"; };
+		A18F440A1EBAF82600C6FB05 /* BOSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOSlider.m; sourceTree = "<group>"; };
+		A18F440F1EBECC1700C6FB05 /* BOCurrentPriceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BOCurrentPriceView.swift; sourceTree = "<group>"; };
 		A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOFlyingCoin.swift; path = Presenters/Graph/BOFlyingCoin.swift; sourceTree = "<group>"; };
 		A1E1361D1E826CA1009D1348 /* box_loader.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = box_loader.json; sourceTree = "<group>"; };
 		A1E1361F1E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LWMarginalAssetPairTableViewCell.swift; sourceTree = "<group>"; };
@@ -280,6 +285,7 @@
 				A1F1C6B31E57FA580095E369 /* BOUtilsView.swift */,
 				A10B54A41E4D5C1D00E5DCBE /* BOGamePresenter.xib */,
 				A1F1C6B51E5AB0AE0095E369 /* BOHelper.swift */,
+				A18F440F1EBECC1700C6FB05 /* BOCurrentPriceView.swift */,
 			);
 			name = Game;
 			sourceTree = "<group>";
@@ -317,6 +323,8 @@
 				A1410BD81EB1B99300EA9607 /* LWBottomInfoPopup.m */,
 				A1410BD91EB1B99300EA9607 /* LWCommonButton.h */,
 				A1410BDA1EB1B99300EA9607 /* LWCommonButton.m */,
+				A18F44091EBAF82600C6FB05 /* BOSlider.h */,
+				A18F440A1EBAF82600C6FB05 /* BOSlider.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -530,6 +538,7 @@
 				A10B54941E4C40F500E5DCBE /* BOAsset.m in Sources */,
 				A1B241231E4E211A008F6913 /* BOFlyingCoin.swift in Sources */,
 				A10B53551E4C3EF900E5DCBE /* BODataManager.m in Sources */,
+				A18F440B1EBAF82600C6FB05 /* BOSlider.m in Sources */,
 				A10B53281E4C3DED00E5DCBE /* ViewController.m in Sources */,
 				A10B54951E4C40F500E5DCBE /* BORate.m in Sources */,
 				A10B53251E4C3DED00E5DCBE /* AppDelegate.m in Sources */,
@@ -539,6 +548,7 @@
 				A10B53221E4C3DED00E5DCBE /* main.m in Sources */,
 				A10B549C1E4C45D000E5DCBE /* BOAssetsTablePresenter.swift in Sources */,
 				A10B54A31E4D5C0500E5DCBE /* BOGamePresenter.swift in Sources */,
+				A18F44101EBECC1700C6FB05 /* BOCurrentPriceView.swift in Sources */,
 				A174FFD31E5451C400EC383F /* NSString+Date.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -702,8 +712,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lykkex.BoxOptions;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "12f66ef8-417c-4519-8e29-7aa01a8664bb";
-				PROVISIONING_PROFILE_SPECIFIER = "BoxOptions-development";
+				PROVISIONING_PROFILE = "766b62d8-b7d1-4891-8cf2-69e4adc5488d";
+				PROVISIONING_PROFILE_SPECIFIER = "BoxOptions-development2";
 				SWIFT_OBJC_BRIDGING_HEADER = "BoxOptions/BoxOptions-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;

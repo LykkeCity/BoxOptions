@@ -18,7 +18,7 @@ class BOUtilsView: UIView {
     weak var graphView: BOGraphView?
     weak var presener: BOGamePresenter?
     
-    var slider: UISlider?
+    var slider: BOSlider?
     var currentOrientationIsLandscape = false
     
     var eyeButton: UIButton?
@@ -47,7 +47,7 @@ class BOUtilsView: UIView {
         self.addSubview(eyeButton!)
         
 
-        slider = UISlider()
+        slider = BOSlider()
 
         var sliderColor: UIColor
         if(mode == .light) {
@@ -90,6 +90,7 @@ class BOUtilsView: UIView {
         else {
             presener!.keyboardView!.superview!.bringSubview(toFront: presener!.keyboardView!)
             presener!.view.bringSubview(toFront: presener!.titleContainerView!)
+            presener!.view.bringSubview(toFront: presener!.showSettingsButton!)
             self.superview?.bringSubview(toFront: self)
         }
     }
@@ -130,9 +131,9 @@ class BOUtilsView: UIView {
 
         betView?.center = CGPoint(x: betView!.bounds.size.width / 2 + 20, y: self.bounds.size.height / 2)
 
-//        slider?.frame = CGRect(x: 12, y: 10, width: betView!.frame.origin.x - 20, height: 20)
         
-        slider?.frame = CGRect(x: betView!.frame.origin.x + betView!.bounds.size.width + 20, y: 14, width: self.bounds.size.width - (betView!.frame.origin.x + betView!.bounds.size.width + 20 + eyeButton!.bounds.size.width + 40), height: 20)
+//        slider?.frame = CGRect(x: betView!.frame.origin.x + betView!.bounds.size.width + 20, y: 14, width: self.bounds.size.width - (betView!.frame.origin.x + betView!.bounds.size.width + 20 + eyeButton!.bounds.size.width + 40), height: 20)
+        slider?.frame = CGRect(x: betView!.frame.origin.x + betView!.bounds.size.width + 20, y: 0, width: self.bounds.size.width - (betView!.frame.origin.x + betView!.bounds.size.width + 20 + eyeButton!.bounds.size.width + 40), height: 48)
 
         slider?.center.y = self.bounds.size.height / 2
         

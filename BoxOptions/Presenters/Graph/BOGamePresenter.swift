@@ -84,6 +84,8 @@ class BOGamePresenter: UIViewController {
     }
     
     @IBOutlet weak var graphView: BOGraphView?
+    
+    var currentPriceView: BOCurrentPriceView?
     @IBOutlet weak var keyboardView: BOKeyboardView?
     
     @IBOutlet weak var balanceLabel:UILabel?
@@ -147,6 +149,14 @@ class BOGamePresenter: UIViewController {
         
         graphView?.changes = asset?.changes as? [BORate]
         graphView?.accuracy = Int(asset!.accuracy)
+        
+        
+        currentPriceView = BOCurrentPriceView()
+        currentPriceView?.price = String((graphView!.changes!.last!.ask + graphView!.changes!.last!.bid)/2)
+
+        self.view.insertSubview(currentPriceView!, aboveSubview: graphView!)
+        
+        graphView?.currentPriceView = currentPriceView
         
 //        graphView?.widthPrice = (graphView!.changes!.last!.ask - graphView!.changes!.last!.bid) * 4 * 4
         
@@ -265,6 +275,9 @@ class BOGamePresenter: UIViewController {
     func pricesChanged() {
         graphView?.changes = asset!.changes.copy() as! [BORate]
         currentRateLabel?.text = asset!.identity + ": " + String((graphView!.changes!.last!.ask + graphView!.changes!.last!.bid)/2)
+        
+        currentPriceView?.price = String((graphView!.changes!.last!.ask + graphView!.changes!.last!.bid)/2)
+        
         graphView?.setNeedsDisplay()
     }
     
@@ -380,8 +393,15 @@ class BOGamePresenter: UIViewController {
     
     @IBAction func closePressed() {
         BODataManager.sendLogEvent(BOEventGameClosed, message: asset!.identity)
-
-        self.dismiss(animated: true, completion: nil)
+        
+        let transition = CATransition()
+        transition.duration = 0.25
+        transition.type = kCATransitionPush
+        transition.subtype = kCATransitionFromLeft
+        self.view.window!.layer.add(transition, forKey: kCATransition)
+        
+        dismiss(animated: false)
+//        self.dismiss(animated: true, completion: nil)
     }
     
     override var prefersStatusBarHidden: Bool {

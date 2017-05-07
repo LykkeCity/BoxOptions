@@ -25,13 +25,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BoxOptions/BODataManager.m"
-            timestampString = "515125131.707497"
+            filePath = "BoxOptions/BOCurrentPriceView.swift"
+            timestampString = "515825782.319329"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
-            landmarkName = "-mdwamp:sessionEstablished:"
+            startingLineNumber = "110"
+            endingLineNumber = "110"
+            landmarkName = "deinit"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

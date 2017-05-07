@@ -34,6 +34,16 @@ class BOGraphView: UIView {
 
     var context: CGContext?
     
+    weak var currentPriceView: BOCurrentPriceView?
+    
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+//        currentPriceView
+        
+    }
+    
     
     override func draw(_ rect: CGRect) {
         
@@ -248,6 +258,13 @@ class BOGraphView: UIView {
 //            lastXCoord = priceToX(price: lastX! + delta)
             lastX = lastX! + delta
         }
+        if(flagLandscape) {
+            currentPriceView?.centerPoint = CGPoint(x: origPoint.y + self.frame.origin.x + 1, y: self.bounds.size.height - origPoint.x)
+        }
+        else {
+            currentPriceView?.centerPoint = CGPoint(x: origPoint.x, y: self.frame.origin.y + origPoint.y + 1)
+
+        }
 
     }
     
@@ -385,7 +402,7 @@ class BOGraphView: UIView {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
             
-            let attrs = [NSFontAttributeName: UIFont(name: "ProximaNova-Regular", size: 10)!, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: UIColor(red: 178.0/255, green: 184.0/255, blue: 191.0/255, alpha: 1)]
+            let attrs = [NSFontAttributeName: UIFont(name: "ProximaNova-Regular", size: 10)!, NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: UIColor(red: 13.0/255, green: 167.0/255, blue: 252.0/255, alpha: 1)]
             
             let formatString = "%." + String(accuracy!) + "f"
             let string = String(format:formatString, value)
@@ -393,7 +410,7 @@ class BOGraphView: UIView {
             
             if(flagLandscape == false) {
                
-                string.draw(with: CGRect(x: x - width/2, y: 0, width: width, height: 20), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+                string.draw(with: CGRect(x: x - width/2 + 3, y: 0, width: width - 6, height: 20), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
             }
             else {
                 paragraphStyle.alignment = .left

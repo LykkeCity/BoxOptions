@@ -251,6 +251,7 @@ class BOKeyboardView: UIView {
 class BOKeyView: UIView {
     var flagIsRight: Bool?
     
+    var testFontLabel:UILabel?
     weak var presenter: BOGamePresenter?
     private var _value: Double?
     var value:Double? {
@@ -263,6 +264,9 @@ class BOKeyView: UIView {
         set {
             _value = newValue
             if(label != nil) {
+               let ee = label?.frame
+                let eee = box?.frame
+                
                 if(_value == 0) {
                     label?.text = "..."
                     self.isUserInteractionEnabled = false
@@ -288,7 +292,7 @@ class BOKeyView: UIView {
         self.backgroundColor = nil
         
         label = UILabel()
-        label?.font = UIFont(name: "ProximaNova-Regular", size: 17)
+        label?.font = UIFont(name: "ProximaNova-Regular", size: 14)
         
         if(mode == .light) {
             box!.layer.borderColor = UIColor(red: 216.0/255, green: 216.0/255, blue: 216.0/255, alpha: 1).cgColor
@@ -306,11 +310,23 @@ class BOKeyView: UIView {
         
         self.addSubview(box!)
         
+        label?.clipsToBounds = true
 
         label?.textAlignment = .center
         label?.frame = box!.frame
-        label?.adjustsFontSizeToFitWidth = true
-        label?.minimumScaleFactor = 0.3
+//        label?.frame = CGRect(x: 10.0, y: 0, width: box!.bounds.size.width-20, height: box!.bounds.size.height)
+        
+        testFontLabel = UILabel()
+        testFontLabel?.font = label?.font
+        testFontLabel?.text = "00.00"
+        
+//        label?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        label?.numberOfLines = 1
+//        label?.lineBreakMode = .byWordWrapping
+//
+//        label?.adjustsFontSizeToFitWidth = true
+//        label?.minimumScaleFactor = 0.2
+        
         self.addSubview(label!)
         
         
@@ -336,7 +352,15 @@ class BOKeyView: UIView {
             box?.frame = CGRect(x: 0, y: 0, width: frame.size.width + 0.5, height: frame.size.height + m)
 
         }
-        label?.frame = box!.frame
+        
+        label?.frame = box!.bounds
+
+//        label?.frame = CGRect(x: 10.0, y: 0, width: box!.bounds.size.width-20, height: box!.bounds.size.height)
+
+        
+//        let largestFontSize = 40
+//        let str = "00.00"
+//        str.
 
     }
     
@@ -352,7 +376,7 @@ class BOKeyView: UIView {
         BODataManager.sendLogEvent(BOEventBetPlaced, message: "Coeff: " + String(_value!) + ", Bet: " + String(betAmount))
 
         presenter?.balance -= betAmount
-//        _ = BOOptionView.init(frame: self.frame, inView:self.superview!.superview!, value: value! * betAmount, presenter: presenter!)
+
         _ = BOOptionView.init(frame: self.convert(self.bounds, to: self.superview!.superview!), inView:self.superview!.superview!, value: value! * betAmount, presenter: presenter!)
         
         print("TAPPED")

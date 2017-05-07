@@ -19,6 +19,8 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
     
     var animation: LOTAnimationView?
     
+    var animationBackgroundView: UIView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,13 +58,27 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if(animation == nil) {
-//            animation = LOTAnimationView.animationNamed("box_loader.json")
+
+            animationBackgroundView = UIView.init(frame: CGRect(x: 0, y: 0, width: 85, height: 85))
+            animationBackgroundView?.backgroundColor = nil
+            animationBackgroundView?.center = self.view.center
+            animationBackgroundView?.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin, .flexibleBottomMargin]
+
+            let backLayer = UIView.init(frame: animationBackgroundView!.bounds)
+            backLayer.backgroundColor = UIColor.white
+            backLayer.alpha = 0.9
+            animationBackgroundView?.addSubview(backLayer)
+            
+            self.view.addSubview(animationBackgroundView!)
+            
+            
             animation = LOTAnimationView(name: "box_loader.json")
             animation?.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
             
-            animation!.center = self.view.center
-            animation?.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin, .flexibleBottomMargin]
-            self.view.addSubview(animation!)
+            animation!.center = CGPoint(x: animationBackgroundView!.bounds.size.width/2, y: animationBackgroundView!.bounds.size.height/2)
+            
+//            animation?.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin, .flexibleBottomMargin]
+            animationBackgroundView!.addSubview(animation!)
             self.playLoader()
         }
     }
@@ -77,7 +93,7 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
                 
             }
             else {
-                self.animation?.removeFromSuperview()
+                self.animationBackgroundView!.removeFromSuperview()
             }
         })
     }
@@ -123,7 +139,14 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
             //Bundle.main.loadNibNamed("BOGamePresenter", owner: self, options: nil) as! BOGamePresenter
         game.asset = BODataManager.shared().assets![indexPath.row] as! BOAsset
         
-        self.present(game, animated: true, completion: nil)
+        let transition = CATransition()
+        transition.duration = 0.25
+        transition.type = kCATransitionPush
+        transition.subtype = kCATransitionFromRight
+        view.window!.layer.add(transition, forKey: kCATransition)
+        present(game, animated: false, completion: nil)
+        
+//        self.present(game, animated: true, completion: nil)
     }
     
     func assetsListChanged() {
