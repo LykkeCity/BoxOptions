@@ -74,7 +74,7 @@ class BOCurrentPriceView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        if(UIDevice.current.orientation.isPortrait) {
+        if(flagLandscape == false) {
             self.transform = CGAffineTransform.identity
         }
         else {

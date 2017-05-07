@@ -738,8 +738,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lykkex.BoxOptions;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d91ed76c-c986-4b93-8c7d-bbbb93137164";
-				PROVISIONING_PROFILE_SPECIFIER = "BoxOptions-Adhoc7";
+				PROVISIONING_PROFILE = "102bb2d2-923e-465e-9cab-a8b672994981";
+				PROVISIONING_PROFILE_SPECIFIER = BoxOptionsAppstoreDistribution;
 				SWIFT_OBJC_BRIDGING_HEADER = "BoxOptions/BoxOptions-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};

@@ -62,6 +62,7 @@ class BOKeyboardView: UIView {
                     keyView.value = arr[Int(j) * Int(horNumber) + Int(i)]
                 }
             }
+            self.setNeedsLayout()
         })
 
     }
@@ -144,12 +145,15 @@ class BOKeyboardView: UIView {
         
         var value = 1.0
 
+        let width = etalon! * self.presenter!.graphView!.scale
+        let height = width
 
+        var maxLabelText: String?
+        var maxLabelWidth: CGFloat = 0.0
         
+        let attributes = [NSFontAttributeName : UIFont.systemFont(ofSize: 18)]
             if(flagLandscape) {
                 
-                let width = etalon! * self.presenter!.graphView!.scale
-                let height = width
                 
                 
                 
@@ -185,7 +189,12 @@ class BOKeyboardView: UIView {
                         
                         keyView?.flagIsRight = (j == Int(verNumber)-1)
 
-                        
+                        let string = keyView!.label!.text
+                        let size = string!.size(attributes: attributes)
+                        if(size.width > maxLabelWidth) {
+                            maxLabelWidth = size.width
+                            maxLabelText = string!
+                        }
                         
                     }
                     
@@ -193,10 +202,6 @@ class BOKeyboardView: UIView {
             }
                 
             else {
-                
-                let width = etalon! * self.presenter!.graphView!.scale
-                let height = width
-                
                 
                 
                 for j in 0..<Int(verNumber) {
@@ -231,11 +236,30 @@ class BOKeyboardView: UIView {
                         
                         keyView?.flagIsRight = (i == Int(horNumber)-1)
                         
-                        
+                        let string = keyView!.label!.text
+                        let size = string!.size(attributes: attributes)
+                        if(size.width > maxLabelWidth) {
+                            maxLabelWidth = size.width
+                            maxLabelText = string!
+                        }
+
                     }
                 }
                 
             }
+        
+        var fontSize: CGFloat = 18
+        while(maxLabelText!.size(attributes: [NSFontAttributeName : UIFont(name: "ProximaNova-Regular", size: fontSize)!]).width > width - 8) {
+            fontSize = fontSize - 1
+        }
+        let maxFont = UIFont(name: "ProximaNova-Regular", size: fontSize)
+        for j in 0..<Int(verNumber) {
+            for i in 0..<Int(horNumber) {
+                let keyView = self.keysArray![Int(j) * Int(horNumber) + Int(i)]
+                keyView.label?.font = maxFont
+            }
+        }
+        
         
 //            sendParams()
         }
@@ -251,7 +275,6 @@ class BOKeyboardView: UIView {
 class BOKeyView: UIView {
     var flagIsRight: Bool?
     
-    var testFontLabel:UILabel?
     weak var presenter: BOGamePresenter?
     private var _value: Double?
     var value:Double? {
@@ -292,7 +315,7 @@ class BOKeyView: UIView {
         self.backgroundColor = nil
         
         label = UILabel()
-        label?.font = UIFont(name: "ProximaNova-Regular", size: 14)
+//        label?.font = UIFont(name: "ProximaNova-Regular", size: 14)
         
         if(mode == .light) {
             box!.layer.borderColor = UIColor(red: 216.0/255, green: 216.0/255, blue: 216.0/255, alpha: 1).cgColor
@@ -314,18 +337,6 @@ class BOKeyView: UIView {
 
         label?.textAlignment = .center
         label?.frame = box!.frame
-//        label?.frame = CGRect(x: 10.0, y: 0, width: box!.bounds.size.width-20, height: box!.bounds.size.height)
-        
-        testFontLabel = UILabel()
-        testFontLabel?.font = label?.font
-        testFontLabel?.text = "00.00"
-        
-//        label?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        label?.numberOfLines = 1
-//        label?.lineBreakMode = .byWordWrapping
-//
-//        label?.adjustsFontSizeToFitWidth = true
-//        label?.minimumScaleFactor = 0.2
         
         self.addSubview(label!)
         
@@ -355,12 +366,6 @@ class BOKeyView: UIView {
         
         label?.frame = box!.bounds
 
-//        label?.frame = CGRect(x: 10.0, y: 0, width: box!.bounds.size.width-20, height: box!.bounds.size.height)
-
-        
-//        let largestFontSize = 40
-//        let str = "00.00"
-//        str.
 
     }
     

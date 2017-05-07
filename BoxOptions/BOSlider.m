@@ -13,7 +13,7 @@
 - (CGRect)thumbRectForBounds:(CGRect)bounds trackRect:(CGRect)rect value:(float)value
 {
     CGRect orig = [super thumbRectForBounds:bounds trackRect:rect value:value];
-    CGRect newArea = CGRectInset(orig, -30, -30);
+    CGRect newArea = CGRectInset(orig, -50, -50);
     return newArea;
     return CGRectInset ([super thumbRectForBounds:bounds trackRect:rect value:value], 10 , 10);
 }
