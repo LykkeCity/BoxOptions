@@ -394,13 +394,14 @@ class BOGamePresenter: UIViewController {
     @IBAction func closePressed() {
         BODataManager.sendLogEvent(BOEventGameClosed, message: asset!.identity)
         
-        let transition = CATransition()
-        transition.duration = 0.25
-        transition.type = kCATransitionPush
-        transition.subtype = kCATransitionFromLeft
-        self.view.window!.layer.add(transition, forKey: kCATransition)
-        
-        dismiss(animated: false)
+//        let transition = CATransition()
+//        transition.duration = 0.25
+//        transition.type = kCATransitionPush
+//        transition.subtype = kCATransitionFromLeft
+//        self.view.window!.layer.add(transition, forKey: kCATransition)
+  
+        self.navigationController?.popViewController(animated: true)
+//        dismiss(animated: false)
 //        self.dismiss(animated: true, completion: nil)
     }
     

@@ -41,6 +41,7 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+    
         let b = UserDefaults.standard.double(forKey: "UserBalance")
         var balance: Double?
         if(b != nil && b > 0) {
@@ -52,6 +53,7 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
         
         balanceLabel?.text = "USD " + String.init(format: "%.2f", balance!)
 
+        
         
     }
     
@@ -139,13 +141,14 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
             //Bundle.main.loadNibNamed("BOGamePresenter", owner: self, options: nil) as! BOGamePresenter
         game.asset = BODataManager.shared().assets![indexPath.row] as! BOAsset
         
-        let transition = CATransition()
-        transition.duration = 0.25
-        transition.type = kCATransitionPush
-        transition.subtype = kCATransitionFromRight
-        view.window!.layer.add(transition, forKey: kCATransition)
-        present(game, animated: false, completion: nil)
+//        let transition = CATransition()
+//        transition.duration = 0.25
+//        transition.type = kCATransitionPush
+//        transition.subtype = kCATransitionFromRight
+//        view.window!.layer.add(transition, forKey: kCATransition)
+//        present(game, animated: false, completion: nil)
         
+        self.navigationController?.pushViewController(game, animated: true)
 //        self.present(game, animated: true, completion: nil)
     }
     
@@ -158,11 +161,11 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
 
     }
     
-//    open override var shouldAutorotate: Bool {
-//        get {
-//            return false
-//        }
-//    }
+    open override var shouldAutorotate: Bool {
+        get {
+            return true
+        }
+    }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         get {

@@ -39,7 +39,11 @@ class BOCurrentPriceView: UIView {
         set {
             _centerPoint = newValue!
             if(flagLandscape) {
-                self.center = CGPoint(x: _centerPoint.x + self.bounds.size.height/2, y: _centerPoint.y)
+                if(self.superview == nil) {
+                    return
+                }
+//                self.center = CGPoint(x: _centerPoint.x + self.bounds.size.height/2, y: _centerPoint.y)
+                self.center = CGPoint(x: _centerPoint.x - self.bounds.size.width/2 - 2, y: self.superview!.bounds.size.height - self.bounds.size.height/2)
             }
             else {
                 self.center = CGPoint(x: _centerPoint.x, y: _centerPoint.y + self.bounds.size.height/2)
@@ -74,13 +78,13 @@ class BOCurrentPriceView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        if(flagLandscape == false) {
-            self.transform = CGAffineTransform.identity
-        }
-        else {
-            self.transform = CGAffineTransform.init(rotationAngle: CGFloat(-M_PI_2))
- //           self.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI_2), 0, 0, 1)
-        }
+//        if(flagLandscape == false) {
+//            self.transform = CGAffineTransform.identity
+//        }
+//        else {
+//            self.transform = CGAffineTransform.init(rotationAngle: CGFloat(-M_PI_2))
+// //           self.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI_2), 0, 0, 1)
+//        }
         
         //        if(flagLandscape) {
         //            self.transform = CGAffineTransform.init(rotationAngle: CGFloat(-M_PI_2))
@@ -93,10 +97,13 @@ class BOCurrentPriceView: UIView {
         //            currentOrientationIsLandscape = flagLandscape
         //            self.setNeedsLayout()
         //        }
-
+        self.setNeedsDisplay()
     }
     
     override func draw(_ rect: CGRect) {
+        if(flagLandscape) {
+            return
+        }
         let context = UIGraphicsGetCurrentContext()
 
         context!.setFillColor(UIColor(red: 13.0/255, green: 167.0/255 ,blue: 252.0/255, alpha: 1).cgColor)

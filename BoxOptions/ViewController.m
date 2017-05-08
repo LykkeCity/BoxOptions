@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "BODataManager.h"
 #import "BoxOptions-Swift.h"
+#import "BONavigationController.h"
 //#import <LOTAnimationView.h>
 #import "Lottie.h"
 
@@ -45,8 +46,17 @@
     
     [self.view addSubview:animation];
     [animation playWithCompletion:^(BOOL animationFinished) {
+        
+        
         BOAssetsTablePresenter *presenter = [[BOAssetsTablePresenter alloc] initWithNibName:@"BOAssetsTablePresenter" bundle:[NSBundle mainBundle]];
-        [self presentViewController:presenter animated:YES completion:nil];
+//        [self presentViewController:presenter animated:YES completion:nil];
+        
+        
+        BONavigationController *navController = [[BONavigationController alloc] initWithRootViewController:presenter];
+        [navController setNavigationBarHidden:YES];
+        [self presentViewController:navController animated:NO completion:nil];
+
+//        [self pushViewController:presenter animated:YES];
 
     }];
 }

@@ -40,6 +40,7 @@
 		A18F440B1EBAF82600C6FB05 /* BOSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = A18F440A1EBAF82600C6FB05 /* BOSlider.m */; };
 		A18F44101EBECC1700C6FB05 /* BOCurrentPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F440F1EBECC1700C6FB05 /* BOCurrentPriceView.swift */; };
 		A1B241231E4E211A008F6913 /* BOFlyingCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */; };
+		A1DC481D1EC05540009E8312 /* BONavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1DC481C1EC05540009E8312 /* BONavigationController.m */; };
 		A1E1361E1E826CA1009D1348 /* box_loader.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E1361D1E826CA1009D1348 /* box_loader.json */; };
 		A1E136211E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E1361F1E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift */; };
 		A1E136221E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1E136201E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.xib */; };
@@ -120,6 +121,8 @@
 		A18F440A1EBAF82600C6FB05 /* BOSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOSlider.m; sourceTree = "<group>"; };
 		A18F440F1EBECC1700C6FB05 /* BOCurrentPriceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BOCurrentPriceView.swift; sourceTree = "<group>"; };
 		A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOFlyingCoin.swift; path = Presenters/Graph/BOFlyingCoin.swift; sourceTree = "<group>"; };
+		A1DC481B1EC05540009E8312 /* BONavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BONavigationController.h; sourceTree = "<group>"; };
+		A1DC481C1EC05540009E8312 /* BONavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BONavigationController.m; sourceTree = "<group>"; };
 		A1E1361D1E826CA1009D1348 /* box_loader.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = box_loader.json; sourceTree = "<group>"; };
 		A1E1361F1E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LWMarginalAssetPairTableViewCell.swift; sourceTree = "<group>"; };
 		A1E136201E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LWMarginalAssetPairTableViewCell.xib; sourceTree = "<group>"; };
@@ -325,6 +328,8 @@
 				A1410BDA1EB1B99300EA9607 /* LWCommonButton.m */,
 				A18F44091EBAF82600C6FB05 /* BOSlider.h */,
 				A18F440A1EBAF82600C6FB05 /* BOSlider.m */,
+				A1DC481B1EC05540009E8312 /* BONavigationController.h */,
+				A1DC481C1EC05540009E8312 /* BONavigationController.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -529,6 +534,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1DC481D1EC05540009E8312 /* BONavigationController.m in Sources */,
 				A1E136281E82743B009D1348 /* UIView+ThinLines.m in Sources */,
 				A1F1C6B41E57FA580095E369 /* BOUtilsView.swift in Sources */,
 				A1410BDB1EB1B99300EA9607 /* LWBottomInfoPopup.m in Sources */,
@@ -738,8 +744,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lykkex.BoxOptions;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "102bb2d2-923e-465e-9cab-a8b672994981";
-				PROVISIONING_PROFILE_SPECIFIER = BoxOptionsAppstoreDistribution;
+				PROVISIONING_PROFILE = "d91ed76c-c986-4b93-8c7d-bbbb93137164";
+				PROVISIONING_PROFILE_SPECIFIER = "BoxOptions-Adhoc7";
 				SWIFT_OBJC_BRIDGING_HEADER = "BoxOptions/BoxOptions-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
