@@ -276,7 +276,9 @@ class BOKeyView: UIView {
     var flagIsRight: Bool?
     
     weak var presenter: BOGamePresenter?
+    
     private var _value: Double?
+    
     var value:Double? {
         get {
             if(_value == nil) {
@@ -382,8 +384,9 @@ class BOKeyView: UIView {
 
         presenter?.balance -= betAmount
 
-        _ = BOOptionView.init(frame: self.convert(self.bounds, to: self.superview!.superview!), inView:self.superview!.superview!, value: value! * betAmount, presenter: presenter!)
-        
+        let optionView = BOOptionView.init(frame: self.convert(self.bounds, to: self.superview!.superview!), inView:self.superview!.superview!, value: value! * betAmount, presenter: presenter!)
+        optionView.optionBetAmount = betAmount
+        presenter?.activeOptions!.append(optionView)
         print("TAPPED")
     }
 }
@@ -391,6 +394,7 @@ class BOKeyView: UIView {
 class BOOptionView: UIView {
     
     var value:Double?
+    var optionBetAmount: Double?
     weak var presenter: BOGamePresenter?
 
     weak var graphView: BOGraphView?
@@ -417,6 +421,8 @@ class BOOptionView: UIView {
     var stopped = false
     
     var flagWon = false
+    
+    var flagLost = false
     
     
     init(frame: CGRect, inView: UIView, value: Double, presenter: BOGamePresenter) {
@@ -543,6 +549,10 @@ class BOOptionView: UIView {
         }
         flagWon = true
         self.timer?.invalidate()
+        if let index = presenter?.activeOptions!.index(of:self) {
+            presenter?.activeOptions!.remove(at: index)
+        }
+
         
         BODataManager.sendLogEvent(BOEventBetWon, message: "Value: " + String(value!))
 
@@ -593,6 +603,12 @@ class BOOptionView: UIView {
         }
         
 //        if(((pointInSelf.y > self.bounds.size.height && flagLandscape == false) || (pointInSelf.x > self.bounds.size.width && flagLandscape == true)) && stopped == false) {  //remove immediately
+        
+        if((self.frame.origin.y + self.bounds.size.height < graphView!.frame.origin.y + graphView!.bounds.size.height - 10) && flagLandscape == false ||
+            (self.frame.origin.x + self.bounds.size.width < graphView!.frame.origin.x + graphView!.bounds.size.width - 10) && flagLandscape == true) {
+            flagLost = true
+        }
+        
         if(((self.frame.origin.y < (graphView!.frame.origin.y + 20) && flagLandscape == false) || (self.frame.origin.x < 0 && flagLandscape == true)) && stopped == false) {
             stopped = true
             BODataManager.sendLogEvent(BOEventBetLost, message: "Value: " + String(value!))
@@ -627,6 +643,9 @@ class BOOptionView: UIView {
                     timer?.invalidate()
                     self.removeFromSuperview()
                 }
+            }
+            if let index = presenter?.activeOptions!.index(of:self) {
+                presenter?.activeOptions!.remove(at: index)
             }
         }
 

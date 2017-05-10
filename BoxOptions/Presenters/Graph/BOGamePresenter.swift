@@ -17,7 +17,6 @@ let BoxColumns = 15.0 //21.0
 let BoxRows = 8.0 //12.0
 
 
-
 var flagLandscape = false
 
 enum COLOR_MODE {
@@ -29,7 +28,7 @@ let mode: COLOR_MODE = .light
 
 var scrollOffset: CGFloat = 0
 
-class BOGamePresenter: UIViewController {
+class BOGamePresenter: UIViewController, UIAlertViewDelegate {
     
     private var _balance: Double?
     var balance:Double {
@@ -108,9 +107,14 @@ class BOGamePresenter: UIViewController {
     
     var startScrollPoint:CGPoint?
     
+    var activeOptions: [BOOptionView]?
+
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        activeOptions = Array()
         
         let b = UserDefaults.standard.double(forKey: "UserBalance")
         if(b != nil && b > 0) {
@@ -392,17 +396,34 @@ class BOGamePresenter: UIViewController {
     }
     
     @IBAction func closePressed() {
+        
+        var amount = 0.0
+        for v in activeOptions! {
+            if(v.flagLost == false) {
+                amount += v.optionBetAmount!
+            }
+        }
+        if(amount > 0) {
+            let alert = UIAlertView.init(title: "WARNING", message: "If you quit the instrument right now, all your options worth USD " + String(amount) + " will be discarded and not paid off. Please wait until they are hit or missed.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Quit")
+            alert.show()
+        }
+        else {
+            closeGame()
+        }
+
+    }
+    
+    func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
+        if(buttonIndex == 1) {
+            closeGame()
+        }
+    }
+    
+    func closeGame() {
         BODataManager.sendLogEvent(BOEventGameClosed, message: asset!.identity)
         
-//        let transition = CATransition()
-//        transition.duration = 0.25
-//        transition.type = kCATransitionPush
-//        transition.subtype = kCATransitionFromLeft
-//        self.view.window!.layer.add(transition, forKey: kCATransition)
-  
         self.navigationController?.popViewController(animated: true)
-//        dismiss(animated: false)
-//        self.dismiss(animated: true, completion: nil)
+
     }
     
     override var prefersStatusBarHidden: Bool {

@@ -169,9 +169,9 @@
                 BORate *rate=[BORate new];
                 rate.ask=[dict[@"Ask"] doubleValue];
                 rate.bid=[dict[@"Bid"] doubleValue];
-                NSDate *date = [dict[@"Date"] toDateWithMilliSeconds];
-                rate.timestamp=[date timeIntervalSinceReferenceDate];
-
+//                NSDate *date = [dict[@"Date"] toDateWithMilliSeconds];
+//                rate.timestamp=[date timeIntervalSinceReferenceDate];
+                rate.timestamp = [[NSDate date] timeIntervalSinceReferenceDate];
                 
                 BOOL flagFound = false;
                 @synchronized (self) {
