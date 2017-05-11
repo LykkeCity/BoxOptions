@@ -259,6 +259,15 @@ class BOKeyboardView: UIView {
                 keyView.label?.font = maxFont
             }
         }
+    
+        
+        for v in presenter!.activeOptions! {
+            fontSize = 18
+            while(v.label.text!.size(attributes: [NSFontAttributeName : UIFont(name: "ProximaNova-Regular", size: fontSize)!]).width > v.bounds.size.width - 8) {
+                fontSize = fontSize - 1
+            }
+            v.label.font = UIFont(name: "ProximaNova-Regular", size: fontSize)
+        }
         
         
 //            sendParams()
@@ -424,6 +433,8 @@ class BOOptionView: UIView {
     
     var flagLost = false
     
+    let label = UILabel()
+
     
     init(frame: CGRect, inView: UIView, value: Double, presenter: BOGamePresenter) {
         super.init(frame: frame)
@@ -447,7 +458,6 @@ class BOOptionView: UIView {
         originalWidth = frame.size.width / presenter.graphView!.scale
         originalHeight = frame.size.height / presenter.graphView!.scale
         
-        let label = UILabel()
         label.font = UIFont(name: "ProximaNova-Regular", size: 14)
 
 

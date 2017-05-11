@@ -164,6 +164,10 @@ class BOGraphView: UIView {
             if(cornerRadius > fabs(x - prevX)/2) {
                 cornerRadius = fabs(x - prevX)/2
             }
+            if(cornerRadius > fabs(y - prevY)/2) {
+                cornerRadius = fabs(y - prevY)/2
+            }
+
             if(cornerRadius < 1) {
                 cornerRadius = 0
             }
