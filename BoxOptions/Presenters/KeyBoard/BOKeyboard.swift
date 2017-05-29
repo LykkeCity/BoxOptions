@@ -67,14 +67,19 @@ class BOKeyboardView: UIView {
 
     }
     
-    func sendParams() {
-        
+    func clearCoefficents() {
         flagParamsSent = false
-
         for v in keysArray! {
             v.value = 0
         }
+
+    }
+    
+    func sendParams() {
         
+        flagParamsSent = false
+        
+        clearCoefficents()
         
         var distToGraph: CGFloat?
         var timeNeededToGoToGraph: Double?
@@ -103,7 +108,7 @@ class BOKeyboardView: UIView {
         let boxTimeLength = Double(etalon! * self.presenter!.graphView!.scale)/Double(delta!)
         
 
-        BODataManager.shared().sendParameters(forAsset: presenter!.asset!.identity, timeToGraph: timeNeededToGoToGraph!, boxPriceWidth: presenter!.graphView!.widthPrice!/Double(numberOfColumnsOnScreen), boxTimeLength: boxTimeLength, columns: Int32(BoxColumns), rows: Int32(BoxRows), withCompletion: { res in
+        BODataManager.shared().sendParameters(forAsset: presenter!.asset!.identity, timeToGraph: timeNeededToGoToGraph!, boxPriceWidth: (presenter!.graphView!.widthPrice!/Double(numberOfColumnsOnScreen)) * Double(keyboardScale), boxTimeLength: boxTimeLength, columns: Int32(BoxColumns), rows: Int32(BoxRows), withCompletion: { res in
             self.flagParamsSent = true
             self.refreshCoeffs()
         })
@@ -389,7 +394,7 @@ class BOKeyView: UIView {
             return
         }
         
-        BODataManager.sendLogEvent(BOEventBetPlaced, message: "Coeff: " + String(_value!) + ", Bet: " + String(betAmount))
+        BODataManager.shared().sendLogEvent(BOEventBetPlaced, message: "Coeff: " + String(_value!) + ", Bet: " + String(betAmount))
 
         presenter?.balance -= betAmount
 
@@ -564,7 +569,7 @@ class BOOptionView: UIView {
         }
 
         
-        BODataManager.sendLogEvent(BOEventBetWon, message: "Value: " + String(value!))
+        BODataManager.shared().sendLogEvent(BOEventBetWon, message: "Value: " + String(value!))
 
         NotificationCenter.default.removeObserver(self)
         UIView.animate(withDuration: 0.1, animations: {
@@ -621,7 +626,7 @@ class BOOptionView: UIView {
         
         if(((self.frame.origin.y < (graphView!.frame.origin.y + 20) && flagLandscape == false) || (self.frame.origin.x < 0 && flagLandscape == true)) && stopped == false) {
             stopped = true
-            BODataManager.sendLogEvent(BOEventBetLost, message: "Value: " + String(value!))
+            BODataManager.shared().sendLogEvent(BOEventBetLost, message: "Value: " + String(value!))
 
             NotificationCenter.default.removeObserver(self)
 

@@ -33,6 +33,6 @@ typedef enum {BOEventLaunch = 1,
 
 -(void) requestCoeffsForPair:(NSString *) assetId withCompletion:(void (^)(NSArray *result)) completion;
 
-+(void) sendLogEvent:(BOEvent) event message:(NSString *) message;
+-(void) sendLogEvent:(BOEvent) event message:(NSString *) message;
 
 @end

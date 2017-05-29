@@ -53,7 +53,7 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
 //                alert.show()
 
                 
-                let popup = LWBottomInfoPopup.popup(withText: "Additional 50 coins added to your balance") as! LWBottomInfoPopup
+                let popup = LWBottomInfoPopup.popup(withText: "Additional 50 USD added to your balance") as! LWBottomInfoPopup
                 popup.show()
             }
             
@@ -64,7 +64,7 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
 //            str.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFont(ofSize: 17), range: NSMakeRange(0, str.length - 8))
             
             let prevY = balanceLabel!.center.y
-            balanceLabel?.text = "Available " + ( NSString.init(format: "%.2f", _balance!) as String)
+            balanceLabel?.text = "Available $" + ( NSString.init(format: "%.2f", _balance!) as String)
             balanceLabel?.sizeToFit()
             balanceLabel?.center = CGPoint(x: self.view.bounds.size.width - balanceLabel!.bounds.size.width/2 - 20, y: prevY)
             if(previous != nil && _balance! > previous!) {
@@ -124,7 +124,7 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
             balance = 50
         }
         
-        BODataManager.sendLogEvent(BOEventGameStarted, message: asset!.identity)
+        BODataManager.shared().sendLogEvent(BOEventGameStarted, message: asset!.identity)
         
         if(mode == .light) {
             self.view.backgroundColor = .white
@@ -420,7 +420,7 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
     }
     
     func closeGame() {
-        BODataManager.sendLogEvent(BOEventGameClosed, message: asset!.identity)
+        BODataManager.shared().sendLogEvent(BOEventGameClosed, message: asset!.identity)
         
         self.navigationController?.popViewController(animated: true)
 

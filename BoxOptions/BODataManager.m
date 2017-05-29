@@ -13,6 +13,11 @@
 #import "NSString+Date.h"
 #import "BoxOptions-Swift.h"
 
+#define kProductionServer @"boxoptions-api.lykke.com:5000"
+#define kDevelopmentServer @"13.93.116.252:5050"
+
+
+
 @import UIKit;
 
 @interface BODataManager() <MDWampClientDelegate, MDWampTransportDelegate>
@@ -21,11 +26,20 @@
     
     NSString *token;
     UIAlertView *alertDisconnected;
+    NSString *serverUrl;
 }
 
 @end
 
 @implementation BODataManager
+
+-(id) init {
+    self = [super init];
+    
+    serverUrl = kDevelopmentServer;
+    
+    return self;
+}
 
 + (instancetype)shared
 {
@@ -39,9 +53,8 @@
 }
 
 -(void) start {
-//    MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:@"ws://lke-mt-dev-api.azurewebsites.net:80/ws"] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
     
-    MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:@"ws://boxoptions-api.lykke.com:5000/ws"] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
+    MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:[NSString stringWithFormat:@"ws://%@/ws", serverUrl]] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
 //    
     wamp = [[MDWamp alloc] initWithTransport:websocket realm:@"box-options" delegate:self];
 
@@ -226,35 +239,81 @@
     
 }
 
--(void) sendParametersForAsset:(NSString *) assetId timeToGraph:(double) timeToGraph boxPriceWidth:(double) priceWidth boxTimeLength:(double) timeLength columns:(int) columns rows:(int)rows withCompletion:(void (^)(BOOL result)) completion {
+//-(void) sendParameters111ForAsset:(NSString *) assetId timeToGraph:(double) timeToGraph boxPriceWidth:(double) priceWidth boxTimeLength:(double) timeLength columns:(int) columns rows:(int)rows withCompletion:(void (^)(BOOL result)) completion {
+//
+//    if(!token) {
+//        token = [[NSUUID UUID] UUIDString];
+//    }
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        
+//        NSString *urlString = [NSString stringWithFormat:@"http://%@/api/Coef/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", serverUrl, assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
+//       
+//        
+//        NSURLResponse *responce;
+//        NSError *error;
+//        
+//        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+//        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&responce error:&error];
+//        
+//        
+//        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) responce;
+//        NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
+//
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            completion(true);
+//        });
+//    
+//    
+//    });
+//}
 
+-(void) sendParametersForAsset:(NSString *) assetId timeToGraph:(double) timeToGraph boxPriceWidth:(double) priceWidth boxTimeLength:(double) timeLength columns:(int) columns rows:(int)rows withCompletion:(void (^)(BOOL result)) completion {
+    
     if(!token) {
         token = [[NSUUID UUID] UUIDString];
     }
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-        // http://13.94.249.22:8800/change?pair=EURUSD&timeToFirstOption=40000&optionLen=40000&priceSize=0.0005&nPriceIndex=20&nTimeIndex=20
-//        NSString *urlString = [NSString stringWithFormat:@"http://13.94.249.22:8800/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
-        NSString *urlString = [NSString stringWithFormat:@"http://boxoptions-api.lykke.com:5000/api/Coef/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
-       
-        
-        NSURLResponse *responce;
-        NSError *error;
-        
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&responce error:&error];
-        
-        
-        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) responce;
-        NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(true);
-        });
+    
+    NSDictionary *params = @{@"userId":token,
+                             @"pair":assetId,
+                             @"timeToFirstOption":@(timeToGraph*1000),
+                             @"optionLen":@(timeLength*1000),
+                             @"priceSize":@(priceWidth),
+                             @"nPriceIndex": @(columns),
+                             @"nTimeIndex": @(rows)};
+                             
     
     
-    });
+    [wamp call:@"coeffapi.changeparameters" payload:params complete:^(MDWampResult *result, NSError *error){
+        NSLog(@"%@", result.arguments);
+        
+        completion(true);
+    }];
+    
+    
+    
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        
+//        NSString *urlString = [NSString stringWithFormat:@"http://%@/api/Coef/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", serverUrl, assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
+//        
+//        
+//        NSURLResponse *responce;
+//        NSError *error;
+//        
+//        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+//        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&responce error:&error];
+//        
+//        
+//        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) responce;
+//        NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            completion(true);
+//        });
+//        
+//        
+//    });
 }
+
 
 //{
 //    Ask = "121.426";
@@ -263,48 +322,72 @@
 //    Instrument = EURJPY;
 //}
 
-
 -(void) requestCoeffsForPair:(NSString *) assetId withCompletion:(void (^)(NSArray *result)) completion {
+    NSDictionary *params = @{@"userId":token,
+                             @"pair":assetId
+                             };
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    
+    [wamp call:@"coeffapi.requestcoeff" payload:params complete:^(MDWampResult *result, NSError *error){
+        NSLog(@"%@", result.arguments);
+                NSMutableArray *arr = [[NSMutableArray alloc] init];
         
-        // http://13.94.249.22:8800/change?pair=EURUSD&timeToFirstOption=40000&optionLen=40000&priceSize=0.0005&nPriceIndex=20&nTimeIndex=20
-//        NSString *urlString = [NSString stringWithFormat:@"http://13.94.249.22:8800/request?pair=%@&userId=%@", assetId, token];
-        NSString *urlString = [NSString stringWithFormat:@"http://boxoptions-api.lykke.com:5000/api/Coef/request?pair=%@&userId=%@", assetId, token];
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+        NSString *resString = result.arguments[0];
+        NSData *data = [resString dataUsingEncoding:NSUTF8StringEncoding];
         
-        NSHTTPURLResponse *response;
-        NSError *error;
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        NSArray *resArr = [NSJSONSerialization JSONObjectWithData:data  options:0 error:nil];
         
-        NSInteger status = response.statusCode;
-        if(data == nil || data.length == 0) {
-            return;
-        }
-        NSArray *ddd = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        
-        NSMutableArray *arr = [[NSMutableArray alloc] init];
-        
-        for(NSArray *rows in ddd) {
-            for(NSDictionary *d in rows) {
-                [arr addObject:d[@"hitCoeff"]];
-            }
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(arr);
-        });
-        
-        
-    });
+                for(NSArray *rows in resArr) {
+                    for(NSDictionary *d in rows) {
+                        [arr addObject:d[@"hitCoeff"]];
+                    }
+                }
 
-    
+        completion(arr);
+    }];
+
 }
 
-+(void) sendLogEvent:(BOEvent)event message:(NSString *)message {
+//-(void) requestCoeffsForPair:(NSString *) assetId withCompletion:(void (^)(NSArray *result)) completion {
+//    
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        
+//        NSString *urlString = [NSString stringWithFormat:@"http://%@/api/Coef/request?pair=%@&userId=%@", serverUrl, assetId, token];
+//        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+//        
+//        NSHTTPURLResponse *response;
+//        NSError *error;
+//        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+//        
+//        NSInteger status = response.statusCode;
+//        if(data == nil || data.length == 0) {
+//            return;
+//        }
+//        NSArray *ddd = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+//        
+//        NSMutableArray *arr = [[NSMutableArray alloc] init];
+//        
+//        for(NSArray *rows in ddd) {
+//            for(NSDictionary *d in rows) {
+//                [arr addObject:d[@"hitCoeff"]];
+//            }
+//        }
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            completion(arr);
+//        });
+//        
+//        
+//    });
+//
+//    
+//}
+
+-(void) sendLogEvent:(BOEvent)event message:(NSString *)message {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
-//        NSString *urlString =  @"http://boxoptions-dev-api.azurewebsites.net/api/Log";
-        NSString *urlString =  @"http://boxoptions-api.lykke.com:5000/api/Log";
+
+        NSString *urlString =  [NSString stringWithFormat:@"http://%@/api/Log", serverUrl];
         
         
         

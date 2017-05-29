@@ -108,14 +108,15 @@ class BOUtilsView: UIView {
         if(graphView!.scale * CGFloat(keyboardScale) > maximumScale) {
             graphView!.scale = maximumScale / CGFloat(keyboardScale)
         }
-
+        
+        presener!.keyboardView!.clearCoefficents()
         
         self.superview?.setNeedsLayout()
     }
     
     func sliderFinishedEditing() {
         
-        BODataManager.sendLogEvent(BOEventChangeScale, message: String(keyboardScale))
+        BODataManager.shared().sendLogEvent(BOEventChangeScale, message: String(keyboardScale))
 
         presener!.keyboardView?.sendParams()
         
@@ -232,7 +233,7 @@ class BOUtilsBetView: UIView {
         amountLabel?.text = String(Int(betAmount))
         self.superview?.superview?.setNeedsLayout()
 
-        BODataManager.sendLogEvent(BOEventChangeBet, message: String(betAmount))
+        BODataManager.shared().sendLogEvent(BOEventChangeBet, message: String(betAmount))
 
     }
     
@@ -245,7 +246,7 @@ class BOUtilsBetView: UIView {
 
         self.superview?.superview?.setNeedsLayout()
         
-        BODataManager.sendLogEvent(BOEventChangeBet, message: String(betAmount))
+        BODataManager.shared().sendLogEvent(BOEventChangeBet, message: String(betAmount))
 
 
     }
