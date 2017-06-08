@@ -140,6 +140,7 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
             
             //Bundle.main.loadNibNamed("BOGamePresenter", owner: self, options: nil) as! BOGamePresenter
         game.asset = BODataManager.shared().assets![indexPath.row] as! BOAsset
+        BODataManager.shared().sendGameStartedEvent(game.asset)
         
 //        let transition = CATransition()
 //        transition.duration = 0.25

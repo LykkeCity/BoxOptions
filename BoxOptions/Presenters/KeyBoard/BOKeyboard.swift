@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-let numberOfColumnsOnScreen = 5
+var numberOfColumnsOnScreen = 5
 
 class BOKeyboardView: UIView {
     
@@ -394,6 +394,7 @@ class BOKeyView: UIView {
             return
         }
         
+        
         BODataManager.shared().sendLogEvent(BOEventBetPlaced, message: "Coeff: " + String(_value!) + ", Bet: " + String(betAmount))
 
         presenter?.balance -= betAmount
@@ -439,11 +440,13 @@ class BOOptionView: UIView {
     var flagLost = false
     
     let label = UILabel()
+    
+    var betBox: BOBetBox?
 
     
     init(frame: CGRect, inView: UIView, value: Double, presenter: BOGamePresenter) {
         super.init(frame: frame)
-        
+        betBox = BOBetBox()
         self.presenter = presenter
         graphView = presenter.graphView
 
@@ -517,6 +520,10 @@ class BOOptionView: UIView {
             timeNeededToGoToGraph = Double(distToGraph! / delta!)
             timeLength = Double(self.bounds.size.width / delta!)
             priceLength =  graphView!.xToPrice(x: frame.origin.y) - graphView!.xToPrice(x: frame.origin.y + frame.size.height)
+            
+            betBox?.startPrice = graphView!.xToPrice(x: frame.origin.y)
+            betBox?.endPrice = graphView!.xToPrice(x: frame.origin.y + frame.size.height)
+            
 
         }
         else {
@@ -529,14 +536,62 @@ class BOOptionView: UIView {
             timeLength = Double(self.bounds.size.height / delta!)
             priceLength =  graphView!.xToPrice(x: frame.origin.x + frame.size.width) - graphView!.xToPrice(x: frame.origin.x)
 
+            betBox?.startPrice = graphView!.xToPrice(x: frame.origin.x)
+            betBox?.endPrice = graphView!.xToPrice(x: frame.origin.x + frame.size.width)
+
         }
         
+        betBox?.timeToGraph = timeNeededToGoToGraph! + Double(10.0 / delta!) - timeLength! / 2
+        
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 12.295) {
+//            self.backgroundColor = UIColor.yellow
+//        }
 
+        
+        betBox?.timeLength = timeLength!
+        betBox?.betAmount = betAmount
+        betBox?.coeff = value
+        
+        betBox?.identity = UUID().uuidString
+        betBox?.assetPair = presenter.asset
+        betBox?.timeStamp = Date.timeIntervalSinceReferenceDate
+        
+        BODataManager.shared().sendBetEvent(for: betBox!)
+
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(checkPrice(notification:)), name: Notification.Name("PricesChanged" + presenter.asset!.identity), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(boxWinEventFromServer), name: Notification.Name("BoxWinWithId" + betBox!.identity), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(boxLoseEventFromServer), name: Notification.Name("BoxLoseWithId" + betBox!.identity), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(betPlacedEventFromServer(notification:)), name: Notification.Name("BoxPlacedWithId" + betBox!.identity), object: nil)
+
+    }
+    
+    func betPlacedEventFromServer(notification: Notification) {
+        let object = notification.object as! NSNumber
+        originalTimeStamp = object.doubleValue
+        betBox?.timeStamp = originalTimeStamp!
         timer = Timer.init(timeInterval: 0.04, target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
         
         RunLoop.current.add(timer!, forMode: .defaultRunLoopMode)
+
+    }
+    
+    func boxWinEventFromServer() {
         
-        NotificationCenter.default.addObserver(self, selector: #selector(checkPrice(notification:)), name: Notification.Name("PricesChanged" + presenter.asset!.identity), object: nil)
+        let time = Date.timeIntervalSinceReferenceDate
+        let passed = time - betBox!.timeStamp
+
+//        self.backgroundColor = UIColor.green
+        boxWin()
+        
+    }
+    
+    func boxLoseEventFromServer() {
+        
+        let time = Date.timeIntervalSinceReferenceDate
+        let passed = time - betBox!.timeStamp
+//        self.backgroundColor = UIColor.red
+        NotificationCenter.default.removeObserver(self)
     }
     
     func timerFired () {
@@ -549,12 +604,12 @@ class BOOptionView: UIView {
         let value = notification.object as! NSValue
         let point  = value.cgPointValue
         
-        let timeNow = Date.timeIntervalSinceReferenceDate
-        if(timeNow >= originalTimeStamp! + timeNeededToGoToGraph! - timeLength!/2 && timeNow <= originalTimeStamp! + timeNeededToGoToGraph! + timeLength!/2) {
-            if((Double(point.x) > price! && Double(point.y) < price!) || (Double(point.x) < price! && Double(point.y) > price!)) {
-                boxWin()
-            }
-        }
+//        let timeNow = Date.timeIntervalSinceReferenceDate
+//        if(timeNow >= originalTimeStamp! + timeNeededToGoToGraph! - timeLength!/2 && timeNow <= originalTimeStamp! + timeNeededToGoToGraph! + timeLength!/2) {
+//            if((Double(point.x) > price! && Double(point.y) < price!) || (Double(point.x) < price! && Double(point.y) > price!)) {
+//                boxWin()
+//            }
+//        }
         
     }
     
@@ -572,9 +627,12 @@ class BOOptionView: UIView {
         BODataManager.shared().sendLogEvent(BOEventBetWon, message: "Value: " + String(value!))
 
         NotificationCenter.default.removeObserver(self)
+        
+//        return  //TEMPORARY FOR TESTING
+        
         UIView.animate(withDuration: 0.1, animations: {
             self.layer.cornerRadius = 4
-//            self.frame = CGRect(x: self.frame.origin.x + pointInSelf.x - 4, y: self.frame.origin.y + pointInSelf.y - 4, width: 8, height: 8)
+
             self.frame = CGRect(x: self.center.x - 4, y: self.center.y - 4, width: 8, height: 8)
 
         }, completion: { fin in
@@ -613,9 +671,9 @@ class BOOptionView: UIView {
         }
         let pointInSelf = self.graphView!.convert(pointFire, to: self)
         
-        if(self.bounds.contains(pointInSelf)) {
-            boxWin()
-        }
+//        if(self.bounds.contains(pointInSelf)) {
+//            boxWin()
+//        }
         
 //        if(((pointInSelf.y > self.bounds.size.height && flagLandscape == false) || (pointInSelf.x > self.bounds.size.width && flagLandscape == true)) && stopped == false) {  //remove immediately
         
@@ -628,8 +686,8 @@ class BOOptionView: UIView {
             stopped = true
             BODataManager.shared().sendLogEvent(BOEventBetLost, message: "Value: " + String(value!))
 
-            NotificationCenter.default.removeObserver(self)
-
+//            NotificationCenter.default.removeObserver(self)
+//
 //            UIView.animate(withDuration: 2, animations: {
 //                self.alpha = 0
 //            }, completion: {res in
@@ -723,6 +781,7 @@ class BOOptionView: UIView {
     
     deinit {
         timer?.invalidate()
+        
     }
     
 }

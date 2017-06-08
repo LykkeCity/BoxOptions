@@ -12,6 +12,7 @@
 #import "BOAsset.h"
 #import "NSString+Date.h"
 #import "BoxOptions-Swift.h"
+#import "BOBetBox.h"
 
 #define kProductionServer @"boxoptions-api.lykke.com:5000"
 #define kDevelopmentServer @"13.93.116.252:5050"
@@ -24,9 +25,10 @@
 {
     MDWamp *wamp;
     
-    NSString *token;
+    
     UIAlertView *alertDisconnected;
     NSString *serverUrl;
+    NSString *clientId;
 }
 
 @end
@@ -37,6 +39,15 @@
     self = [super init];
     
     serverUrl = kDevelopmentServer;
+    
+    clientId = [[NSUserDefaults standardUserDefaults] objectForKey:@"ClientId"];
+    if(!clientId) {
+        clientId = [[NSUUID UUID] UUIDString];
+        [[NSUserDefaults standardUserDefaults] setObject:clientId forKey:@"ClientId"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+
+
     
     return self;
 }
@@ -116,6 +127,10 @@
             
             NSArray *changes = dict[key];
             
+            if([key isEqualToString:@"EURUSD"]) {
+                NSLog(@"%@", changes);
+            }
+            
             BOAsset *newAsset = [BOAsset new];
             newAsset.identity = key;
             [_assets addObject:newAsset];
@@ -126,6 +141,7 @@
                 BORate *rate=[BORate new];
                 rate.ask=[d[@"Ask"] doubleValue];
                 rate.bid=[d[@"Bid"] doubleValue];
+                rate.middle = (rate.ask + rate.bid) / 2;
                 NSDate *date = [d[@"Date"] toDateWithMilliSeconds];
                 rate.timestamp=[date timeIntervalSinceReferenceDate];
                 
@@ -138,7 +154,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"AssetsListChanged" object:nil];
         });
 
-        
+        [self sendInitUser];
         [self startListeningForAssets];
         _flagConnected = true;
 
@@ -158,7 +174,7 @@
         
 //    [wamp subscribe:@"prices.update" options:nil onEvent:^(MDWampEvent *payload) {
         
-        NSLog(@"received an event %@", payload.arguments);
+//        NSLog(@"received an event %@", payload.arguments);
 
         // do something with the payload of the event
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -182,9 +198,11 @@
                 BORate *rate=[BORate new];
                 rate.ask=[dict[@"Ask"] doubleValue];
                 rate.bid=[dict[@"Bid"] doubleValue];
-//                NSDate *date = [dict[@"Date"] toDateWithMilliSeconds];
-//                rate.timestamp=[date timeIntervalSinceReferenceDate];
-                rate.timestamp = [[NSDate date] timeIntervalSinceReferenceDate];
+                rate.middle = (rate.ask + rate.bid) / 2;
+
+                NSDate *date = [dict[@"Date"] toDateWithMilliSeconds];
+                rate.timestamp=[date timeIntervalSinceReferenceDate];
+//                rate.timestamp = [[NSDate date] timeIntervalSinceReferenceDate];
                 
                 BOOL flagFound = false;
                 @synchronized (self) {
@@ -193,6 +211,9 @@
                 {
                     if([asset.identity isEqualToString:dict[@"Instrument"]])
                     {
+//                        if([asset.identity isEqualToString:@"EURUSD"]) {
+//                            NSLog(@"received an event %@", payload.arguments);
+//                        }
                         flagWasChange = [asset rateChanged:rate];
                         
                         if(flagWasChange) {
@@ -269,11 +290,8 @@
 
 -(void) sendParametersForAsset:(NSString *) assetId timeToGraph:(double) timeToGraph boxPriceWidth:(double) priceWidth boxTimeLength:(double) timeLength columns:(int) columns rows:(int)rows withCompletion:(void (^)(BOOL result)) completion {
     
-    if(!token) {
-        token = [[NSUUID UUID] UUIDString];
-    }
     
-    NSDictionary *params = @{@"userId":token,
+    NSDictionary *params = @{@"userId":clientId,
                              @"pair":assetId,
                              @"timeToFirstOption":@(timeToGraph*1000),
                              @"optionLen":@(timeLength*1000),
@@ -285,7 +303,7 @@
     
     [wamp call:@"coeffapi.changeparameters" payload:params complete:^(MDWampResult *result, NSError *error){
         NSLog(@"%@", result.arguments);
-        
+  
         completion(true);
     }];
     
@@ -323,14 +341,14 @@
 //}
 
 -(void) requestCoeffsForPair:(NSString *) assetId withCompletion:(void (^)(NSArray *result)) completion {
-    NSDictionary *params = @{@"userId":token,
+    NSDictionary *params = @{@"userId":clientId,
                              @"pair":assetId
                              };
     
     
     
     [wamp call:@"coeffapi.requestcoeff" payload:params complete:^(MDWampResult *result, NSError *error){
-        NSLog(@"%@", result.arguments);
+//        NSLog(@"%@", result.arguments);
                 NSMutableArray *arr = [[NSMutableArray alloc] init];
         
         NSString *resString = result.arguments[0];
@@ -348,6 +366,128 @@
     }];
 
 }
+
+-(void) sendGameStartedEvent:(BOAsset *) asset {
+    return;
+    NSDictionary *params = @{@"userId":clientId,
+                             @"assetPair":asset.identity };
+    
+    [wamp call:@"game.start" payload:params complete:^(MDWampResult *result, NSError *error){
+        NSLog(@"%@", result.arguments);
+    }];
+}
+
+-(void) sendInitUser {
+    NSDictionary *params = @{@"userId":clientId};
+    
+    [wamp call:@"user.init" payload:params complete:^(MDWampResult *result, NSError *error){
+        NSLog(@"%@", result.arguments);
+        NSData *data = [result.arguments[0] dataUsingEncoding:NSUTF8StringEncoding];
+        NSArray *arr = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        for(NSDictionary *dict in arr) {
+            NSLog(@"%@", dict);
+            for(BOAsset *a in _assets) {
+                if([a.identity isEqualToString:dict[@"AssetPair"]]) {
+                    a.boxWidth = [dict[@"BoxWidth"] doubleValue];
+                    
+//                    a.boxWidth = 0.00001429;
+                    
+//                    a.boxWidth = a.boxWidth / 3;
+                    
+                    a.boxHeight = [dict[@"BoxHeight"] doubleValue];
+                    a.boxesPerRow = [dict[@"BoxesPerRow"] intValue];
+                    a.timeToFirstBox = [dict[@"TimeToFirstBox"] doubleValue];
+                    break;
+                }
+            }
+        }
+        [self subscribeForUserTopic];
+    }];
+}
+
+-(void) subscribeForUserTopic {
+    
+    [wamp subscribe:[@"game.events." stringByAppendingString:clientId] onEvent:^(MDWampEvent *payload) {
+        NSString *boxId = payload.arguments[0][@"BoxId"];
+        NSLog(@"%@", payload.arguments);
+        NSArray *aaa = _assets;
+        NSLog(@"%f", [NSDate timeIntervalSinceReferenceDate]);
+        BOOL isWin = [payload.arguments[0][@"IsWin"] boolValue];
+        int state = [payload.arguments[0][@"BetState"] intValue];
+        if(isWin) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:[@"BoxWinWithId" stringByAppendingString:boxId] object:nil];
+        }
+        else if(state == 2) {
+             [[NSNotificationCenter defaultCenter] postNotificationName:[@"BoxLoseWithId" stringByAppendingString:boxId] object:nil];
+        }
+        
+    } result:^(NSError *error) {
+        if(error)
+        {
+            UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Failed to subscribe to user channel" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+            
+        }
+    }];
+}
+
+-(void) sendBetEventForBox:(BOBetBox *)box {
+    
+    
+//    @{
+//                                           @"Id":box.identity,
+//                                           @"MinPrice":@(box.startPrice),
+//                                           @"MaxPrice":@(box.endPrice),
+//                                           @"TimeToGraph":@(box.timeToGraph),
+//                                           @"TimeLength":@(box.timeLength),
+//                                           @"Coefficient":@(box.coeff)
+//                                           }
+    NSData *data = [NSJSONSerialization dataWithJSONObject:@{
+                                                             @"Id":box.identity,
+                                                             @"MinPrice":@(box.startPrice),
+                                                             @"MaxPrice":@(box.endPrice),
+                                                             @"TimeToGraph":@(box.timeToGraph),
+                                                             @"TimeLength":@( box.timeLength),
+                                                             @"Coefficient":@(box.coeff)
+                                                             } options:0 error:nil];
+    NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+    NSDictionary *params = @{@"userId":clientId,
+                             @"betValue":@(box.betAmount),
+                             @"assetPair":box.assetPair.identity,
+                             @"box": string//@{
+//                                     @"Id":box.identity,
+//                                     @"MinPrice":@(box.startPrice),
+//                                     @"MaxPrice":@(box.endPrice),
+//                                     @"TimeToGraph":@(box.timeToGraph),
+//                                     @"TimeLength":@(box.timeLength),
+//                                     @"Coefficient":@(box.coeff)
+//                                     }
+                             };
+    
+//    NSData *data = [NSJSONSerialization dataWithJSONObject:params options:0 error:nil];
+//    NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
+    NSLog(@"Sending bet");
+    [wamp call:@"game.placebet" payload:params complete:^(MDWampResult *result, NSError *error){
+        NSLog(@"%@", result.arguments);
+        NSDate *date = [result.arguments[0][@"BetTimeStamp"] toDateWithMilliSeconds];
+        double timestamp=[date timeIntervalSinceReferenceDate];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:[@"BoxPlacedWithId" stringByAppendingString:box.identity] object:@(timestamp)];
+
+    }];
+    
+}
+
+-(void) sendSetBalance:(double) newBalance {
+    [wamp call:@"user.setbalance" payload:@{@"userId": clientId,
+                                          @"balance": @(newBalance)}
+      complete:^(MDWampResult *result, NSError *error){
+        NSLog(@"%@", result.arguments);
+    }];
+}
+
 
 //-(void) requestCoeffsForPair:(NSString *) assetId withCompletion:(void (^)(NSArray *result)) completion {
 //    
@@ -384,25 +524,9 @@
 //}
 
 -(void) sendLogEvent:(BOEvent)event message:(NSString *)message {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-
-        NSString *urlString =  [NSString stringWithFormat:@"http://%@/api/Log", serverUrl];
-        
-        
-        
-        NSMutableURLRequest *request=[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
-        [request setHTTPMethod:@"POST"];
-        
-            [request setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-        
-        NSString *clientId = [[NSUserDefaults standardUserDefaults] objectForKey:@"ClientId"];
-        if(!clientId) {
-            clientId = [[NSUUID UUID] UUIDString];
-            [[NSUserDefaults standardUserDefaults] setObject:clientId forKey:@"ClientId"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-        
+    if(!_flagConnected) {
+        return;
+    }
         NSString *eventMessage = message;
         
         if(!eventMessage) {
@@ -410,34 +534,14 @@
         }
         
         NSDictionary *params = @{
-                                 @"ClientId": clientId,
-                                 @"EventCode":@(event),
-                                 @"Message": eventMessage
+                                 @"userId": clientId,
+                                 @"eventCode":@(event),
+                                 @"message": eventMessage
                                  };
-        
-        
-        NSData* jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:nil];
-            
-            request.HTTPBody = jsonData;
-            
-        
+    [wamp call:@"game.savelog" payload:params complete:^(MDWampResult *result, NSError *error){
+          NSLog(@"%@", result.arguments);
+      }];
 
-        
-        NSURLResponse *responce;
-        NSError *error;
-        
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&responce error:&error];
-        
-        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) responce;
-        NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
-        
-        if(data) {
-            NSArray *ddd = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            NSLog(@"%@", ddd);
-        }
-    
-    
-    });
 }
 
 

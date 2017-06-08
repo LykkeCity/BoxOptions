@@ -27,6 +27,11 @@
 
 @property (strong, nonatomic) NSArray *graphValues;
 
+@property double timeToFirstBox;
+@property double boxHeight;
+@property double boxWidth;
+@property int boxesPerRow;
+
 
 -(BOOL) rateChanged:(BORate *) newRate;
 

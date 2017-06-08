@@ -14,4 +14,6 @@
 @property double bid;
 @property double timestamp;
 
+@property double middle;
+
 @end

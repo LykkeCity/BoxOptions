@@ -46,6 +46,7 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
             let previous = _balance
             _balance = newValue
             
+            
             if(_balance! < 1.0) {
                 _balance = 50
                 
@@ -56,6 +57,8 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
                 let popup = LWBottomInfoPopup.popup(withText: "Additional 50 USD added to your balance") as! LWBottomInfoPopup
                 popup.show()
             }
+            
+            BODataManager.shared().sendSetBalance(_balance!)
             
             UserDefaults.standard.set(_balance, forKey: "UserBalance")
             UserDefaults.standard.synchronize()
@@ -114,6 +117,8 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        BODataManager.shared().sendSetBalance(300.0)
+        
         activeOptions = Array()
         
         let b = UserDefaults.standard.double(forKey: "UserBalance")
@@ -166,10 +171,14 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
         
 //        NSArray *allowedAssets = @[@"EURUSD", @"EURAUD", @"EURCHF", @"EURGBP", @"EURJPY", @"USDCHF"];
 
-        let ww = 0.0001 //0.0005
-        let widthPrices = ["EURUSD":ww, "EURAUD":ww, "EURCHF":ww, "EURGBP":ww, "EURJPY": 0.03, "USDCHF":ww]
+//        let ww = 0.0001 //0.0005
+//        let widthPrices = ["EURUSD":ww, "EURAUD":ww, "EURCHF":ww, "EURGBP":ww, "EURJPY": 0.03, "USDCHF":ww]
         
-        graphView?.widthPrice = widthPrices[asset!.identity]
+        graphView?.widthPrice = asset!.boxWidth * Double(asset!.boxesPerRow)  //widthPrices[asset!.identity]
+        
+        numberOfColumnsOnScreen = Int(asset!.boxesPerRow)
+        
+        
         
         gradientView = UIImageView(image: #imageLiteral(resourceName: "GradientImage"))
         self.view.insertSubview(gradientView!, belowSubview: graphView!)
@@ -292,6 +301,11 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         timer?.invalidate()
@@ -301,9 +315,24 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-//        return
+        var distToKeyboard: CGFloat = 0.0
         
-        let distToKeyboard = 40.0 * graphView!.scale
+        
+        if(flagLandscape == false) {
+            let boxHeight = Double(graphView!.bounds.size.width) / Double(asset!.boxesPerRow)
+            graphView?.heightSeconds = (Double(graphView!.bounds.size.height) / boxHeight) * asset!.boxHeight
+            distToKeyboard = CGFloat( (Double(graphView!.bounds.size.height) / graphView!.heightSeconds) * asset!.timeToFirstBox - 10.0 ) * graphView!.scale
+        }
+        else {
+                let boxHeight = Double(graphView!.bounds.size.height) / Double(asset!.boxesPerRow)
+                graphView?.heightSeconds = (Double(graphView!.bounds.size.width) / boxHeight) * asset!.boxHeight
+            distToKeyboard = CGFloat( (Double(graphView!.bounds.size.width) / graphView!.heightSeconds) * asset!.timeToFirstBox ) * graphView!.scale
+
+        }
+
+        
+        
+//        let distToKeyboard = 40.0 * graphView!.scale
         
         let graphSizeCoeff: CGFloat = 1
         
@@ -325,7 +354,8 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
             titleLabel?.center = CGPoint(x: 51 + titleLabel!.bounds.size.width/2, y: titleContainerView!.bounds.size.height/2)
             
             backButton?.frame = CGRect(x: 16, y: 12, width: 28, height: 28)
-            
+            backButton?.frame = CGRect(x: 0, y: 4, width: 60, height: 44)
+
             
             
 //            balanceLabel?.center.y = currentRateLabel!.center.y
@@ -366,7 +396,8 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
             titleLabel?.center = CGPoint(x: 51 + titleLabel!.bounds.size.width/2, y: 42)
 
             
-            backButton?.frame = CGRect(x: 16, y: 28, width: 28, height: 28)
+
+            backButton?.frame = CGRect(x: 0, y: 20, width: 60, height: 44)
 
             
             utilsView?.frame = CGRect(x: 0, y: self.view.bounds.size.height - 56, width: self.view.bounds.size.width, height: 56)
@@ -397,19 +428,19 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
     
     @IBAction func closePressed() {
         
-        var amount = 0.0
-        for v in activeOptions! {
-            if(v.flagLost == false) {
-                amount += v.optionBetAmount!
-            }
-        }
-        if(amount > 0) {
-            let alert = UIAlertView.init(title: "WARNING", message: "If you quit the instrument right now, all your options worth USD " + String(amount) + " will be discarded and not paid off. Please wait until they are hit or missed.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Quit")
-            alert.show()
-        }
-        else {
+//        var amount = 0.0
+//        for v in activeOptions! {
+//            if(v.flagLost == false) {
+//                amount += v.optionBetAmount!
+//            }
+//        }
+//        if(amount > 0) {
+//            let alert = UIAlertView.init(title: "WARNING", message: "If you quit the instrument right now, all your options worth USD " + String(amount) + " will be discarded and not paid off. Please wait until they are hit or missed.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Quit")
+//            alert.show()
+//        }
+//        else {
             closeGame()
-        }
+//        }
 
     }
     

@@ -65,6 +65,7 @@ class BOUtilsView: UIView {
         slider?.thumbTintColor = sliderColor
 
         self.addSubview(slider!)
+        slider?.isHidden = true
         
         lineView = UIView()
         lineView?.backgroundColor = UIColor(red: 207.0/255, green: 210.0/255, blue: 215.0/255, alpha: 1)

@@ -19,7 +19,7 @@ class BOGraphView: UIView {
     
     var changes:[BORate]?
     
-    let heightSeconds = 30.0
+    var heightSeconds = 30.0
     
     var widthPrice:Double?
     
@@ -161,16 +161,31 @@ class BOGraphView: UIView {
             let y = timeToY(time: rate.timestamp)
             
             var cornerRadius = maxCornerRadius
+            
+            if(i < changes!.count - 2) {
+                cornerRadius = maxCornerRadius
+                
+                
+                let prePrevRate = changes![i+2]
+                let prePrevX = priceToX(price: (prePrevRate.ask + prePrevRate.bid)/2)
+                let prePrevY = timeToY(time: prePrevRate.timestamp)
+                if(cornerRadius > fabs(prevX - prePrevX)/2) {
+                    cornerRadius = fabs(prevX - prePrevX)/2
+                }
+                if(cornerRadius > fabs(prevY - prePrevY)/2) {
+                    cornerRadius = fabs(prevY - prePrevY)/2
+                }
+                
+            }
+
             if(cornerRadius > fabs(x - prevX)/2) {
                 cornerRadius = fabs(x - prevX)/2
             }
-            if(cornerRadius > fabs(y - prevY)/2) {
-                cornerRadius = fabs(y - prevY)/2
-            }
-
             if(cornerRadius < 1) {
                 cornerRadius = 0
             }
+
+            
 //            if(i == changes!.count - 2) {
                 context?.addLine(to: CGPoint(x: prevX, y: prevY + cornerRadius))
 //            }
@@ -196,6 +211,19 @@ class BOGraphView: UIView {
 
             }
             
+            cornerRadius = maxCornerRadius
+            if(cornerRadius > fabs(x - prevX)/2) {
+                cornerRadius = fabs(x - prevX)/2
+            }
+            if(cornerRadius > fabs(y - prevY)/2) {
+                cornerRadius = fabs(y - prevY)/2
+            }
+            
+            if(cornerRadius < 1) {
+                cornerRadius = 0
+            }
+
+
             if(x > prevX) {
                 context?.addLine(to: CGPoint(x: x - cornerRadius, y: prevY))
                 

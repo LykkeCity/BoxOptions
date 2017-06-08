@@ -30,9 +30,16 @@
     @synchronized (@"AssetChanges") {
 
     NSMutableArray *newChanges=[_changes mutableCopy];
-        if((newChanges.count>0 && (newRate.timestamp - [(BORate *)newChanges.lastObject timestamp]) < 0.2) == false) {
-            [newChanges addObject:newRate];
-        }
+//        if((newChanges.count>0 && (newRate.timestamp - [(BORate *)newChanges.lastObject timestamp]) < 0.2) == false) {
+//            [newChanges addObject:newRate];
+//        }
+//        else if(newChanges.count > 0) {
+//            [newChanges removeLastObject];
+//            [newChanges addObject:newRate];
+//        }
+
+        [newChanges addObject:newRate];
+
         _previousRate=_rate;
         _rate=newRate;
         

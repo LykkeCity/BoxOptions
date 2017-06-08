@@ -19,6 +19,9 @@ typedef enum {BOEventLaunch = 1,
               BOEventBetWon = 9,
              BOEventBetLost = 10} BOEvent;
 
+@class BOBetBox;
+@class BOAsset;
+
 @interface BODataManager : NSObject
 
 
@@ -34,5 +37,10 @@ typedef enum {BOEventLaunch = 1,
 -(void) requestCoeffsForPair:(NSString *) assetId withCompletion:(void (^)(NSArray *result)) completion;
 
 -(void) sendLogEvent:(BOEvent) event message:(NSString *) message;
+
+-(void) sendBetEventForBox:(BOBetBox *) box;
+
+-(void) sendGameStartedEvent:(BOAsset *) asset;
+-(void) sendSetBalance:(double) newBalance;
 
 @end

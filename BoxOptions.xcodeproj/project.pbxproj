@@ -39,6 +39,7 @@
 		A174FFD31E5451C400EC383F /* NSString+Date.m in Sources */ = {isa = PBXBuildFile; fileRef = A174FFD21E5451C400EC383F /* NSString+Date.m */; };
 		A18F440B1EBAF82600C6FB05 /* BOSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = A18F440A1EBAF82600C6FB05 /* BOSlider.m */; };
 		A18F44101EBECC1700C6FB05 /* BOCurrentPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F440F1EBECC1700C6FB05 /* BOCurrentPriceView.swift */; };
+		A1A655B71EDD3AB7005CC7C1 /* BOBetBox.m in Sources */ = {isa = PBXBuildFile; fileRef = A1A655B61EDD3AB7005CC7C1 /* BOBetBox.m */; };
 		A1B241231E4E211A008F6913 /* BOFlyingCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */; };
 		A1DC481D1EC05540009E8312 /* BONavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1DC481C1EC05540009E8312 /* BONavigationController.m */; };
 		A1E1361E1E826CA1009D1348 /* box_loader.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E1361D1E826CA1009D1348 /* box_loader.json */; };
@@ -120,6 +121,8 @@
 		A18F44091EBAF82600C6FB05 /* BOSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BOSlider.h; sourceTree = "<group>"; };
 		A18F440A1EBAF82600C6FB05 /* BOSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOSlider.m; sourceTree = "<group>"; };
 		A18F440F1EBECC1700C6FB05 /* BOCurrentPriceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BOCurrentPriceView.swift; sourceTree = "<group>"; };
+		A1A655B51EDD3AB7005CC7C1 /* BOBetBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BOBetBox.h; sourceTree = "<group>"; };
+		A1A655B61EDD3AB7005CC7C1 /* BOBetBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOBetBox.m; sourceTree = "<group>"; };
 		A1B241221E4E211A008F6913 /* BOFlyingCoin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BOFlyingCoin.swift; path = Presenters/Graph/BOFlyingCoin.swift; sourceTree = "<group>"; };
 		A1DC481B1EC05540009E8312 /* BONavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BONavigationController.h; sourceTree = "<group>"; };
 		A1DC481C1EC05540009E8312 /* BONavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BONavigationController.m; sourceTree = "<group>"; };
@@ -252,6 +255,8 @@
 				A10B54911E4C40F500E5DCBE /* BOAsset.m */,
 				A10B54921E4C40F500E5DCBE /* BORate.h */,
 				A10B54931E4C40F500E5DCBE /* BORate.m */,
+				A1A655B51EDD3AB7005CC7C1 /* BOBetBox.h */,
+				A1A655B61EDD3AB7005CC7C1 /* BOBetBox.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -542,6 +547,7 @@
 				A10B54A71E4D994F00E5DCBE /* BOKeyboard.swift in Sources */,
 				A1E136211E826FE2009D1348 /* LWMarginalAssetPairTableViewCell.swift in Sources */,
 				A10B54941E4C40F500E5DCBE /* BOAsset.m in Sources */,
+				A1A655B71EDD3AB7005CC7C1 /* BOBetBox.m in Sources */,
 				A1B241231E4E211A008F6913 /* BOFlyingCoin.swift in Sources */,
 				A10B53551E4C3EF900E5DCBE /* BODataManager.m in Sources */,
 				A18F440B1EBAF82600C6FB05 /* BOSlider.m in Sources */,
