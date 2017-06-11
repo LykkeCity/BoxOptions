@@ -10,10 +10,15 @@
 #import "BODataManager.h"
 #import "BoxOptions-Swift.h"
 #import "BONavigationController.h"
+#import "BOBetBox.h"
+#import "BOAsset.h"
 //#import <LOTAnimationView.h>
 #import "Lottie.h"
 
 @interface ViewController ()
+{
+    int count;
+}
 
 @end
 
@@ -22,8 +27,32 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    count = 0;
+    
     [[BODataManager shared] start];
+    
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self sendEvent];
+//     });
+    
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+-(void) sendEvent {
+    if(count < 100) {
+        BOBetBox *bb = [[BOBetBox alloc] init];
+        bb.identity = @"kjdskjsd";
+        BOAsset *aaa = [[BOAsset alloc] init];
+        aaa.identity = @"EURUSD";
+        bb.assetPair = aaa;
+        [BODataManager.shared sendBetEventForBox:bb];
+        count++;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self sendEvent];
+        });
+        
+    }
 }
 
 

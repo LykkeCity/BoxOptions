@@ -13,6 +13,7 @@
 #import "NSString+Date.h"
 #import "BoxOptions-Swift.h"
 #import "BOBetBox.h"
+#import "BOBoxesManager.h"
 
 #define kProductionServer @"boxoptions-api.lykke.com:5000"
 #define kDevelopmentServer @"13.93.116.252:5050"
@@ -46,8 +47,6 @@
         [[NSUserDefaults standardUserDefaults] setObject:clientId forKey:@"ClientId"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-
-
     
     return self;
 }
@@ -65,20 +64,14 @@
 
 -(void) start {
     
+    
     MDWampTransportWebSocket *websocket = [[MDWampTransportWebSocket alloc] initWithServer:[NSURL URLWithString:[NSString stringWithFormat:@"ws://%@/ws", serverUrl]] protocolVersions:@[kMDWampProtocolWamp2msgpack, kMDWampProtocolWamp2json]];
 //    
     wamp = [[MDWamp alloc] initWithTransport:websocket realm:@"box-options" delegate:self];
 
-//    wamp = [[MDWamp alloc] initWithTransport:websocket realm:@"mtcrossbar" delegate:self];
+    NSLog(@"Conecting WAMP");
 
     [wamp connect];
-    
-//    [self sendParameters:@{@"pair":@"EURUSD", @"timeToFirstOption":@(4000), @"optionLen":@(4000), @"priceSize":@(0.005), @"nPriceIndex":@(10), @"nTimeIndex":@(5)} withCompletion:^(BOOL result){
-//        [self requestCoeffsWithCompletion:^(NSArray *finished){
-//        
-//        
-//        }];
-//    }];
     
 
 }
@@ -118,18 +111,18 @@
         NSDictionary *dict=result.arguments[0];
         _assets = [[NSMutableArray alloc] init];
         
-        NSArray *allowedAssets = @[@"EURUSD", @"EURAUD", @"EURCHF", @"EURGBP", @"EURJPY", @"USDCHF"];
+//        NSArray *allowedAssets = @[@"EURUSD", @"EURAUD", @"EURCHF", @"EURGBP", @"EURJPY", @"USDCHF"];
         for(NSString *key in dict.allKeys) {
             
-            if([allowedAssets containsObject:key] == NO) {
-                continue;
-            }
+//            if([allowedAssets containsObject:key] == NO) {
+//                continue;
+//            }
             
             NSArray *changes = dict[key];
             
-            if([key isEqualToString:@"EURUSD"]) {
-                NSLog(@"%@", changes);
-            }
+//            if([key isEqualToString:@"EURUSD"]) {
+//                NSLog(@"%@", changes);
+//            }
             
             BOAsset *newAsset = [BOAsset new];
             newAsset.identity = key;
@@ -152,6 +145,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:@"AssetsListChanged" object:nil];
+            [BOBoxesManager shared]; //load boxes from last game
         });
 
         [self sendInitUser];
@@ -200,9 +194,9 @@
                 rate.bid=[dict[@"Bid"] doubleValue];
                 rate.middle = (rate.ask + rate.bid) / 2;
 
-                NSDate *date = [dict[@"Date"] toDateWithMilliSeconds];
-                rate.timestamp=[date timeIntervalSinceReferenceDate];
-//                rate.timestamp = [[NSDate date] timeIntervalSinceReferenceDate];
+//                NSDate *date = [dict[@"Date"] toDateWithMilliSeconds];
+//                rate.timestamp=[date timeIntervalSinceReferenceDate];
+                rate.timestamp = [[NSDate date] timeIntervalSinceReferenceDate];
                 
                 BOOL flagFound = false;
                 @synchronized (self) {
@@ -211,9 +205,9 @@
                 {
                     if([asset.identity isEqualToString:dict[@"Instrument"]])
                     {
-//                        if([asset.identity isEqualToString:@"EURUSD"]) {
-//                            NSLog(@"received an event %@", payload.arguments);
-//                        }
+                        if([asset.identity isEqualToString:@"BTCUSD"]) {
+                            NSLog(@"received an event %@", payload.arguments);
+                        }
                         flagWasChange = [asset rateChanged:rate];
                         
                         if(flagWasChange) {
@@ -306,30 +300,6 @@
   
         completion(true);
     }];
-    
-    
-    
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        
-//        NSString *urlString = [NSString stringWithFormat:@"http://%@/api/Coef/change?pair=%@&timeToFirstOption=%d&optionLen=%d&priceSize=%@&nPriceIndex=%d&nTimeIndex=%d&userId=%@", serverUrl, assetId, (int)(timeToGraph*1000), (int)(timeLength*1000), [@(priceWidth) stringValue], columns, rows, token];
-//        
-//        
-//        NSURLResponse *responce;
-//        NSError *error;
-//        
-//        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-//        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&responce error:&error];
-//        
-//        
-//        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) responce;
-//        NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            completion(true);
-//        });
-//        
-//        
-//    });
 }
 
 
@@ -341,6 +311,17 @@
 //}
 
 -(void) requestCoeffsForPair:(NSString *) assetId withCompletion:(void (^)(NSArray *result)) completion {
+//    NSMutableArray *arr = [[NSMutableArray alloc] init];
+//    for(int i=0;i<8*15;i++) {   //Testing
+//        [arr addObject:@(1.5)];
+//    }
+//    
+//    
+//    completion(arr);
+//
+//    
+//    return;
+    
     NSDictionary *params = @{@"userId":clientId,
                              @"pair":assetId
                              };
@@ -361,6 +342,15 @@
                         [arr addObject:d[@"hitCoeff"]];
                     }
                 }
+        if(arr.count != 15*8) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Failed to load coefficients" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+
+            
+            for(int i=0;i<8*15;i++) {   //Testing
+                [arr addObject:@(1.0)];
+            }
+        }
 
         completion(arr);
     }];
@@ -378,6 +368,25 @@
 }
 
 -(void) sendInitUser {
+    
+//       //Testing
+//        for(BOAsset *a in _assets) {
+//            
+//            a.boxWidth = 0.000054;
+//            a.boxHeight = 7;
+//            a.timeToFirstBox = 4;
+//            a.boxesPerRow = 7;
+//            
+//        }
+//    
+//    [self subscribeForUserTopic];
+//
+//    return;
+    
+    
+    
+    
+    
     NSDictionary *params = @{@"userId":clientId};
     
     [wamp call:@"user.init" payload:params complete:^(MDWampResult *result, NSError *error){
@@ -397,10 +406,27 @@
                     a.boxHeight = [dict[@"BoxHeight"] doubleValue];
                     a.boxesPerRow = [dict[@"BoxesPerRow"] intValue];
                     a.timeToFirstBox = [dict[@"TimeToFirstBox"] doubleValue];
+                    
                     break;
                 }
             }
         }
+        
+        if(arr == nil) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Could load asset pairs parameters" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+        }
+        
+//        if(arr == nil) {
+//            for(BOAsset *a in _assets) {
+//                
+//                a.boxWidth = 0.0000014;
+//                a.boxHeight = 7;
+//                a.timeToFirstBox = 4;
+//                a.boxesPerRow = 7;
+//                
+//            }
+//        }
         [self subscribeForUserTopic];
     }];
 }
@@ -409,9 +435,9 @@
     
     [wamp subscribe:[@"game.events." stringByAppendingString:clientId] onEvent:^(MDWampEvent *payload) {
         NSString *boxId = payload.arguments[0][@"BoxId"];
-        NSLog(@"%@", payload.arguments);
+//        NSLog(@"%@", payload.arguments);
         NSArray *aaa = _assets;
-        NSLog(@"%f", [NSDate timeIntervalSinceReferenceDate]);
+//        NSLog(@"%f", [NSDate timeIntervalSinceReferenceDate]);
         BOOL isWin = [payload.arguments[0][@"IsWin"] boolValue];
         int state = [payload.arguments[0][@"BetState"] intValue];
         if(isWin) {
@@ -470,7 +496,10 @@
     
     NSLog(@"Sending bet");
     [wamp call:@"game.placebet" payload:params complete:^(MDWampResult *result, NSError *error){
-        NSLog(@"%@", result.arguments);
+        
+        NSLog(@"Got bet result");
+        
+//        NSLog(@"%@", result.arguments);
         NSDate *date = [result.arguments[0][@"BetTimeStamp"] toDateWithMilliSeconds];
         double timestamp=[date timeIntervalSinceReferenceDate];
         
@@ -481,10 +510,11 @@
 }
 
 -(void) sendSetBalance:(double) newBalance {
+    return;
     [wamp call:@"user.setbalance" payload:@{@"userId": clientId,
                                           @"balance": @(newBalance)}
       complete:^(MDWampResult *result, NSError *error){
-        NSLog(@"%@", result.arguments);
+//        NSLog(@"%@", result.arguments);
     }];
 }
 
@@ -539,7 +569,7 @@
                                  @"message": eventMessage
                                  };
     [wamp call:@"game.savelog" payload:params complete:^(MDWampResult *result, NSError *error){
-          NSLog(@"%@", result.arguments);
+//          NSLog(@"%@", result.arguments);
       }];
 
 }

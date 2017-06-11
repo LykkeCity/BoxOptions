@@ -9,6 +9,13 @@
 #import <Foundation/Foundation.h>
 
 @class BOAsset;
+@class BOBetBox;
+
+@protocol BOBetBoxDelegate
+
+-(void) betBoxWon:(BOBetBox *) box;
+
+@end
 
 @interface BOBetBox : NSObject
 
@@ -20,8 +27,14 @@
 @property double betAmount;
 @property double coeff;
 
+@property double timeNeeded; //for drawing
+
 @property double timeStamp;
 
 @property (strong, nonatomic) NSString *identity;
+
+@property (weak, nonatomic) id <BOBetBoxDelegate> delegate;
+
+-(BOOL) isWon;
 
 @end

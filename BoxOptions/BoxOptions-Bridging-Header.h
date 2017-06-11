@@ -14,3 +14,4 @@
 #import "LWBottomInfoPopup.h"
 #import "BOSlider.h"
 #import "BOBetBox.h"
+#import "BOBoxesManager.h"

@@ -33,9 +33,9 @@ class BOFlyingCoin: UIView, CAAnimationDelegate {
     }
     
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        if(circleLayer().presenter != nil) {
-            circleLayer().presenter!.balance += circleLayer().value!
-        }
+//        if(circleLayer().presenter != nil) {
+//            circleLayer().presenter!.balance += circleLayer().value!
+//        }
 
         self.removeFromSuperview()
     }

@@ -31,6 +31,8 @@ class BOGraphView: UIView {
     let maxCornerRadius: CGFloat = 6.0
     
     var dashLinesValueStep: Double?
+    var scaleValueForDashStep: CGFloat?
+    var offsetValueForDashStep: Double = 0
 
     var context: CGContext?
     
@@ -330,35 +332,75 @@ class BOGraphView: UIView {
     }
     
     func drawDashedLines() {
+//        return
         
         if(lastX == nil) {
             return
         }
-        if(dashLinesValueStep == nil) {
-            let a = changes?.last?.ask
-            let b = changes?.last?.bid
+        var startPrice:Double = 0
+
+        if(dashLinesValueStep == nil || scale != scaleValueForDashStep) {
             
-            dashLinesValueStep = widthPrice! / 8
+//            dashLinesValueStep = widthPrice! / 8
+            
+            if(flagLandscape == false) {
+                startPrice = xToPrice(x: 0)
+                
+                dashLinesValueStep = ((widthPrice! / Double(scale)) / Double(self.bounds.size.width)) * 60
+                
+            }
+            else {
+                startPrice = xToPrice(x: self.bounds.size.height)
+                
+                dashLinesValueStep = ((widthPrice! / Double(scale)) / Double(self.bounds.size.height)) * 60
+                
+            }
+            
+            scaleValueForDashStep = scale
+            
+            let lll = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!)
+            
+            offsetValueForDashStep = (xToPrice(x: self.bounds.size.width/2) - xToPrice(x: 0)).truncatingRemainder(dividingBy: dashLinesValueStep!) + lll
+
         }
         
         if(dashLinesValueStep == 0) {
             dashLinesValueStep = nil
             return
         }
-        context?.setLineWidth(0.5)
-        context?.setStrokeColor(UIColor.init(red: 182.0/255, green: 229.0/255, blue: 1, alpha: 1).cgColor)
-        context?.setLineDash(phase: 0, lengths: [5,5])
-        var startPrice:Double = 0
-        if(flagLandscape == false) {
-            startPrice = xToPrice(x: 0)
-        }
-        else {
-            startPrice = xToPrice(x: self.bounds.size.height)
+        
+        if(startPrice == 0) {
+            if(flagLandscape == false) {
+                startPrice = xToPrice(x: 0)
+            }
+            else {
+                startPrice = xToPrice(x: self.bounds.size.height)
+            }
 
         }
         
-        let firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!)
+        
+        context?.setLineWidth(0.5)
+        context?.setStrokeColor(UIColor.init(red: 182.0/255, green: 229.0/255, blue: 1, alpha: 1).cgColor)
+        context?.setLineDash(phase: 0, lengths: [5,5])
+        
+//        var firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!)
+//        if(flagLandscape == false) {
+////            firstLineOffsetValue = (xToPrice(x: self.bounds.size.width/2 - scrollOffset) - startPrice).truncatingRemainder(dividingBy: dashLinesValueStep!) * Double(scale)
+////            firstLineOffsetValue = startPrice * Double(scale)
+//            
+//            firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!) - offsetValueForDashStep
+//            
+//        }
+//        else {
+//            firstLineOffsetValue = (xToPrice(x: self.bounds.size.height/2 - scrollOffset) - startPrice).truncatingRemainder(dividingBy: dashLinesValueStep!)
+//        }
+        
+        let firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!) - offsetValueForDashStep
+
+        
         var value = startPrice - firstLineOffsetValue
+        
         
         let width = priceToX(price: startPrice + dashLinesValueStep!) - priceToX(price: startPrice)
         if(width == 0) {
@@ -413,7 +455,17 @@ class BOGraphView: UIView {
         }
 
 
-        let firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!)
+//        var firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!)
+//        if(flagLandscape == false) {
+//            firstLineOffsetValue = (xToPrice(x: self.bounds.size.width/2 - scrollOffset) - startPrice).truncatingRemainder(dividingBy: dashLinesValueStep!)
+//        }
+//        else {
+//            firstLineOffsetValue = (xToPrice(x: self.bounds.size.height/2 - scrollOffset) - startPrice).truncatingRemainder(dividingBy: dashLinesValueStep!)
+//        }
+        
+        let firstLineOffsetValue = startPrice.truncatingRemainder(dividingBy: dashLinesValueStep!) - offsetValueForDashStep
+
+
         var value = startPrice - firstLineOffsetValue
         
         let width = priceToX(price: startPrice + dashLinesValueStep!) - priceToX(price: startPrice)

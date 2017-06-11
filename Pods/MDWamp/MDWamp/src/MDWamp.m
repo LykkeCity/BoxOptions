@@ -607,7 +607,7 @@
 
 - (void) sendMessage:(id<MDWampMessage>)message
 {
-    MDWampDebugLog(@"Sending %@", message);
+//    MDWampDebugLog(@"Sending %@", message);
     if ([message isKindOfClass:[MDWampGoodbye class]]) {
         self.goodbyeSent = YES;
     }

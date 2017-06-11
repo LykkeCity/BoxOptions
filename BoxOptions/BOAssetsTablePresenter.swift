@@ -36,12 +36,10 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
         tableView?.register(UINib(nibName: "LWMarginalAssetPairTableViewCell", bundle: nil), forCellReuseIdentifier: "MarginalAssetPairCellId")
         tableView?.separatorStyle = .none
         
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(changeBalance), name: Notification.Name("BalanceChanged"), object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    
+    func changeBalance() {
         let b = UserDefaults.standard.double(forKey: "UserBalance")
         var balance: Double?
         if(b != nil && b > 0) {
@@ -50,9 +48,15 @@ class BOAssetsTablePresenter: UIViewController, UITableViewDelegate, UITableView
         else {
             balance = 50
         }
-        
+
         balanceLabel?.text = "USD " + String.init(format: "%.2f", balance!)
 
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        changeBalance()
         
         
     }

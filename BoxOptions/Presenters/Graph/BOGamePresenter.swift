@@ -110,7 +110,7 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
     
     var startScrollPoint:CGPoint?
     
-    var activeOptions: [BOOptionView]?
+
 
     
     
@@ -119,7 +119,7 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
         
 //        BODataManager.shared().sendSetBalance(300.0)
         
-        activeOptions = Array()
+        
         
         let b = UserDefaults.standard.double(forKey: "UserBalance")
         if(b != nil && b > 0) {
@@ -184,6 +184,7 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
         self.view.insertSubview(gradientView!, belowSubview: graphView!)
         
         NotificationCenter.default.addObserver(self, selector: #selector(pricesChanged), name: NSNotification.Name("PricesChanged" + asset!.identity), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(changeBalance(notification:)), name: Notification.Name("BalanceChanged"), object: nil)
         
         currentRateLabel?.text = asset!.identity
         titleLabel?.attributedText =  NSAttributedString.init(string: asset!.identity, attributes: [NSFontAttributeName: UIFont.init(name: "ProximaNova-Semibold", size: 17)!, NSKernAttributeName: 1.5])
@@ -196,9 +197,19 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
         let gesture = UIPinchGestureRecognizer(target: self, action: #selector(zoomDetected(gesture:)))
         self.view.addGestureRecognizer(gesture)
         let gesture1 = UIPanGestureRecognizer(target: self, action: #selector(dragDetected(gesture:)))
+        gesture1.minimumNumberOfTouches = 1
+        gesture1.maximumNumberOfTouches = 1
         self.view.addGestureRecognizer(gesture1)
-        
-
+    }
+    
+    func changeBalance(notification: Notification?) {
+        let change = notification?.object as? NSNumber
+        if(change != nil) {
+            balance += change!.doubleValue
+        }
+        else {
+            balance = UserDefaults.standard.double(forKey: "UserBalance")
+        }
     }
     
     func showSettingsButtonPressed() {
@@ -239,12 +250,22 @@ class BOGamePresenter: UIViewController, UIAlertViewDelegate {
     }
     
     func dragDetected(gesture: UIPanGestureRecognizer) {
+        if(gesture.numberOfTouches > 1) {
+            return
+        }
+        
+        
         let point=gesture.location(in: self.view)
+        
+//        print(point)
         
         if(gesture.state == .began) {
             startScrollPoint = point
         }
         else {
+            if(startScrollPoint == nil) {
+                return
+            }
             if(flagLandscape) {
                 scrollOffset += point.y - startScrollPoint!.y
             }
