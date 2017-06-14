@@ -39,7 +39,7 @@
 -(id) init {
     self = [super init];
     
-    serverUrl = kDevelopmentServer;
+    serverUrl = kProductionServer;
     
     clientId = [[NSUserDefaults standardUserDefaults] objectForKey:@"ClientId"];
     if(!clientId) {
@@ -342,12 +342,12 @@
                         [arr addObject:d[@"hitCoeff"]];
                     }
                 }
-        if(arr.count != 15*8) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Failed to load coefficients" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
+        if(arr.count < 15*8) {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Failed to load coefficients" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+//            [alert show];
 
             
-            for(int i=0;i<8*15;i++) {   //Testing
+            for(int i=(int)arr.count;i<8*15;i++) {   //Testing
                 [arr addObject:@(1.0)];
             }
         }
